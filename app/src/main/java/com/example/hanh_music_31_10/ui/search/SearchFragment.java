@@ -1,4 +1,4 @@
-package com.example.hanh_music_31_10.ui.dashboard;
+package com.example.hanh_music_31_10.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.hanh_music_31_10.R;
 
-public class DashboardFragment extends Fragment {
+public class SearchFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
 
@@ -22,7 +22,7 @@ public class DashboardFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         dashboardViewModel =
                 new ViewModelProvider(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
