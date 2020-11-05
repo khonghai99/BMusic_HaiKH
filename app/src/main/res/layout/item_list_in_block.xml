@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/itemSongHome"
+        android:id="@+id/image_song_home"
         android:layout_width="match_parent"
         android:layout_height="152dp"
         android:layout_marginStart="4dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameSong"
+        android:id="@+id/name_song"
         android:layout_width="match_parent"
         android:layout_height="18dp"
         android:layout_marginStart="4dp"

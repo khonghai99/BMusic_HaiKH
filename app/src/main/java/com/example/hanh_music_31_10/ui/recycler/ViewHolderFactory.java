@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.LayoutRes;
 
+import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.ui.holder.BlockHomeCategoryHolder;
 import com.example.hanh_music_31_10.ui.holder.HomeSongItemHolder;
 
@@ -35,7 +36,9 @@ public class ViewHolderFactory {
             case RecyclerViewType.TYPE_INVALID:
                 return 0;
             case RecyclerViewType.TYPE_BLOCK_HOME_CATEGORY:
+                return R.layout.block_song_category;
             case RecyclerViewType.TYPE_ITEM_SONG_IN_HOME:
+                return R.layout.item_list_in_block;
             case RecyclerViewType.TYPE_ARTICLE_STYLE_MEDIUM:
             case RecyclerViewType.TYPE_ARTICLE_STYLE_SMALL:
             case RecyclerViewType.TYPE_NEWS_CATEGORY:
