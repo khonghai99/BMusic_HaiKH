@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <ImageView
+    <TextView
         android:id="@+id/id_number"
         android:layout_width="0dp"
         android:layout_weight="1"

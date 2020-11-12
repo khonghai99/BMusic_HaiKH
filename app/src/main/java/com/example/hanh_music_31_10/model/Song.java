@@ -1,5 +1,9 @@
 package com.example.hanh_music_31_10.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
 public class Song implements RecyclerData {
@@ -58,6 +62,18 @@ public class Song implements RecyclerData {
 
     public int getIdCategory() {
         return idCategory;
+    }
+
+    //lay anh theo bitmap neu co path
+    public Bitmap loadImageFromPath(String path) {
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        try {
+            mediaMetadataRetriever.setDataSource(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] data = mediaMetadataRetriever.getEmbeddedPicture();
+        return data == null ? null : BitmapFactory.decodeByteArray(data, 0, data.length);
     }
 
     @Override

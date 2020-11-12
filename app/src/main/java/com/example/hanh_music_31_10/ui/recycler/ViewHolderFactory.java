@@ -8,7 +8,11 @@ import androidx.annotation.LayoutRes;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.ui.holder.BlockHomeCategoryHolder;
+import com.example.hanh_music_31_10.ui.holder.FavoriteSongItemLibraryHolder;
 import com.example.hanh_music_31_10.ui.holder.HomeSongItemHolder;
+import com.example.hanh_music_31_10.ui.holder.ImageSearchItemHolder;
+import com.example.hanh_music_31_10.ui.holder.OfflineSongItemLibraryHolder;
+import com.example.hanh_music_31_10.ui.holder.PlayListItemLibraryHolder;
 
 public class ViewHolderFactory {
 
@@ -21,10 +25,14 @@ public class ViewHolderFactory {
                 return new BlockHomeCategoryHolder(view);
             case RecyclerViewType.TYPE_ITEM_SONG_IN_HOME:
                 return new HomeSongItemHolder(view);
-            case RecyclerViewType.TYPE_ARTICLE_STYLE_MEDIUM:
-            case RecyclerViewType.TYPE_ARTICLE_STYLE_SMALL:
-            case RecyclerViewType.TYPE_NEWS_CATEGORY:
-            case RecyclerViewType.TYPE_NEWS_HIDE_SOURCE:
+            case RecyclerViewType.TYPE_IMAGE_SEARCH:
+                return new ImageSearchItemHolder(view);
+            case RecyclerViewType.TYPE_OFFLINE_SONG_LIBRARY:
+                return new OfflineSongItemLibraryHolder(view);
+            case RecyclerViewType.TYPE_PLAYLIST_LIBRARY:
+                return new PlayListItemLibraryHolder(view);
+            case RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY:
+                return new FavoriteSongItemLibraryHolder(view);
             case RecyclerViewType.TYPE_ARTICLE_DETAIL:
         }
         return new InvalidViewHolder(view);
@@ -39,10 +47,14 @@ public class ViewHolderFactory {
                 return R.layout.block_song_category;
             case RecyclerViewType.TYPE_ITEM_SONG_IN_HOME:
                 return R.layout.item_list_in_block;
-            case RecyclerViewType.TYPE_ARTICLE_STYLE_MEDIUM:
-            case RecyclerViewType.TYPE_ARTICLE_STYLE_SMALL:
-            case RecyclerViewType.TYPE_NEWS_CATEGORY:
-            case RecyclerViewType.TYPE_NEWS_HIDE_SOURCE:
+            case RecyclerViewType.TYPE_IMAGE_SEARCH:
+                return R.layout.item_grid_search_layout;
+            case RecyclerViewType.TYPE_OFFLINE_SONG_LIBRARY:
+                return R.layout.item_list_offline;
+            case RecyclerViewType.TYPE_PLAYLIST_LIBRARY:
+                return R.layout.item_list_playlist;
+            case RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY:
+                return R.layout.item_list_favorite;
             case RecyclerViewType.TYPE_ARTICLE_DETAIL:
         }
         return 0;

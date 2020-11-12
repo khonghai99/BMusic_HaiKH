@@ -29,7 +29,7 @@ public class BaseRecyclerAdapter<T extends RecyclerData> extends RecyclerView.Ad
     }
 
     public BaseRecyclerAdapter(List<T> data, RecyclerActionListener actionListener) {
-        this.data = new ArrayList<>();
+        this.data = data;//new ArrayList<>();
         this.actionListener = actionListener;
     }
 
