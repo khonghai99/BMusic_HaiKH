@@ -11,4 +11,10 @@ Tình mình tựa đôi đũa lệch đành buông trôi
 Cầu mong em sẽ sớm quên được tất cả
 Tìm thấy một người xứng đáng ở bên…
 </string>
+    <string name="like_song">Like</string>
+    <string name="dis_like_song">Dislike</string>
+    <string name="delete">Delete</string>
+    <string name="add_playlist">Add playlist</string>
+    <string name="add_song_to_playlist">Add song</string>
+    <string name="download">Download</string>
 </resources>

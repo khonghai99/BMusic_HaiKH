@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
 
     private void openDetailFragment() {
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.home_fragment_container, new HomeDetailFragment(), HomeDetailFragment.class.getName())
+                .replace(R.id.home_fragment_container, new DetailSongFragment(), DetailSongFragment.class.getName())
                 .commit();
     }
 

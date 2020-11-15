@@ -1,7 +1,9 @@
 package com.example.hanh_music_31_10.ui.holder;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,31 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
             Song song = (Song) data;
             mNameSongOffline.setText(song.getNameSong());
             mDuration.setText(song.getDuration());
+            mOptionOffline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(itemView.getContext(), mOptionOffline);
+                    popupMenu.inflate(R.menu.menu_offline_song);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.like_song:
+//                                    addFavoriteSongsList(song.getId());
+                                    return true;
+                                case R.id.delete_song:
+//                                    removeFavoriteSongsList(song.getId());
+                                    return true;
+                                case R.id.add_playlist_song:
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
         }
     }
 

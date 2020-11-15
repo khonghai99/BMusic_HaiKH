@@ -34,7 +34,7 @@ public class HomeDetailFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home_detail, container, false);
 
         homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+                new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

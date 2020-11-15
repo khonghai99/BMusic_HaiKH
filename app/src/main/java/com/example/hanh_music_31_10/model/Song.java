@@ -28,6 +28,18 @@ public class Song implements RecyclerData {
         this.mImageUrl = mImageUrl;
     }
 
+    public Song() {}
+
+    //song offline
+    public Song(int id, String nameSong, String imageUrl, String artist, String albumID, String timeSong) {
+        this.id = id;
+        this.nameSong = nameSong;
+        this.singer = artist;
+        this.albumID = albumID;
+        this.duration = timeSong;
+        this.mImageUrl = imageUrl;
+    }
+
     public String getImageUrl() {
         return mImageUrl;
     }

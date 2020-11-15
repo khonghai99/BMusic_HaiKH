@@ -11,9 +11,9 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
-    private MutableLiveData<Song> mDetailSong = new MutableLiveData<>();
-    private MutableLiveData<List<Playlist>> mPlaylist = new MutableLiveData<>();
+    private final MutableLiveData<String> mText;
+    private final MutableLiveData<Song> mDetailSong = new MutableLiveData<>();
+    private final MutableLiveData<List<Playlist>> mPlaylist = new MutableLiveData<>();
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
