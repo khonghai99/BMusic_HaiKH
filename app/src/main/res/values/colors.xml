@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#CCFFCC</color>
+    <color name="ccnews_bg">#FFFFFF</color>
+    <color name="ccnews_seekable_bar">#B7B7B7</color>
 </resources>
