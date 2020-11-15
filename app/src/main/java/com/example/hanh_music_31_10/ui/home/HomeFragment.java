@@ -27,8 +27,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLinearLayout;
+
     RecyclerActionListener mRecyclerActionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
@@ -44,34 +43,36 @@ public class HomeFragment extends Fragment {
         }
     };
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+                new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
             @Override
-            public void onChanged(@Nullable String s) {
-
+            public void onChanged(Song song) {
+                openDetailFragment();
             }
         });
 
-        mRecyclerView = root.findViewById(R.id.list_block_playlist_home);
-        mRecyclerView.setHasFixedSize(true);
+        openOverviewFragment();
 
-        mLinearLayout = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(mLinearLayout);
-
-
-        BaseRecyclerAdapter<Playlist> adapter = new BaseRecyclerAdapter<Playlist>(getData(), mRecyclerActionListener) {
-            @Override
-            public int getItemViewType(int position) {
-                return RecyclerViewType.TYPE_BLOCK_HOME_CATEGORY;
-            }
-        };
-        mRecyclerView.setAdapter(adapter);
+        homeViewModel.setPlaylist(getData());
 
         return root;
+    }
+
+    private void openOverviewFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.home_fragment_container, new HomeOverviewFragment(), HomeOverviewFragment.class.getName())
+                .commit();
+    }
+
+    private void openDetailFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.home_fragment_container, new HomeDetailFragment(), HomeDetailFragment.class.getName())
+                .commit();
     }
 
     //Create data
