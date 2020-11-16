@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        findViewById(R.id.layout_play_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new MainBottomSheetFragment().show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
+            }
+        });
     }
 
     // cap quyen doc bo nho
