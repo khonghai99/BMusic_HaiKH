@@ -1,4 +1,4 @@
-package com.example.hanh_music_31_10;
+package com.example.hanh_music_31_10.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

@@ -1,10 +1,15 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +48,7 @@ public class PlayListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // chuyen giao dien tao playlist
+                disPlayDialogCreatePlayList();
             }
         });
         mRecyclerView = view.findViewById(R.id.recycler_playlist);
@@ -60,6 +66,50 @@ public class PlayListFragment extends Fragment {
         mRecyclerView.setAdapter(adapter);
 
         return view;
+    }
+
+    private void disPlayDialogCreatePlayList(){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
+        final EditText titlePlaylist = (EditText) alertLayout.findViewById(R.id.input_name_playlist);
+
+//        final Button exitButton = (Button) alertLayout.findViewById(R.id.btn_exit);
+//        exitButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // su kien exit
+//            }
+//        });
+//
+//        final Button agreeButton = (Button) alertLayout.findViewById(R.id.btn_action);
+//        agreeButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setView(alertLayout);
+        alert.setCancelable(false);
+        alert.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alert.setPositiveButton("Đồng Ý", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // code for matching password
+                String user = titlePlaylist.getText().toString();
+                Toast.makeText(getContext(), "TitlePlay: " + user, Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 
     private List<Playlist> getData() {

@@ -24,13 +24,11 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.hanh_music_31_10.MainActivity;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Song;
-import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 
 import java.io.Serializable;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Random;
 

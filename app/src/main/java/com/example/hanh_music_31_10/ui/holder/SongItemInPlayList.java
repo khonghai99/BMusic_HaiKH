@@ -14,43 +14,40 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
-public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
-    private TextView mNumber;
-    private TextView mNameSongOffline;
-    private TextView mDuration;
-    private ImageView mOptionOffline;
+public class SongItemInPlayList extends BaseRecyclerViewHolder {
+    private ImageView mImageSong;
+    private TextView mNameSong;
+    private TextView mArtistSong;
+    private ImageView mOptionSongInPlaylist;
 
-    public OfflineSongItemLibraryHolder(@NonNull View itemView) {
+    public SongItemInPlayList(@NonNull View itemView) {
         super(itemView);
-        mNumber = itemView.findViewById(R.id.id_number);
-        mNameSongOffline = itemView.findViewById(R.id.id_item_name_song);
-        mDuration = itemView.findViewById(R.id.id_item_duration);
-        mOptionOffline = itemView.findViewById(R.id.id_option_menu);
+        mImageSong = itemView.findViewById(R.id.id_image_song);
+        mNameSong = itemView.findViewById(R.id.id_name_song);
+        mArtistSong = itemView.findViewById(R.id.artist_song);
+        mOptionSongInPlaylist = itemView.findViewById(R.id.id_option_song_playlist);
     }
 
     @Override
     public void bindViewHolder(RecyclerData data) {
-        if (data instanceof Song) {
+        if( data instanceof Song){
             Song song = (Song) data;
-            mNumber.setText(""+(getAdapterPosition()+1));
-            mNameSongOffline.setText(song.getNameSong());
-            mDuration.setText(song.getDuration());
-            mOptionOffline.setOnClickListener(new View.OnClickListener() {
+            mImageSong.setImageResource(R.drawable.ic_baseline_library_music_24);
+            mNameSong.setText(song.getNameSong());
+            mArtistSong.setText(song.getSinger());
+            mOptionSongInPlaylist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(itemView.getContext(), mOptionOffline);
-                    popupMenu.inflate(R.menu.menu_offline_song);
+                    PopupMenu popupMenu = new PopupMenu(itemView.getContext(), mOptionSongInPlaylist);
+                    popupMenu.inflate(R.menu.menu_song_in_playlist);
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
-                                case R.id.like_song:
+                                case R.id.delete_song_in_playlist:
 //                                    addFavoriteSongsList(song.getId());
                                     return true;
-                                case R.id.delete_song:
-//                                    removeFavoriteSongsList(song.getId());
-                                    return true;
-                                case R.id.add_playlist_song:
+                                case R.id.add_favorite:
                                     return true;
                                 default:
                                     return false;
@@ -61,11 +58,7 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 }
             });
         }
-    }
 
-    public void setNumber(int i) {
-        if (mNumber != null)
-            mNumber.setText("" + i);
     }
 
     @Override

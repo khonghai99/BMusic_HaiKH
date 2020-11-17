@@ -13,6 +13,7 @@ import com.example.hanh_music_31_10.ui.holder.HomeSongItemHolder;
 import com.example.hanh_music_31_10.ui.holder.ImageSearchItemHolder;
 import com.example.hanh_music_31_10.ui.holder.OfflineSongItemLibraryHolder;
 import com.example.hanh_music_31_10.ui.holder.PlayListItemLibraryHolder;
+import com.example.hanh_music_31_10.ui.holder.SongItemInPlayList;
 
 public class ViewHolderFactory {
 
@@ -33,7 +34,8 @@ public class ViewHolderFactory {
                 return new PlayListItemLibraryHolder(view);
             case RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY:
                 return new FavoriteSongItemLibraryHolder(view);
-            case RecyclerViewType.TYPE_ARTICLE_DETAIL:
+            case RecyclerViewType.TYPE_SONG_IN_PLAYLIST:
+                return new SongItemInPlayList(view);
         }
         return new InvalidViewHolder(view);
     }
@@ -55,7 +57,8 @@ public class ViewHolderFactory {
                 return R.layout.item_list_playlist;
             case RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY:
                 return R.layout.item_list_favorite;
-            case RecyclerViewType.TYPE_ARTICLE_DETAIL:
+            case RecyclerViewType.TYPE_SONG_IN_PLAYLIST:
+                return R.layout.item_song_in_playlist;
         }
         return 0;
     }
