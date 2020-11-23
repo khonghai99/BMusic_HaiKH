@@ -1,18 +1,17 @@
 package com.example.hanh_music_31_10.ui.library;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -38,10 +38,22 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
     private List<Song> mListSong = new ArrayList<Song>();
     private BaseRecyclerAdapter<Song> mAdapter;
 
+    private LibraryViewModel mLibraryViewModel;
+
+
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-            super.onViewClick(position, view, viewHolder);
+           mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
+        }
+
+        @Override
+        public void clickSong(Song song) {
+        }
+
+        @Override
+        public Song getSongPlaying() {
+           return ((MainActivity) getActivity()).getService().getPlayingSong();
         }
     };
 
@@ -51,6 +63,7 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
        //load bai hat o tren thiet bi
         getLoaderManager().initLoader(LOADER_ID,null, this);
 
+//        getArguments()
         View view = inflater.inflate(R.layout.offline_library_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_offline);
         mRecyclerView.setHasFixedSize(true);
@@ -65,6 +78,15 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
             }
         };
         mRecyclerView.setAdapter(mAdapter);
+
+        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
+        mLibraryViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                ((MainActivity) getActivity()).playSong((ArrayList<Song>)mAdapter.getData(), song);
+                System.out.println("HanhNTHe: OfflineSongFragment click song ");
+            }
+        });
 
         return view;
     }

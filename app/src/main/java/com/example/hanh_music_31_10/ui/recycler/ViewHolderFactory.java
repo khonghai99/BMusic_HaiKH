@@ -13,7 +13,7 @@ import com.example.hanh_music_31_10.ui.holder.HomeSongItemHolder;
 import com.example.hanh_music_31_10.ui.holder.ImageSearchItemHolder;
 import com.example.hanh_music_31_10.ui.holder.OfflineSongItemLibraryHolder;
 import com.example.hanh_music_31_10.ui.holder.PlayListItemLibraryHolder;
-import com.example.hanh_music_31_10.ui.holder.SongItemInPlayList;
+import com.example.hanh_music_31_10.ui.holder.SongItemInPlayListHolder;
 
 public class ViewHolderFactory {
 
@@ -35,7 +35,7 @@ public class ViewHolderFactory {
             case RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY:
                 return new FavoriteSongItemLibraryHolder(view);
             case RecyclerViewType.TYPE_SONG_IN_PLAYLIST:
-                return new SongItemInPlayList(view);
+                return new SongItemInPlayListHolder(view);
         }
         return new InvalidViewHolder(view);
     }

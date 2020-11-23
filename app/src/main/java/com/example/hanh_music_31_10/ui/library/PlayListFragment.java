@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -14,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,12 +32,22 @@ import java.util.List;
 public class PlayListFragment extends Fragment {
     private LinearLayout mButtonNewPlayList;
     private RecyclerView mRecyclerView;
+
+    private LibraryViewModel mLibViewModel;
+    BaseRecyclerAdapter<Playlist> mAdapter;
+
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-            super.onViewClick(position, view, viewHolder);
+            // click vao 1 view trong playlist fragment chuyển sang fragment detail
+//            mOnClickListener.onViewClick(position, view, viewHolder);
+            mLibViewModel.setDetailPlaylist(mAdapter.getData().get(position));
+            System.out.println("HanhNTHe: Click view playlist fragment " + view.toString());
         }
     };
+
+    public PlayListFragment() {
+    }
 
     @Nullable
     @Override
@@ -57,18 +68,21 @@ public class PlayListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(manager);
 
-        BaseRecyclerAdapter<Playlist> adapter = new BaseRecyclerAdapter<Playlist>(getData(), actionListener) {
+        mAdapter = new BaseRecyclerAdapter<Playlist>(getData(), actionListener) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_PLAYLIST_LIBRARY;
             }
         };
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mLibViewModel =
+                new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
 
         return view;
     }
 
-    private void disPlayDialogCreatePlayList(){
+    private void disPlayDialogCreatePlayList() {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
         final EditText titlePlaylist = (EditText) alertLayout.findViewById(R.id.input_name_playlist);

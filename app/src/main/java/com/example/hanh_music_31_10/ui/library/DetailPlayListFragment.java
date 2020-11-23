@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,9 +30,12 @@ public class DetailPlayListFragment extends Fragment {
     private RecyclerView mListSong;
     BaseRecyclerAdapter<Song> mAdapter;
 
+    private LibraryViewModel mLibraryViewModel;
+
     RecyclerActionListener mRecyclerActionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
+            mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
         }
 
         @Override
@@ -63,6 +68,18 @@ public class DetailPlayListFragment extends Fragment {
         };
 
         mListSong.setAdapter(mAdapter);
+
+        mLibraryViewModel =
+                new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
+        // lăng nghe sự kiện khi click vào 1 song
+        mLibraryViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                //update giao diện
+                System.out.println("HanhNTHe: DetailPlayListFragment click song ");
+            }
+        });
+
         return root;
     }
 

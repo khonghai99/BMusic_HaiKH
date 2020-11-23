@@ -14,13 +14,13 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
-public class SongItemInPlayList extends BaseRecyclerViewHolder {
+public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
     private ImageView mImageSong;
     private TextView mNameSong;
     private TextView mArtistSong;
     private ImageView mOptionSongInPlaylist;
 
-    public SongItemInPlayList(@NonNull View itemView) {
+    public SongItemInPlayListHolder(@NonNull View itemView) {
         super(itemView);
         mImageSong = itemView.findViewById(R.id.id_image_song);
         mNameSong = itemView.findViewById(R.id.id_name_song);
@@ -63,6 +63,11 @@ public class SongItemInPlayList extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onViewClick(getAdapterPosition(), v, SongItemInPlayListHolder.this);
+            }
+        });
     }
 }

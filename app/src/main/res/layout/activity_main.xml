@@ -35,7 +35,8 @@
         android:layout_height="62dp"
         android:layout_above="@+id/nav_view"
         android:orientation="horizontal"
-        android:background="@drawable/background_linear">
+        android:background="@drawable/background_linear"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imgMainSong"

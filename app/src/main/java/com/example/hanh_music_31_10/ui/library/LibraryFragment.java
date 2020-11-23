@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.activity.SettingsActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
@@ -26,35 +27,22 @@ import java.util.List;
 
 public class LibraryFragment extends Fragment {
 
-    private LibraryViewModel libraryViewModel;
+    private LibraryViewModel mLibraryViewModel;
     //list fragment
     private List<Fragment> mFragments = new ArrayList<Fragment>();
 
-    RecyclerActionListener mRecyclerActionListener = new RecyclerActionListener() {
-        @Override
-        public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-        }
-
-        @Override
-        public void onViewLongClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-        }
-
-        @Override
-        public void clickSong(Song song) {
-            super.clickSong(song);
-        }
-    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        libraryViewModel =
+        mLibraryViewModel =
                 new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
         View root = inflater.inflate(R.layout.fragment_library, container, false);
-        libraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
+        mLibraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
             @Override
             public void onChanged(Playlist playlist) {
                 LibraryFragment.this.openDetailFragment();
+                System.out.println("HanhNTHe: LibraryViewModel click playlist ");
             }
         });
 
@@ -63,9 +51,11 @@ public class LibraryFragment extends Fragment {
         return root;
     }
 
+
     private void openOverviewFragment() {
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.container_fragment_library, new LibraryOverViewFragment(), LibraryOverViewFragment.class.getName())
+                .replace(R.id.container_fragment_library, new LibraryOverViewFragment(),
+                        LibraryOverViewFragment.class.getName())
                 .commit();
     }
 

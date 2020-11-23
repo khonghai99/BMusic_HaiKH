@@ -14,6 +14,8 @@ public class LibraryViewModel extends ViewModel {
     private MutableLiveData<String> mText;
     private final MutableLiveData<Playlist> mDetailPlaylist = new MutableLiveData<>();
     private final MutableLiveData<List<Playlist>> mPlaylist = new MutableLiveData<>();
+    // nhan su kien khi click vao mot bai hat
+    private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
 
     public LibraryViewModel() {
         mText = new MutableLiveData<>();
@@ -38,5 +40,12 @@ public class LibraryViewModel extends ViewModel {
 
     public void setPlaylist(List<Playlist> mPlaylist) {
         this.mPlaylist.setValue(mPlaylist);
+    }
+
+    public MutableLiveData<Song> getClickSong(){
+        return mClickSong;
+    }
+    public void setClickSong(Song song){
+        this.mClickSong.setValue(song);
     }
 }

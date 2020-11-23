@@ -23,7 +23,6 @@ public class LyricsFragment extends Fragment {
         View view = inflater.inflate(R.layout.lyrics_song_fragment, container, false);
         mLyricsView = view.findViewById(R.id.lyrics_song);
         mLyricsView.setText(R.string.lyrics_default);
-
         return view;
     }
 }

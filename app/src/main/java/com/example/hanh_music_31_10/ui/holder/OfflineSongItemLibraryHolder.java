@@ -14,11 +14,14 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
     private TextView mNumber;
     private TextView mNameSongOffline;
     private TextView mDuration;
     private ImageView mOptionOffline;
+    private EqualizerView mEqualizerView;
 
     public OfflineSongItemLibraryHolder(@NonNull View itemView) {
         super(itemView);
@@ -26,6 +29,7 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
         mNameSongOffline = itemView.findViewById(R.id.id_item_name_song);
         mDuration = itemView.findViewById(R.id.id_item_duration);
         mOptionOffline = itemView.findViewById(R.id.id_option_menu);
+        mEqualizerView = itemView.findViewById(R.id.equalizer);
     }
 
     @Override
@@ -62,14 +66,24 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
             });
         }
     }
-
-    public void setNumber(int i) {
-        if (mNumber != null)
-            mNumber.setText("" + i);
+    //update sóng khi phát 1 bài hát
+    public void updateEqualizerView(boolean isPlay){
+        if( isPlay ){
+            mEqualizerView.animateBars();
+        } else if (!mEqualizerView.isAnimating()){
+            mEqualizerView.stopBars();
+        }
+        mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
+        mNumber.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );
     }
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onViewClick(getAdapterPosition(), v, OfflineSongItemLibraryHolder.this);
+            }
+        });
     }
 }

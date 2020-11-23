@@ -37,7 +37,7 @@ public class Song implements RecyclerData {
         this.singer = artist;
         this.albumID = albumID;
         this.duration = timeSong;
-        this.mImageUrl = imageUrl;
+        this.pathSong = imageUrl;
     }
 
     public String getImageUrl() {

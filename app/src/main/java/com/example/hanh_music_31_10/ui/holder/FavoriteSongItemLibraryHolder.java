@@ -66,6 +66,11 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onViewClick(getAdapterPosition(), v, FavoriteSongItemLibraryHolder.this);
+            }
+        });
     }
 }

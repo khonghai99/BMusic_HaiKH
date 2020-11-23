@@ -1,14 +1,26 @@
 package com.example.hanh_music_31_10.activity;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,7 +31,57 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ImageView mImageSong;
+    private TextView mNameSong;
+    private TextView mArtist;
+    private ImageView mIsPlaySong;
+    private LinearLayout mBottomControl;
+
+    private MainBottomSheetFragment mMainBottomSheetFragment;
+
+    public MediaPlaybackService mMediaPlaybackService;
+    IServiceConnectListenner1 mServiceConnectListenner1;
+    IServiceConnectListenner2 mServiceConnectListenner2;
+
+    ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MediaPlaybackService.MediaPlaybackServiceBinder mediaPlaybackServiceBinder = (MediaPlaybackService.MediaPlaybackServiceBinder) iBinder;
+            mMediaPlaybackService = mediaPlaybackServiceBinder.getService();
+
+            System.out.println("HanhNTHe: connect service iBinder "+ mMediaPlaybackService);
+//            mServiceConnectListenner1.onConnect();
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mServiceConnectListenner2.onConnect();
+            }
+//            update();
+            mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
+                @Override
+                public void onUpdate() {
+                    updateBottomSheet();
+                }
+
+            });
+//            if (!mMediaPlaybackService.isMusicPlay()) {
+//                if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
+//                    mMediaPlaybackService.loadData();
+//                    updateSaveSong();
+//                } else {
+//                    findViewById(R.id.layoutPlayMusic).setVisibility(View.GONE);
+//                }
+//            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +100,109 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        findViewById(R.id.layout_play_home).setOnClickListener(new View.OnClickListener() {
+//        mMainBottomSheetFragment = new MainBottomSheetFragment();
+
+        mBottomControl =  findViewById(R.id.layout_play_home);
+        mBottomControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new MainBottomSheetFragment().show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
+//                mMainBottomSheetFragment.show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
+                mMainBottomSheetFragment = new MainBottomSheetFragment();
+                mMainBottomSheetFragment.show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
             }
         });
+
+        mImageSong = findViewById(R.id.imgMainSong);
+        mNameSong = findViewById(R.id.tvMainNameSong);
+        mArtist = findViewById(R.id.tvMainArtist);
+        mIsPlaySong = findViewById(R.id.btMainPlay);
+
+        mIsPlaySong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mMediaPlaybackService.isPlaying()){
+                    mMediaPlaybackService.pause();
+                    mIsPlaySong.setImageResource(R.drawable.ic_play_black_24dp);
+                }else {
+                    mMediaPlaybackService.play();
+                    mIsPlaySong.setImageResource(R.drawable.ic_pause_black_24dp);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isMyServiceRunning(MediaPlaybackService.class)) {
+            connectService();
+        } else {
+            startService();
+            connectService();
+        }
+    }
+
+    public void startService() {
+        Intent it = new Intent(this, MediaPlaybackService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startService(it);
+            System.out.println("HanhNTHe: start service");
+        }
+    }
+
+    //method
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void connectService() {
+        Intent it = new Intent(this, MediaPlaybackService.class);
+        bindService(it, mServiceConnection, Context.BIND_AUTO_CREATE);
+        System.out.println("HanhNTHe: connect service");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+    }
+
+    public void playSong(ArrayList<Song> songs, Song song){
+//        songs.add(song);
+//        songs.add(song);
+        mMediaPlaybackService.playSong(songs, song);
+        updateUI(song);
+    }
+
+    public MediaPlaybackService getService(){
+        return mMediaPlaybackService;
+    }
+
+    //update ui
+    private void updateUI(Song song){
+        if(mBottomControl.getVisibility() == View.GONE)
+            mBottomControl.setVisibility(View.VISIBLE);
+        if (song.loadImageFromPath(song.getPathSong()) == null){
+            mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song));
+        } else {
+            mImageSong.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
+        }
+        mNameSong.setText(song.getNameSong());
+        mArtist.setText(song.getSinger());
+        mIsPlaySong.setImageResource(mMediaPlaybackService.isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp);
+    }
+
+    public void updateBottomSheet(){
+        updateUI(mMediaPlaybackService.getPlayingSong());
+        if(mMainBottomSheetFragment != null){
+            mMainBottomSheetFragment.updatePlaySongUI();
+        }
     }
 
     // cap quyen doc bo nho
@@ -97,5 +256,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //interface
+    public interface IServiceConnectListenner1 {
+        void onConnect();
+    }
+
+    public interface IServiceConnectListenner2 {
+        void onConnect();
+    }
 
 }

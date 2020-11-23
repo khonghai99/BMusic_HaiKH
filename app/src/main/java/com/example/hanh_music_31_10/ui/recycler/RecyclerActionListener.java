@@ -2,6 +2,7 @@ package com.example.hanh_music_31_10.ui.recycler;
 
 import android.view.View;
 
+import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 
 public class RecyclerActionListener {
@@ -16,5 +17,8 @@ public class RecyclerActionListener {
 
     public void clickSong(Song song) {
 
+    }
+    public Song getSongPlaying(){
+        return null;
     }
 }

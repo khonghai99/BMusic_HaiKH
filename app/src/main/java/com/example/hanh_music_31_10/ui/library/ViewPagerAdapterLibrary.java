@@ -1,10 +1,16 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 
 public class ViewPagerAdapterLibrary extends FragmentStatePagerAdapter {
 
@@ -21,7 +27,11 @@ public class ViewPagerAdapterLibrary extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new OfflineSongFragment();
+                OfflineSongFragment offlineSongFragment = new OfflineSongFragment();
+                Bundle bundle = new Bundle();
+                //
+                offlineSongFragment.setArguments(bundle);
+                return offlineSongFragment;
             case 1:
                 return new PlayListFragment();
             case 2:

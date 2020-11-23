@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,11 +26,16 @@ import java.util.List;
 
 public class FavoriteSongFragment extends Fragment {
     private RecyclerView mRecyclerView;
+    private LibraryViewModel mLibraryViewModel;
+    private BaseRecyclerAdapter<Song> mAdapter;
+
+
     private RecyclerActionListener mActionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-            super.onViewClick(position, view, viewHolder);
+            mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
         }
+
     };
 
     @Nullable
@@ -42,14 +49,25 @@ public class FavoriteSongFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        BaseRecyclerAdapter<Song> adapter = new BaseRecyclerAdapter<Song>(getData(), mActionListener) {
+        mAdapter = new BaseRecyclerAdapter<Song>(getData(), mActionListener) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY;
             }
         };
 
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
+        // lăng nghe sự kiện khi click vào 1 song
+        mLibraryViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                //update giao diện
+                System.out.println("HanhNTHe: FavoriteSongFragment click song ");
+            }
+        });
+
         return view;
     }
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/media_playback_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/backgound_gradient">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout1"
@@ -43,8 +44,9 @@
             android:layout_marginRight="16dp"
             app:layout_constraintBottom_toTopOf="@+id/artist_song_playback"
             app:layout_constraintLeft_toRightOf="@+id/image_song_small"
-            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"
             app:layout_constraintTop_toTopOf="parent" />
+<!--            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"-->
+
 
         <TextView
             android:id="@+id/artist_song_playback"
@@ -58,20 +60,19 @@
             android:textSize="12sp"
             android:layout_marginRight="16dp"
             app:layout_constraintLeft_toRightOf="@+id/image_song_small"
-            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"
             app:layout_constraintTop_toBottomOf="@+id/name_song_playback" />
+<!--            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"-->
 
-
-        <ImageView
-            android:id="@+id/btn_list_song_playback"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:layout_marginRight="16dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_queue_music_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/btn_menu_playback"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <ImageView-->
+<!--            android:id="@+id/btn_list_song_playback"-->
+<!--            android:layout_width="46dp"-->
+<!--            android:layout_height="46dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_queue_music_black_24dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintRight_toLeftOf="@+id/btn_menu_playback"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <ImageView
             android:id="@+id/btn_menu_playback"
@@ -80,7 +81,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_more_vert_black_24dp"
+            android:src="@drawable/ic_alarms"
             android:textAppearance="?android:textAppearanceLarge"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
