@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -186,8 +188,12 @@ public class MainActivity extends AppCompatActivity {
 
     //update ui
     private void updateUI(Song song){
-        if(mBottomControl.getVisibility() == View.GONE)
+        if(mBottomControl.getVisibility() == View.GONE){
             mBottomControl.setVisibility(View.VISIBLE);
+            Animation alpha = new AlphaAnimation(0.00f, 1.00f);
+            alpha.setDuration(400);
+            mBottomControl.startAnimation(alpha);
+        }
         if (song.loadImageFromPath(song.getPathSong()) == null){
             mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song));
         } else {

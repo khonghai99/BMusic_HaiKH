@@ -2,6 +2,7 @@ package com.example.hanh_music_31_10.ui.holder;
 
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -22,8 +23,8 @@ public class ImageSearchItemHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void bindViewHolder(RecyclerData data) {
-        if (data instanceof ImageSearchModel)
-            mImageSearchButton.setImageResource(((ImageSearchModel) data).getImageSearchUrl());
+//        if (data instanceof ImageSearchModel)
+//            mImageSearchButton.setImageResource(((ImageSearchModel) data).getImageSearchUrl());
         //load anh
     }
 

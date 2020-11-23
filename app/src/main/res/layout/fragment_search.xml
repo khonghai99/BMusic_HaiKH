@@ -12,12 +12,19 @@
         android:layout_width="match_parent"
         android:layout_height="47dp"
         android:layout_alignParentTop="true"
-        android:id="@+id/search_view"/>
+        android:id="@+id/search_view"
+        android:layout_marginBottom="15dp"
+        android:layout_margin="15dp"
+        app:iconifiedByDefault="false"
+        app:queryBackground="@null"
+        android:background="@drawable/shapebgsearch"
+        app:submitBackground="@null"
+        app:queryHint="@string/search_hint"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/search_view" />
 
 </RelativeLayout>

@@ -1,5 +1,8 @@
 package com.example.hanh_music_31_10.ui.search;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +61,10 @@ public class SearchFragment extends Fragment {
         });
 
         mSearchView = root.findViewById(R.id.search_view);
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        System.out.println("HanhNTHe; searchManager "+searchManager);
 
         mRecyclerView = root.findViewById(R.id.recycler_view_search);
         mRecyclerView.setHasFixedSize(true);

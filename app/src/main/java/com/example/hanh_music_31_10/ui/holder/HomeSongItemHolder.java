@@ -29,7 +29,7 @@ public class HomeSongItemHolder extends BaseRecyclerViewHolder {
         if (data instanceof Song) {
             Song song = (Song) data;
             //Glide.... de load anh :|
-            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
+            mImageView.setImageResource(R.drawable.home_test);
             mTextSongName.setText(song.getNameSong());
             mTextArtistsName.setText(song.getSinger());
         }
