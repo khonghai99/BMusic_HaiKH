@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String SONG_IS_PLAYING = "song_is_playing";
+    public static final String SONG_LIST = "song_list";
 
     private ImageView mImageSong;
     private TextView mNameSong;
@@ -59,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("HanhNTHe: connect service iBinder "+ mMediaPlaybackService);
 //            mServiceConnectListenner1.onConnect();
             int orientation = getResources().getConfiguration().orientation;
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                mServiceConnectListenner2.onConnect();
-            }
+//            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                mServiceConnectListenner2.onConnect();
+//            }
 //            update();
             mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
                 @Override
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 //                    findViewById(R.id.layoutPlayMusic).setVisibility(View.GONE);
 //                }
 //            }
+
         }
 
         @Override
@@ -142,6 +148,19 @@ public class MainActivity extends AppCompatActivity {
             startService();
             connectService();
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // update lan dau vao app giao dieen control
+//        Song songPreference = getSongPlaying();
+//        if(songPreference != null){
+//            mBottomControl.setVisibility(View.VISIBLE);
+//            updateUI(songPreference);
+//        }
     }
 
     public void startService() {
@@ -151,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("HanhNTHe: start service");
         }
     }
+
 
     //method
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -210,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
             mMainBottomSheetFragment.updatePlaySongUI();
         }
     }
-
     // cap quyen doc bo nho
     public void initPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -269,6 +288,23 @@ public class MainActivity extends AppCompatActivity {
 
     public interface IServiceConnectListenner2 {
         void onConnect();
+    }
+
+    //luu gia tri bai hat da phat truoc do
+    private void saveSongPlaying(Song song){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(song);
+        editor.putString(SONG_IS_PLAYING, json);
+        editor.apply();
+    }
+    private Song getSongPlaying(){
+        SharedPreferences sharedPref = getSharedPreferences(MainActivity.SONG_LIST,Context.MODE_PRIVATE);;
+        Gson gson = new Gson();
+        String json = sharedPref.getString(SONG_IS_PLAYING, "");
+        Song obj = gson.fromJson(json, Song.class);
+        return obj;
     }
 
 }

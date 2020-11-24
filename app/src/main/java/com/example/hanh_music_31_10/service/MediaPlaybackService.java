@@ -1,6 +1,7 @@
 package com.example.hanh_music_31_10.service;
 
 import android.Manifest;
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -42,6 +43,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Song;
+import com.google.gson.Gson;
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
 
@@ -364,6 +366,8 @@ public class MediaPlaybackService extends Service {
                 e.printStackTrace();
             }
         }
+        //luu bai hat dang phat
+        saveSongPlaying(mPLayingSong);
 
         if (mMediaPlayer == null) {
             showToast("\t\t\t\tSong not exist !\nPlease chose different Song");
@@ -880,4 +884,15 @@ public class MediaPlaybackService extends Service {
 //            }
 //        });
 //    }
+
+    //luu bai hat dang phat vao preference
+    private void saveSongPlaying(Song song){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(MainActivity.SONG_LIST,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(song);
+        editor.putString(MainActivity.SONG_IS_PLAYING, json);
+        editor.apply();
+    }
+
 }

@@ -13,5 +13,5 @@
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog">
         <item name="android:statusBarColor" tools:ignore="NewApi">@android:color/transparent</item>
     </style>
-
+    
 </resources>

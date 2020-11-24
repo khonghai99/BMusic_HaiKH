@@ -5,14 +5,14 @@
     android:id="@+id/media_playback_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgound_gradient">
+    android:background="@drawable/background_recyclerview">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout1"
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:layout_alignParentBottom="true"
-        android:background="#aaf8f7f6"
+        android:background="@color/top_layout"
         android:elevation="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,7 +44,8 @@
             android:layout_marginRight="16dp"
             app:layout_constraintBottom_toTopOf="@+id/artist_song_playback"
             app:layout_constraintLeft_toRightOf="@+id/image_song_small"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/name_song"/>
 <!--            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"-->
 
 
@@ -60,7 +61,8 @@
             android:textSize="12sp"
             android:layout_marginRight="16dp"
             app:layout_constraintLeft_toRightOf="@+id/image_song_small"
-            app:layout_constraintTop_toBottomOf="@+id/name_song_playback" />
+            app:layout_constraintTop_toBottomOf="@+id/name_song_playback"
+            android:textColor="@color/duration"/>
 <!--            app:layout_constraintRight_toLeftOf="@+id/btn_list_song_playback"-->
 
 <!--        <ImageView-->
@@ -86,7 +88,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="10dp"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/icon_color" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,7 +122,8 @@
         android:src="@drawable/ic_repeat_white_24dp"
         android:padding="3dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@color/icon_color" />
 
     <ImageView
         android:id="@+id/btn_shuffle_playback"
@@ -131,18 +135,19 @@
         android:padding="3dp"
         android:src="@drawable/ic_shuffle_white_24dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/icon_color"/>
 
     <SeekBar
         android:id="@+id/seek_bar_song"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="12dp"
-        android:progressTint="#FF5722"
-        android:thumbTint="#FF5722"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:layout_marginBottom="65dp"
+        android:progressTint="@color/progress_tint"
+        android:thumbTint="@color/thum_tint"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:layout_marginBottom="71dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         />
@@ -151,7 +156,7 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="#aaf8f7f6"
+        android:background="@color/bottom_layout"
         android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -165,7 +170,8 @@
             android:layout_marginTop="4dp"
             android:textSize="11sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/duration"/>
 
         <ImageView
             android:id="@+id/btn_like_playback"
@@ -177,7 +183,8 @@
             android:src="@drawable/ic_like"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint = "@color/icon_color"/>
 
         <ImageView
             android:id="@+id/btn_previous_playback"
@@ -188,7 +195,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/btn_like_playback"
             app:layout_constraintRight_toLeftOf="@+id/btn_pause_playback"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint = "@color/icon_color"/>
 
         <ImageView
             android:id="@+id/btn_pause_playback"
@@ -198,7 +206,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/btn_previous_playback"
             app:layout_constraintRight_toLeftOf="@+id/btn_next_playback"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/progress_tint" />
 
         <ImageView
             android:id="@+id/btn_next_playback"
@@ -209,7 +218,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/btn_pause_playback"
             app:layout_constraintRight_toLeftOf="@+id/btn_dislike_playback"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint = "@color/icon_color"/>
 
         <ImageView
             android:id="@+id/btn_dislike_playback"
@@ -221,7 +231,8 @@
             android:src="@drawable/ic_dislike"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint = "@color/icon_color"/>
 
         <TextView
             android:id="@+id/total_time_song_playback"
@@ -231,7 +242,8 @@
             android:layout_marginTop="4dp"
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/duration"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

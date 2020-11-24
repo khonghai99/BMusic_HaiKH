@@ -28,9 +28,6 @@ import java.util.List;
 public class LibraryFragment extends Fragment {
 
     private LibraryViewModel mLibraryViewModel;
-    //list fragment
-    private List<Fragment> mFragments = new ArrayList<Fragment>();
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,16 +38,34 @@ public class LibraryFragment extends Fragment {
         mLibraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
             @Override
             public void onChanged(Playlist playlist) {
-                LibraryFragment.this.openDetailFragment();
+                if (playlist != null)
+                    LibraryFragment.this.openDetailFragment();
                 System.out.println("HanhNTHe: LibraryViewModel click playlist ");
             }
         });
 
-
+        System.out.println("HanhNTHe; lib onCreateView ");
         openOverviewFragment();
         return root;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("HanhNTHe: lib onstart ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("HanhNTHe: lib onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        System.out.println("HanhNTHe: lib onPause ");
+    }
 
     private void openOverviewFragment() {
         getParentFragmentManager().beginTransaction()

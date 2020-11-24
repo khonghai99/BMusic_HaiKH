@@ -10,4 +10,21 @@
     <color name="blue">#CCFFCC</color>
     <color name="ccnews_bg">#FFFFFF</color>
     <color name="ccnews_seekable_bar">#B7B7B7</color>
+
+    <color name="text_color">#190707</color>
+    <color name="pink">#faefeb</color>
+    <color name="pink_playlist">#faefeb</color>
+
+    <color name="toolbar_color">#371015</color>
+    <color name="toolbar_color_test">#fcfbf9</color>
+
+    <color name="icon_color">#000000</color>
+
+    <color name="name_song">#222222</color>
+    <color name="duration">#505050</color>
+
+    <color name="bottom_layout">#aaf8f7f6</color>
+    <color name="progress_tint">#FF5722</color>
+    <color name="thum_tint">#FF5722</color>
+    <color name="top_layout">#aaf8f7f6</color>
 </resources>

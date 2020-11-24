@@ -80,6 +80,17 @@ public class DetailPlayListFragment extends Fragment {
             }
         });
 
+        mLibraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
+            @Override
+            public void onChanged(Playlist playlist) {
+                if(playlist != null){
+                    mTitlePlayList.setText(playlist.getNameCategory());
+                    updateListSongInPlaylist(playlist.getmSongList());
+                    mLibraryViewModel.setDetailPlaylist(null);
+                }
+            }
+        });
+
         return root;
     }
 
