@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -60,7 +61,7 @@ public class DetailPlayListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mListSong.setLayoutManager(layoutManager);
 
-        mAdapter = new BaseRecyclerAdapter<Song>(mRecyclerActionListener){
+        mAdapter = new BaseRecyclerAdapter<Song>(mRecyclerActionListener, ((MainActivity) getActivity()).getService()){
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_SONG_IN_PLAYLIST;

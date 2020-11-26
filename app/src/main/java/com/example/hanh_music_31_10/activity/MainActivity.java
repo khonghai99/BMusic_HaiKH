@@ -2,6 +2,7 @@ package com.example.hanh_music_31_10.activity;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -61,13 +62,15 @@ public class MainActivity extends AppCompatActivity {
             MediaPlaybackService.MediaPlaybackServiceBinder mediaPlaybackServiceBinder = (MediaPlaybackService.MediaPlaybackServiceBinder) iBinder;
             mMediaPlaybackService = mediaPlaybackServiceBinder.getService();
 
-            System.out.println("HanhNTHe: connect service iBinder "+ mMediaPlaybackService);
+            System.out.println("HanhNTHe: connect service iBinder " + mMediaPlaybackService);
 //            mServiceConnectListenner1.onConnect();
-            int orientation = getResources().getConfiguration().orientation;
+//            int orientation = getResources().getConfiguration().orientation;
 //            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                mServiceConnectListenner2.onConnect();
 //            }
 //            update();
+
+            //update từ service khi thực hiện các thao tác chuyển bài..
             mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
                 @Override
                 public void onUpdate() {
@@ -75,13 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             });
-//            if (!mMediaPlaybackService.isMusicPlay()) {
-//                if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
-//                    mMediaPlaybackService.loadData();
-//                    updateSaveSong();
-//                } else {
-//                    findViewById(R.id.layoutPlayMusic).setVisibility(View.GONE);
-//                }
+//            if (mMediaPlaybackService.isMusicPlay()) {
+            if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
+                mMediaPlaybackService.loadData();
+                updateUI(mMediaPlaybackService.getPlayingSong());
+                System.out.println("HanhNTHe: update ");
+            } else {
+                mBottomControl.setVisibility(View.GONE);
+            }
 //            }
 
         }
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        mMainBottomSheetFragment = new MainBottomSheetFragment();
 
-        mBottomControl =  findViewById(R.id.layout_play_home);
+        mBottomControl = findViewById(R.id.layout_play_home);
         mBottomControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,10 +132,12 @@ public class MainActivity extends AppCompatActivity {
         mIsPlaySong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mMediaPlaybackService.isPlaying()){
+                if(!mMediaPlaybackService.isMusicPlay()){
+                    mMediaPlaybackService.preparePlay();
+                }else if (mMediaPlaybackService.isPlaying()) {
                     mMediaPlaybackService.pause();
                     mIsPlaySong.setImageResource(R.drawable.ic_play_black_24dp);
-                }else {
+                } else {
                     mMediaPlaybackService.play();
                     mIsPlaySong.setImageResource(R.drawable.ic_pause_black_24dp);
                 }
@@ -155,12 +161,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // update lan dau vao app giao dieen control
-//        Song songPreference = getSongPlaying();
-//        if(songPreference != null){
-//            mBottomControl.setVisibility(View.VISIBLE);
-//            updateUI(songPreference);
-//        }
     }
 
     public void startService() {
@@ -195,41 +195,63 @@ public class MainActivity extends AppCompatActivity {
         unbindService(mServiceConnection);
     }
 
-    public void playSong(ArrayList<Song> songs, Song song){
+    public void playSong(ArrayList<Song> songs, Song song) {
 //        songs.add(song);
 //        songs.add(song);
         mMediaPlaybackService.playSong(songs, song);
         updateUI(song);
     }
 
-    public MediaPlaybackService getService(){
+    public MediaPlaybackService getService() {
         return mMediaPlaybackService;
     }
 
+    //cap nhat giao dien small detail
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        //code thi hanh khi receiver nhan dc intent
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //kiem tra intent
+            if (intent.getAction().equals(MediaPlaybackService.ACTION)) {
+                //doc du lieu tu intent
+                Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
+                int isplaying = intent.getIntExtra(MediaPlaybackService.ISPLAYING, 0);
+//                if (change&& isplaying==0) {
+//                }else if( change && isplaying==1){
+//                    mPlay.setImageResource(R.drawable.ic_pause_1);
+//                }
+            }
+        }
+    };
+
     //update ui
-    private void updateUI(Song song){
-        if(mBottomControl.getVisibility() == View.GONE){
+    private void updateUI(Song song) {
+        if (mBottomControl.getVisibility() == View.GONE) {
             mBottomControl.setVisibility(View.VISIBLE);
             Animation alpha = new AlphaAnimation(0.00f, 1.00f);
-            alpha.setDuration(400);
+            alpha.setDuration(300);
             mBottomControl.startAnimation(alpha);
         }
-        if (song.loadImageFromPath(song.getPathSong()) == null){
+
+        if (song.loadImageFromPath(song.getPathSong()) == null) {
             mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song));
         } else {
             mImageSong.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
         }
         mNameSong.setText(song.getNameSong());
         mArtist.setText(song.getSinger());
-        mIsPlaySong.setImageResource(mMediaPlaybackService.isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp);
+        if (mMediaPlaybackService.isMusicPlay()) {
+            mIsPlaySong.setImageResource(mMediaPlaybackService.isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp);
+        } else mIsPlaySong.setImageResource(R.drawable.ic_play_black_24dp);
     }
 
-    public void updateBottomSheet(){
+    public void updateBottomSheet() {
         updateUI(mMediaPlaybackService.getPlayingSong());
-        if(mMainBottomSheetFragment != null){
+        if (mMainBottomSheetFragment != null) {
             mMainBottomSheetFragment.updatePlaySongUI();
         }
     }
+
     // cap quyen doc bo nho
     public void initPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -288,23 +310,6 @@ public class MainActivity extends AppCompatActivity {
 
     public interface IServiceConnectListenner2 {
         void onConnect();
-    }
-
-    //luu gia tri bai hat da phat truoc do
-    private void saveSongPlaying(Song song){
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(song);
-        editor.putString(SONG_IS_PLAYING, json);
-        editor.apply();
-    }
-    private Song getSongPlaying(){
-        SharedPreferences sharedPref = getSharedPreferences(MainActivity.SONG_LIST,Context.MODE_PRIVATE);;
-        Gson gson = new Gson();
-        String json = sharedPref.getString(SONG_IS_PLAYING, "");
-        Song obj = gson.fromJson(json, Song.class);
-        return obj;
     }
 
 }

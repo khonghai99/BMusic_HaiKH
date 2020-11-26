@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +16,7 @@ public class BaseRecyclerAdapter<T extends RecyclerData> extends RecyclerView.Ad
 
     private List<T> data;
     private RecyclerActionListener actionListener;
+    private MediaPlaybackService mService;
 
     public BaseRecyclerAdapter() {
         this.data = new ArrayList<>();
@@ -23,14 +26,19 @@ public class BaseRecyclerAdapter<T extends RecyclerData> extends RecyclerView.Ad
         this.data = new ArrayList<>();
     }
 
-    public BaseRecyclerAdapter(RecyclerActionListener actionListener) {
+    public BaseRecyclerAdapter(RecyclerActionListener actionListener, MediaPlaybackService service) {
         this.data = new ArrayList<>();
         this.actionListener = actionListener;
+        this.mService = service;
     }
 
     public BaseRecyclerAdapter(List<T> data, RecyclerActionListener actionListener) {
         this.data = data;//new ArrayList<>();
         this.actionListener = actionListener;
+    }
+    //HanhNTHe
+    public void setService(MediaPlaybackService service){
+        mService = service;
     }
 
     @NonNull
@@ -38,8 +46,11 @@ public class BaseRecyclerAdapter<T extends RecyclerData> extends RecyclerView.Ad
     public BaseRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, @RecyclerViewType int viewType) {
         BaseRecyclerViewHolder viewHolder = ViewHolderFactory.createViewHolder(viewType, parent);
         viewHolder.setupClickableViews(actionListener);
+        viewHolder.setService(mService);
         return viewHolder;
     }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull BaseRecyclerViewHolder vh, int position) {

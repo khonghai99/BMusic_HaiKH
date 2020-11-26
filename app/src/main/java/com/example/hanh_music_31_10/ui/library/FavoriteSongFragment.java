@@ -1,6 +1,10 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +14,36 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteSongFragment extends Fragment {
+public class FavoriteSongFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int LOADER_ID = 2;
+    ArrayList<Song> mAllSongList;
+
+    static final String AUTHORITY = "com.android.example.provider.FavoriteSongs";
+    static final String CONTENT_PATH = "backupdata";
+    static final String URL = "content://" + AUTHORITY + "/" + CONTENT_PATH;
+    static final Uri CONTENT_URI = Uri.parse(URL);
+
     private RecyclerView mRecyclerView;
     private LibraryViewModel mLibraryViewModel;
     private BaseRecyclerAdapter<Song> mAdapter;
@@ -42,6 +61,8 @@ public class FavoriteSongFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        mAllSongList = loadAllSongs();
+        getLoaderManager().initLoader(LOADER_ID, null, this);
         View view = inflater.inflate(R.layout.favorite_library_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_favorite);
         mRecyclerView.setHasFixedSize(true);
@@ -49,7 +70,7 @@ public class FavoriteSongFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new BaseRecyclerAdapter<Song>(getData(), mActionListener) {
+        mAdapter = new BaseRecyclerAdapter<Song>( mActionListener, ((MainActivity) getActivity()).getService()) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_FAVORITE_SONG_LIBRARY;
@@ -67,9 +88,75 @@ public class FavoriteSongFragment extends Fragment {
                 System.out.println("HanhNTHe: FavoriteSongFragment click song ");
             }
         });
-
         return view;
     }
+
+
+    public ArrayList<Song> loadAllSongs(){
+        ArrayList<Song> list = new ArrayList<>();
+        Cursor c = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        if (c != null && c.moveToFirst()){
+            do {
+                int id = Integer.parseInt(c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID)));
+                String title = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String data = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String artist = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String albumid = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                int duration = Integer.parseInt(c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+                SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
+                String timeSong = formatTimeSong.format(duration);
+                Song song = new Song(id, title, data, artist, albumid, timeSong);
+                list.add(song);
+            } while (c.moveToNext());
+        }
+        return list;
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return new CursorLoader(getContext(), CONTENT_URI, null, FavoriteSongsProvider.IS_FAVORITE+" = "+2, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor c) {
+        ArrayList<Song> list = new ArrayList<>();
+
+        if (c != null && c.moveToFirst()){
+            do {
+                int id_provider = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.ID_PROVIDER)));
+
+                Song song = getSongFromID(id_provider,mAllSongList);
+                if (song != null){
+                    list.add(song);
+                } else {
+                    deleteSongFromFavoriteSongsList(id_provider);
+                }
+            } while (c.moveToNext());
+        }
+        mAdapter.update(list);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        if (mAdapter != null) {
+            mAdapter.update(new ArrayList<Song>());
+        }
+    }
+
+    public Song getSongFromID(int id, ArrayList<Song> list){
+        for (int i = 0; i < list.size(); i++) {
+            if (id == list.get(i).getId())
+                return list.get(i);
+        }
+        return null;
+    }
+
+    public void deleteSongFromFavoriteSongsList(int id){
+        getActivity().getContentResolver().delete(FavoriteSongsProvider.CONTENT_URI,FavoriteSongsProvider.ID_PROVIDER+" = "+id, null);
+    }
+
+
 
     private List<Song> getData() {
         List<Playlist> data = new ArrayList<Playlist>();
@@ -115,4 +202,6 @@ public class FavoriteSongFragment extends Fragment {
         data.add(new Playlist(1, "Anh yeu nguoi khac roi", dataSong3));
         return dataSong;
     }
+
+
 }

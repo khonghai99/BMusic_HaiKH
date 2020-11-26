@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -56,7 +57,7 @@ public class HomeOverviewFragment extends Fragment {
         mLinearLayout = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLinearLayout);
 
-        adapter = new BaseRecyclerAdapter<Playlist>(mRecyclerActionListener) {
+        adapter = new BaseRecyclerAdapter<Playlist>(mRecyclerActionListener, ((MainActivity) getActivity()).getService()) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_BLOCK_HOME_CATEGORY;

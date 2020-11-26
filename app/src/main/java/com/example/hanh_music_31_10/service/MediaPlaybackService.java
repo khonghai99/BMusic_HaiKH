@@ -1,7 +1,5 @@
 package com.example.hanh_music_31_10.service;
 
-import android.Manifest;
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -26,7 +24,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
-import android.telecom.Call;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -43,7 +40,9 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
 
@@ -70,6 +69,10 @@ import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 public class MediaPlaybackService extends Service {
     public static final String CHANNEL_ID = "MusicServiceChannel";
     public static final String DOWNLOAD_ID = "MusicDownloadChannel";
+
+    public static final String ISPLAYING ="isplaying";
+    public static final String MY_KEY = "my_key";
+    public static final String ACTION = "my_action";
 
     private MediaPlayer mMediaPlayer = null;
     private final Binder mBinder = new MediaPlaybackServiceBinder();
@@ -228,6 +231,7 @@ public class MediaPlaybackService extends Service {
         super.onDestroy();
         unregisterReceiver(mHeadsetPlugReceiver);
         getMediaPlayer().stop();
+        System.out.println("HanhNTHe: service onDestroy " );
     }
 
     // method
@@ -306,7 +310,7 @@ public class MediaPlaybackService extends Service {
 
     public boolean isPlaying() {
         if (mMediaPlayer.isPlaying())
-            return true;
+           return true;
         else
             return false;
     }
@@ -366,8 +370,6 @@ public class MediaPlaybackService extends Service {
                 e.printStackTrace();
             }
         }
-        //luu bai hat dang phat
-        saveSongPlaying(mPLayingSong);
 
         if (mMediaPlayer == null) {
             showToast("\t\t\t\tSong not exist !\nPlease chose different Song");
@@ -395,7 +397,7 @@ public class MediaPlaybackService extends Service {
                     }
                 }
             });
-//            saveData();
+            saveData();
         }
     }
 
@@ -552,7 +554,7 @@ public class MediaPlaybackService extends Service {
             showToast("Shuffle Off");
         }
         mServiceCallback.onUpdate();
-//        saveData();
+        saveData();
     }
 
     public void loopSong() {
@@ -567,7 +569,7 @@ public class MediaPlaybackService extends Service {
             showToast("No Loop");
         }
         mServiceCallback.onUpdate();
-//        saveData();
+        saveData();
     }
 
     public String getTotalTime() {
@@ -593,6 +595,7 @@ public class MediaPlaybackService extends Service {
                 mPLayingSong = mPlayingSongList.get(i);
             }
         }
+        System.out.println("HanhNTHe: setPreviousExitSong mPlayingSong "+mPLayingSong);
     }
 
 //    public void setPreviousExitSong(String id) {
@@ -622,40 +625,40 @@ public class MediaPlaybackService extends Service {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-//    public int loadFavoriteStatus(int id) {
-//        int isFavorite = 0;
-//        Cursor c = getApplicationContext().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, null, FavoriteSongsProvider.ID_PROVIDER + " = " + id, null, null);
-//        if (c.moveToFirst()) {
-//            do {
-//                isFavorite = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.IS_FAVORITE)));
-//            } while (c.moveToNext());
-//        }
-//        return isFavorite;
-//    }
+    public int loadFavoriteStatus(int id) {
+        int isFavorite = 0;
+        Cursor c = getApplicationContext().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, null, FavoriteSongsProvider.ID_PROVIDER + " = " + id, null, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                isFavorite = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.IS_FAVORITE)));
+            } while (c.moveToNext());
+        }
+        return isFavorite;
+    }
 
-//    private void saveData() {
-//        SharedPreferences.Editor editor = mSharedPreferences.edit();
-//        Gson gson = new Gson();
-//        String json = null;
-//        if (mIsPlayOnline) {
+    private void saveData() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = null;
+        if (mIsPlayOnline) {
 //            editor.putString("SONG_ID", mPlayingSongOnline.getID());
 //            json = gson.toJson(mListSongOnline);
-//        } else {
-//            editor.putInt("SONG_ID", mPLayingSong.getId());
-//            json = gson.toJson(mPlayingSongList);
-//        }
-//        editor.putString("SONG_LIST", json);
-//        editor.putInt("LoopStatus", mLoopStatus);
-//        editor.putInt("ShuffleStatus", mShuffle);
-//        editor.putBoolean("IS_PLAY_ONLINE", mIsPlayOnline);
-//        editor.apply();
-//    }
+        } else {
+            editor.putInt("SONG_ID", mPLayingSong.getId());
+            json = gson.toJson(mPlayingSongList);
+        }
+        editor.putString("SONG_LIST", json);
+        editor.putInt("LoopStatus", mLoopStatus);
+        editor.putInt("ShuffleStatus", mShuffle);
+        editor.putBoolean("IS_PLAY_ONLINE", mIsPlayOnline);
+        editor.apply();
+    }
 
-//    public void loadData() {
-//        Gson gson = new Gson();
-//        mIsPlayOnline = mSharedPreferences.getBoolean("IS_PLAY_ONLINE", false);
-//        String json = mSharedPreferences.getString("SONG_LIST", null);
-//        if (mIsPlayOnline) {
+    public void loadData() {
+        Gson gson = new Gson();
+        mIsPlayOnline = mSharedPreferences.getBoolean("IS_PLAY_ONLINE", false);
+        String json = mSharedPreferences.getString("SONG_LIST", null);
+        if (mIsPlayOnline) {
 //            Type type = new TypeToken<ArrayList<SongOnline>>() {
 //            }.getType();
 //            mListSongOnline = gson.fromJson(json, type);
@@ -663,18 +666,18 @@ public class MediaPlaybackService extends Service {
 //                mListSongOnline = new ArrayList<>();
 //            }
 //            setPreviousExitSong(mSharedPreferences.getString("SONG_ID", null));
-//        } else {
-//            Type type = new TypeToken<ArrayList<Song>>() {
-//            }.getType();
-//            mPlayingSongList = gson.fromJson(json, type);
-//            if (mPlayingSongList == null) {
-//                mPlayingSongList = new ArrayList<>();
-//            }
-//            setPreviousExitSong(mSharedPreferences.getInt("SONG_ID", 0));
-//        }
-//        mLoopStatus = mSharedPreferences.getInt("LoopStatus", 0);
-//        mShuffle = mSharedPreferences.getInt("ShuffleStatus", 0);
-//    }
+        } else {
+            Type type = new TypeToken<ArrayList<Song>>() {
+            }.getType();
+            mPlayingSongList = gson.fromJson(json, type);
+            if (mPlayingSongList == null) {
+                mPlayingSongList = new ArrayList<>();
+            }
+            setPreviousExitSong(mSharedPreferences.getInt("SONG_ID", 0));
+        }
+        mLoopStatus = mSharedPreferences.getInt("LoopStatus", 0);
+        mShuffle = mSharedPreferences.getInt("ShuffleStatus", 0);
+    }
 
     // class
     public class MediaPlaybackServiceBinder extends Binder {
@@ -884,15 +887,5 @@ public class MediaPlaybackService extends Service {
 //            }
 //        });
 //    }
-
-    //luu bai hat dang phat vao preference
-    private void saveSongPlaying(Song song){
-        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(MainActivity.SONG_LIST,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(song);
-        editor.putString(MainActivity.SONG_IS_PLAYING, json);
-        editor.apply();
-    }
 
 }

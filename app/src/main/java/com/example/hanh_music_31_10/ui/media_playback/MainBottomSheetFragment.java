@@ -4,8 +4,11 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,10 +25,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
+import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.receiver.TimerReceiver;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -140,16 +145,16 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                 if (mMediaPlaybackService.mIsPlayOnline){
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
                 } else {
-//                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
-//                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
-//                        mButtonLike.setImageResource(R.drawable.ic_like);
-//                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-//                        Toast.makeText(getActivity(), "Unliked Song", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        likeSong(mMediaPlaybackService.getId());
-//                        mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
-//                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-//                    }
+                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
+                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
+                        mButtonLike.setImageResource(R.drawable.ic_like);
+                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+                        Toast.makeText(getActivity(), "Unliked Song", Toast.LENGTH_SHORT).show();
+                    } else {
+                        likeSong(mMediaPlaybackService.getId());
+                        mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
+                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+                    }
                 }
             }
         });
@@ -160,16 +165,16 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                 if (mMediaPlaybackService.mIsPlayOnline){
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
                 } else {
-//                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
-//                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
-//                        mButtonLike.setImageResource(R.drawable.ic_like);
-//                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-//                        Toast.makeText(getActivity(), "Undisliked Song", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        dislikeSong(mMediaPlaybackService.getId());
-//                        mButtonLike.setImageResource(R.drawable.ic_disliked_black_24dp);
-//                        mButtonDisLike.setImageResource(R.drawable.ic_like);
-//                    }
+                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
+                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
+                        mButtonLike.setImageResource(R.drawable.ic_like);
+                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+                        Toast.makeText(getActivity(), "Undisliked Song", Toast.LENGTH_SHORT).show();
+                    } else {
+                        dislikeSong(mMediaPlaybackService.getId());
+                        mButtonLike.setImageResource(R.drawable.ic_disliked_black_24dp);
+                        mButtonDisLike.setImageResource(R.drawable.ic_like);
+                    }
                 }
             }
         });
@@ -202,6 +207,27 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 //                getFragmentManager().popBackStack();
 //            }
 //        });
+    }
+
+
+    public void likeSong(int id) {
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsProvider.IS_FAVORITE, 2);
+        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+        Toast.makeText(getActivity(), "Liked Song", Toast.LENGTH_SHORT).show();
+    }
+
+    public void dislikeSong(int id) {
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsProvider.IS_FAVORITE, 1);
+        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+        Toast.makeText(getActivity(), "Disliked Song", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setDefaultFavoriteStatus(int id) {
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsProvider.IS_FAVORITE, 0);
+        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
     }
 
     @Override
@@ -334,21 +360,31 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 //                    }
         }
 
+        //HanhNTHe: Tint
+        int color ;
         int loop = mMediaPlaybackService.getmLoopStatus();
         int shuffle = mMediaPlaybackService.getmShuffle();
         if (loop == 0) {
             mRepeatSong.setImageResource(R.drawable.ic_repeat_white_24dp);
+            color = R.color.icon_color;
         } else if (loop == 1) {
             mRepeatSong.setImageResource(R.drawable.ic_repeat_orange_24dp);
+            color = R.color.icon_click_color;
         } else {
             mRepeatSong.setImageResource(R.drawable.ic_repeat_one_orange_24dp);
+            color = R.color.icon_click_color;
         }
+        mRepeatSong.setColorFilter(ContextCompat.getColor(getContext(),color), android.graphics.PorterDuff.Mode.SRC_IN);
+
         if (shuffle == 0) {
             mShuffleSong.setImageResource(R.drawable.ic_shuffle_white_24dp);
+            color = R.color.icon_color;
         } else {
             mShuffleSong.setImageResource
                     (R.drawable.ic_shuffle_orange_24dp);
+            color = R.color.icon_click_color;
         }
+        mShuffleSong.setColorFilter(ContextCompat.getColor(getContext(),color), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     public void updateTimeSong() {

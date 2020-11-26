@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
@@ -60,5 +61,10 @@ public class BlockHomeCategoryHolder extends BaseRecyclerViewHolder {
                 actionListener.onViewLongClick(position, view, viewHolder);
             }
         };
+    }
+
+    @Override
+    public void setService(MediaPlaybackService service) {
+
     }
 }

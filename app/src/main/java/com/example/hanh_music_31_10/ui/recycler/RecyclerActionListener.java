@@ -18,7 +18,14 @@ public class RecyclerActionListener {
     public void clickSong(Song song) {
 
     }
-    public Song getSongPlaying(){
-        return null;
+
+    //xử lý sự kiện của popupmenu
+
+    //xoa bài hat
+    public void update(int position, View view, BaseRecyclerViewHolder viewHolder, int state) {
+    }
+
+    enum CONTROL_UPDATE {
+        DELETE_SONG, ADD_PLAYLIST, ADD_FAVORITE, DELETE_PLAYLIST, UPDATE_NAME_PLAYLIST, ADD_SONG_TO_PLAYLIST
     }
 }

@@ -4,6 +4,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
+
 public class InvalidViewHolder extends BaseRecyclerViewHolder {
 
     InvalidViewHolder(@NonNull View itemView) {
@@ -17,6 +19,11 @@ public class InvalidViewHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        throw new IllegalArgumentException("You are using an invalid view holder. You need to create a viewType value in CCRecyclerViewType.java, then check CCViewHolderFactory.java and do the same job as TYPE_INVALID.");
+    }
+
+    @Override
+    public void setService(MediaPlaybackService service) {
         throw new IllegalArgumentException("You are using an invalid view holder. You need to create a viewType value in CCRecyclerViewType.java, then check CCViewHolderFactory.java and do the same job as TYPE_INVALID.");
     }
 }

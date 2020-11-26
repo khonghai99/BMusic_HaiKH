@@ -35,7 +35,6 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
 
     private RecyclerView mRecyclerView;
     private static final int LOADER_ID = 1;
-    private List<Song> mListSong = new ArrayList<Song>();
     private BaseRecyclerAdapter<Song> mAdapter;
 
     private LibraryViewModel mLibraryViewModel;
@@ -45,16 +44,17 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
            mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
+           mAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void clickSong(Song song) {
         }
 
-        @Override
-        public Song getSongPlaying() {
-           return ((MainActivity) getActivity()).getService().getPlayingSong();
-        }
+//        @Override
+//        public Song getSongPlaying() {
+//           return ((MainActivity) getActivity()).getService().getPlayingSong();
+//        }
     };
 
     @Nullable
@@ -71,7 +71,7 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new BaseRecyclerAdapter<Song>(actionListener) {
+        mAdapter = new BaseRecyclerAdapter<Song>(actionListener, ((MainActivity) getActivity()).getService()) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_OFFLINE_SONG_LIBRARY;
@@ -173,7 +173,6 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
 
             } while (data.moveToNext());
         }
-        mListSong = songList;
         mAdapter.update(songList);
     }
 

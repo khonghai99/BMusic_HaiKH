@@ -27,4 +27,6 @@
     <color name="progress_tint">#FF5722</color>
     <color name="thum_tint">#FF5722</color>
     <color name="top_layout">#aaf8f7f6</color>
+
+    <color name="icon_click_color">#FF5722</color>
 </resources>

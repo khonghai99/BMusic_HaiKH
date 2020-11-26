@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
@@ -69,5 +70,10 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
                 actionListener.onViewClick(getAdapterPosition(), v, SongItemInPlayListHolder.this);
             }
         });
+    }
+
+    @Override
+    public void setService(MediaPlaybackService service) {
+
     }
 }
