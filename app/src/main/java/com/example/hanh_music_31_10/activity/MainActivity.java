@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
                 @Override
                 public void onUpdate() {
+                    updateUI(mMediaPlaybackService.getPlayingSong());
                     updateBottomSheet();
                 }
 
@@ -246,8 +247,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateBottomSheet() {
-        updateUI(mMediaPlaybackService.getPlayingSong());
-        if (mMainBottomSheetFragment != null) {
+        if (mMainBottomSheetFragment != null && mMainBottomSheetFragment.isVisible()) {
             mMainBottomSheetFragment.updatePlaySongUI();
         }
     }

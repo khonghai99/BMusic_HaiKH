@@ -59,7 +59,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
     private ImageView mButtonDisLike;
 
     private SeekBar seekBarTimer;
-    private TextView textViewContentTimer ;
+    private TextView textViewContentTimer;
     private TextView textViewCurrentTimeTimer;
     private TextView textViewTotalTimeTimer;
 
@@ -142,7 +142,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         mButtonLike.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMediaPlaybackService.mIsPlayOnline){
+                if (mMediaPlaybackService.mIsPlayOnline) {
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
@@ -162,7 +162,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         mButtonDisLike.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMediaPlaybackService.mIsPlayOnline){
+                if (mMediaPlaybackService.mIsPlayOnline) {
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
@@ -361,7 +361,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         }
 
         //HanhNTHe: Tint
-        int color ;
+        int color;
         int loop = mMediaPlaybackService.getmLoopStatus();
         int shuffle = mMediaPlaybackService.getmShuffle();
         if (loop == 0) {
@@ -374,7 +374,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             mRepeatSong.setImageResource(R.drawable.ic_repeat_one_orange_24dp);
             color = R.color.icon_click_color;
         }
-        mRepeatSong.setColorFilter(ContextCompat.getColor(getContext(),color), android.graphics.PorterDuff.Mode.SRC_IN);
+        mRepeatSong.setColorFilter(ContextCompat.getColor(getContext(), color), android.graphics.PorterDuff.Mode.SRC_IN);
 
         if (shuffle == 0) {
             mShuffleSong.setImageResource(R.drawable.ic_shuffle_white_24dp);
@@ -384,7 +384,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                     (R.drawable.ic_shuffle_orange_24dp);
             color = R.color.icon_click_color;
         }
-        mShuffleSong.setColorFilter(ContextCompat.getColor(getContext(),color), android.graphics.PorterDuff.Mode.SRC_IN);
+        mShuffleSong.setColorFilter(ContextCompat.getColor(getContext(), color), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     public void updateTimeSong() {
@@ -409,20 +409,20 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         textViewTotalTimeTimer = view.findViewById(R.id.total_time_timer);
 
         seekBarTimer.setMax(120 * 60 * 1000);
-        if (mMediaPlaybackService.getCurrentTimeTimer()==0){
+        if (mMediaPlaybackService.getCurrentTimeTimer() == 0) {
             textViewContentTimer.setText("");
         } else {
-            textViewContentTimer.setText("Ứng dụng sẽ tự động tắt nhạc sau "+mMediaPlaybackService.getCurrentTimeTimer() / 1000 / 60+" phút");
+            textViewContentTimer.setText("Ứng dụng sẽ tự động tắt nhạc sau " + mMediaPlaybackService.getCurrentTimeTimer() / 1000 / 60 + " phút");
         }
 
         final AlertDialog dialogTimer = new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Bắt đầu hẹn giờ",null)
+                .setPositiveButton("Bắt đầu hẹn giờ", null)
                 .show();
 
         final Button positiveButton = dialogTimer.getButton(AlertDialog.BUTTON_POSITIVE);
-        if (mMediaPlaybackService.getCurrentTimeTimer()==0){
+        if (mMediaPlaybackService.getCurrentTimeTimer() == 0) {
             positiveButton.setEnabled(false);
         } else {
             positiveButton.setText("Kết thúc hẹn giờ");
@@ -432,7 +432,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (positiveButton.getText().equals("Bắt đầu hẹn giờ")){
+                if (positiveButton.getText().equals("Bắt đầu hẹn giờ")) {
                     mMediaPlaybackService.setCurrentTimeTimer(seekBarTimer.getProgress());
                     dialogTimer.dismiss();
                     startAlarm();
@@ -447,7 +447,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textViewCurrentTimeTimer.setText(getCurrentTime(progress));
-                if (progress==0){
+                if (progress == 0) {
                     dialogTimer.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                 } else {
                     dialogTimer.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
@@ -464,22 +464,22 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         });
     }
 
-    public void startAlarm(){
+    public void startAlarm() {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), TimerReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(),1,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+mMediaPlaybackService.getCurrentTimeTimer() ,pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + mMediaPlaybackService.getCurrentTimeTimer(), pendingIntent);
         }
     }
 
-    String getCurrentTime(int miliSecond){
-        int minute = miliSecond/1000/60;
-        int second = (miliSecond/1000)%60;
-        if (second==0){
-            return minute+" phút";
+    String getCurrentTime(int miliSecond) {
+        int minute = miliSecond / 1000 / 60;
+        int second = (miliSecond / 1000) % 60;
+        if (second == 0) {
+            return minute + " phút";
         } else {
-            return minute+" phút "+second+" giây";
+            return minute + " phút " + second + " giây";
         }
     }
 }
