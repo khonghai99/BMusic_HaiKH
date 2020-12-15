@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.ActivityViewModel;
 import com.example.hanh_music_31_10.activity.MainActivity;
+import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -37,14 +39,14 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
     private static final int LOADER_ID = 1;
     private BaseRecyclerAdapter<Song> mAdapter;
 
-    private LibraryViewModel mLibraryViewModel;
+    private ActivityViewModel mLibraryViewModel;
 
 
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-           mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
-           mAdapter.notifyDataSetChanged();
+            mLibraryViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
+            mAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -60,8 +62,8 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       //load bai hat o tren thiet bi
-        getLoaderManager().initLoader(LOADER_ID,null, this);
+        //load bai hat o tren thiet bi
+        getLoaderManager().initLoader(LOADER_ID, null, this);
 
 //        getArguments()
         View view = inflater.inflate(R.layout.offline_library_fragment, container, false);
@@ -79,18 +81,17 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         };
         mRecyclerView.setAdapter(mAdapter);
 
-        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
-        mLibraryViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
-            @Override
-            public void onChanged(Song song) {
-                ((MainActivity) getActivity()).playSong((ArrayList<Song>)mAdapter.getData(), song);
-                System.out.println("HanhNTHe: OfflineSongFragment click song ");
-            }
-        });
+        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
+//        mLibraryViewModel.getPlaylist().observe(getViewLifecycleOwner(), new Observer<PlaySong>() {
+//            @Override
+//            public void onChanged(PlaySong song) {
+////                ((MainActivity) getActivity()).playSong();
+//                System.out.println("HanhNTHe: OfflineSongFragment click song ");
+//            }
+//        });
 
         return view;
     }
-
 
 
     private List<Song> getData() {

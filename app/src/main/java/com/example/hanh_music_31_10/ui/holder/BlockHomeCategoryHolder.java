@@ -34,11 +34,11 @@ public class BlockHomeCategoryHolder extends BaseRecyclerViewHolder {
     public void bindViewHolder(RecyclerData data) {
         if (data instanceof Playlist) {
             Playlist playlist = (Playlist) data;
-            mTitleCategory.setText(playlist.getNameCategory());
+            mTitleCategory.setText(playlist.getNamePlaylist());
 
             mListSongHorizontal.setLayoutManager(new LinearLayoutManager(itemView.getContext(), RecyclerView.HORIZONTAL, false));
 
-            adapter = new BaseRecyclerAdapter<Song>(playlist.getmSongList(), recyclerActionListener) {
+            adapter = new BaseRecyclerAdapter<Song>(playlist.getSongList(), recyclerActionListener) {
                 @Override
                 public int getItemViewType(int position) {
                     return RecyclerViewType.TYPE_ITEM_SONG_IN_HOME;

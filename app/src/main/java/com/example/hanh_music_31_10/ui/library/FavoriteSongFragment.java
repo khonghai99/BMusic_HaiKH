@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +11,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.ActivityViewModel;
 import com.example.hanh_music_31_10.activity.MainActivity;
+import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
-import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
@@ -34,7 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteSongFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FavoriteSongFragment extends Fragment {
 
     private static final int LOADER_ID = 2;
     ArrayList<Song> mAllSongList;
@@ -45,14 +43,14 @@ public class FavoriteSongFragment extends Fragment implements LoaderManager.Load
     static final Uri CONTENT_URI = Uri.parse(URL);
 
     private RecyclerView mRecyclerView;
-    private LibraryViewModel mLibraryViewModel;
+    private ActivityViewModel mLibraryViewModel;
     private BaseRecyclerAdapter<Song> mAdapter;
 
 
     private RecyclerActionListener mActionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-            mLibraryViewModel.setClickSong(mAdapter.getData().get(position));
+            mLibraryViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
         }
 
     };
@@ -62,7 +60,8 @@ public class FavoriteSongFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         mAllSongList = loadAllSongs();
-        getLoaderManager().initLoader(LOADER_ID, null, this);
+        ArrayList<Song> favoriteListSong = getFavoriteSong(mAllSongList);
+
         View view = inflater.inflate(R.layout.favorite_library_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_favorite);
         mRecyclerView.setHasFixedSize(true);
@@ -77,17 +76,11 @@ public class FavoriteSongFragment extends Fragment implements LoaderManager.Load
             }
         };
 
+        mAdapter.update(favoriteListSong);
+
         mRecyclerView.setAdapter(mAdapter);
 
-        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
-        // lăng nghe sự kiện khi click vào 1 song
-        mLibraryViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
-            @Override
-            public void onChanged(Song song) {
-                //update giao diện
-                System.out.println("HanhNTHe: FavoriteSongFragment click song ");
-            }
-        });
+        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
         return view;
     }
 
@@ -112,51 +105,71 @@ public class FavoriteSongFragment extends Fragment implements LoaderManager.Load
         return list;
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return new CursorLoader(getContext(), CONTENT_URI, null, FavoriteSongsProvider.IS_FAVORITE+" = "+2, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor c) {
-        ArrayList<Song> list = new ArrayList<>();
-
-        if (c != null && c.moveToFirst()){
-            do {
-                int id_provider = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.ID_PROVIDER)));
-
-                Song song = getSongFromID(id_provider,mAllSongList);
-                if (song != null){
-                    list.add(song);
-                } else {
-                    deleteSongFromFavoriteSongsList(id_provider);
+    public ArrayList<Song> getFavoriteSong(ArrayList<Song> list) {
+        ArrayList<Song> songFavorite = new ArrayList<>();
+        String selecfavorite = FavoriteSongsTable.IS_FAVORITE + "=2";
+        String[] proje = {
+                FavoriteSongsTable.ID_PROVIDER,
+                FavoriteSongsTable.IS_FAVORITE,
+                FavoriteSongsTable.COUNT_OF_PLAY};
+        Cursor favorite = getContext().getContentResolver().query(FavoriteSongProvider.CONTENT_URI,
+                proje, selecfavorite, null, null);
+        if (favorite != null) {
+            while (favorite.moveToNext())
+                for (int j = 0; j < list.size(); j++) {
+                    Song song1 = list.get(j);
+                    if (song1.getId() == favorite.getInt(0)) {
+                        songFavorite.add(song1);
+                    }
                 }
-            } while (c.moveToNext());
         }
-        mAdapter.update(list);
+        favorite.close();
+        return songFavorite;
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        if (mAdapter != null) {
-            mAdapter.update(new ArrayList<Song>());
-        }
-    }
+//    @NonNull
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+//        return new CursorLoader(getContext(), CONTENT_URI, null, FavoriteSongsProvider.IS_FAVORITE+" = "+2, null, null);
+//    }
+//
+//    @Override
+//    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor c) {
+//        ArrayList<Song> list = new ArrayList<>();
+//
+//        if (c != null && c.moveToFirst()){
+//            do {
+//                int id_provider = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.ID_PROVIDER)));
+//
+//                Song song = getSongFromID(id_provider,mAllSongList);
+//                if (song != null){
+//                    list.add(song);
+//                } else {
+//                    deleteSongFromFavoriteSongsList(id_provider);
+//                }
+//            } while (c.moveToNext());
+//        }
+//        mAdapter.update(list);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+//        if (mAdapter != null) {
+//            mAdapter.update(new ArrayList<Song>());
+//        }
+//    }
 
-    public Song getSongFromID(int id, ArrayList<Song> list){
-        for (int i = 0; i < list.size(); i++) {
-            if (id == list.get(i).getId())
-                return list.get(i);
-        }
-        return null;
-    }
-
-    public void deleteSongFromFavoriteSongsList(int id){
-        getActivity().getContentResolver().delete(FavoriteSongsProvider.CONTENT_URI,FavoriteSongsProvider.ID_PROVIDER+" = "+id, null);
-    }
-
-
+//    public Song getSongFromID(int id, ArrayList<Song> list){
+//        for (int i = 0; i < list.size(); i++) {
+//            if (id == list.get(i).getId())
+//                return list.get(i);
+//        }
+//        return null;
+//    }
+//
+//    public void deleteSongFromFavoriteSongsList(int id){
+//        getActivity().getContentResolver().delete(FavoriteSongsProvider.CONTENT_URI,FavoriteSongsProvider.ID_PROVIDER+" = "+id, null);
+//    }
 
     private List<Song> getData() {
         List<Playlist> data = new ArrayList<Playlist>();

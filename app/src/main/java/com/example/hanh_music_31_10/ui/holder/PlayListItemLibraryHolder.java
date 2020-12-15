@@ -1,6 +1,5 @@
 package com.example.hanh_music_31_10.ui.holder;
 
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,9 +35,9 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
         if (data instanceof Playlist) {
             Playlist mPlayList = (Playlist) data;
             //load anh
-            mImagePlaylist.setImageResource(R.drawable.ic_baseline_library_music_24);
-            mNamePlayList.setText(mPlayList.getNameCategory());
-            mTotalSong.setText(mPlayList.getmSongList().size() + " bài hát ");
+            mImagePlaylist.setImageResource(R.drawable.ic_playlist_black_24dp);
+            mNamePlayList.setText(mPlayList.getNamePlaylist());
+            mTotalSong.setText(mPlayList.getSongList().size() + " bài hát ");
 
             mOptionPlaylist.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,6 +82,5 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setService(MediaPlaybackService service) {
-
     }
 }

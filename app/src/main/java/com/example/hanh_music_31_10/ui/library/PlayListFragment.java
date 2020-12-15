@@ -13,12 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -32,6 +32,9 @@ import java.util.List;
 public class PlayListFragment extends Fragment {
     private LinearLayout mButtonNewPlayList;
     private RecyclerView mRecyclerView;
+
+    private Playlist mNewPlaylist;
+    private ArrayList<Playlist> mListPlaylist = new ArrayList<>();
 
     private LibraryViewModel mLibViewModel;
     BaseRecyclerAdapter<Playlist> mAdapter;
@@ -68,7 +71,7 @@ public class PlayListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(manager);
 
-        mAdapter = new BaseRecyclerAdapter<Playlist>(getData(), actionListener) {
+        mAdapter = new BaseRecyclerAdapter<Playlist>( actionListener, ((MainActivity) getActivity()).getService()) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_PLAYLIST_LIBRARY;
@@ -113,12 +116,16 @@ public class PlayListFragment extends Fragment {
             }
         });
 
-        alert.setPositiveButton("Đồng Ý", new DialogInterface.OnClickListener() {
-
+        alert.setPositiveButton("Tạo Playlist", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // code for matching password
                 String user = titlePlaylist.getText().toString();
+                mNewPlaylist = new Playlist();
+                mNewPlaylist.setNamePlaylist(user);
+                mListPlaylist.add(mNewPlaylist);
+                mAdapter.update(mListPlaylist);
+                mAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "TitlePlay: " + user, Toast.LENGTH_SHORT).show();
             }
         });

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
         android:text="Tên playlist...."
@@ -12,9 +12,18 @@
         android:id="@+id/title_playlist"
         android:layout_marginBottom="10dp"
         android:textSize="20sp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"/>
+        android:paddingStart="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:background="@drawable/background_linear"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/notify_empty"
+        android:visibility="gone"
+        android:layout_below="@+id/title_playlist"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_song_in_playlist"

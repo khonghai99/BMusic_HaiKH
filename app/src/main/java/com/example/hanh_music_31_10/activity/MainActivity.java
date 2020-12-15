@@ -23,14 +23,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout mBottomControl;
 
     private MainBottomSheetFragment mMainBottomSheetFragment;
+
+    private ActivityViewModel mActivityViewModel;
 
     public MediaPlaybackService mMediaPlaybackService;
     IServiceConnectListenner1 mServiceConnectListenner1;
@@ -142,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
                     mMediaPlaybackService.play();
                     mIsPlaySong.setImageResource(R.drawable.ic_pause_black_24dp);
                 }
+            }
+        });
+
+        mActivityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
+        mActivityViewModel.getPlaylist().observe(this, new Observer<PlaySong>() {
+            @Override
+            public void onChanged(PlaySong playSong) {
+                playSong(playSong.getPlayListSong(), playSong.getPlaySong());
             }
         });
     }

@@ -33,7 +33,11 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
     public void bindViewHolder(RecyclerData data) {
         if (data instanceof Song) {
             Song song = (Song) data;
-            mImageFavorite.setImageResource(R.drawable.ic_queue_music_black_24dp);
+            if (song.loadImageFromPath(song.getPathSong()) == null) {
+                mImageFavorite.setImageResource(R.drawable.ic_queue_music_black_24dp);
+            } else {
+                mImageFavorite.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
+            }
             mNameSongFavorite.setText(song.getNameSong());
             mArtist.setText(song.getSinger());
 

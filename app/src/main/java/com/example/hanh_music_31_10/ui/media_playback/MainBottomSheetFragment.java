@@ -7,8 +7,7 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +29,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
-import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.receiver.TimerReceiver;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -172,8 +172,8 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                         Toast.makeText(getActivity(), "Undisliked Song", Toast.LENGTH_SHORT).show();
                     } else {
                         dislikeSong(mMediaPlaybackService.getId());
-                        mButtonLike.setImageResource(R.drawable.ic_disliked_black_24dp);
-                        mButtonDisLike.setImageResource(R.drawable.ic_like);
+                        mButtonLike.setImageResource(R.drawable.ic_like);
+                        mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
                     }
                 }
             }
@@ -209,25 +209,73 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 //        });
     }
 
-
-    public void likeSong(int id) {
+    private void likeSong(int id) {
         ContentValues values = new ContentValues();
-        values.put(FavoriteSongsProvider.IS_FAVORITE, 2);
-        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
-        Toast.makeText(getActivity(), "Liked Song", Toast.LENGTH_SHORT).show();
+        values.put(FavoriteSongsTable.ID_PROVIDER, id);
+        values.put(FavoriteSongsTable.IS_FAVORITE, 2);
+        Cursor cursor = findSongById(id);
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + id + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
+        Toast.makeText(getActivity().getBaseContext(),
+                "Đẫ thêm bài hát vào yêu thích", Toast.LENGTH_LONG).show();
     }
 
-    public void dislikeSong(int id) {
+    private void dislikeSong(int id) {
         ContentValues values = new ContentValues();
-        values.put(FavoriteSongsProvider.IS_FAVORITE, 1);
-        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
-        Toast.makeText(getActivity(), "Disliked Song", Toast.LENGTH_SHORT).show();
+        values.put(FavoriteSongsTable.ID_PROVIDER, id);
+        values.put(FavoriteSongsTable.IS_FAVORITE, 1);
+        Cursor cursor = findSongById(id);
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + id + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
+        Toast.makeText(getActivity().getBaseContext(),
+                "Đã xoá bài hát khỏi yêu thích", Toast.LENGTH_LONG).show();
     }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
+                new String[]{String.valueOf(id)}, null);
+    }
+
+
+//    public void likeSong(int id) {
+//        ContentValues values = new ContentValues();
+//        values.put(FavoriteSongsProvider.IS_FAVORITE, 2);
+//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+//        Toast.makeText(getActivity(), "Liked Song", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void dislikeSong(int id) {
+//        ContentValues values = new ContentValues();
+//        values.put(FavoriteSongsProvider.IS_FAVORITE, 1);
+//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+//        Toast.makeText(getActivity(), "Disliked Song", Toast.LENGTH_SHORT).show();
+//    }
 
     public void setDefaultFavoriteStatus(int id) {
+//        ContentValues values = new ContentValues();
+//        values.put(FavoriteSongsProvider.IS_FAVORITE, 0);
+//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+
         ContentValues values = new ContentValues();
-        values.put(FavoriteSongsProvider.IS_FAVORITE, 0);
-        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
+        values.put(FavoriteSongsTable.ID_PROVIDER, id);
+        values.put(FavoriteSongsTable.IS_FAVORITE, 0);
+        Cursor cursor = findSongById(id);
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + id + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
     }
 
     @Override
@@ -348,16 +396,16 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 //                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
             }
 
-//                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
-//                        btImgLike.setImageResource(R.drawable.ic_liked_black_24dp);
-//                        btImgDislike.setImageResource(R.drawable.ic_dislike);
-//                    } else if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
-//                        btImgDislike.setImageResource(R.drawable.ic_disliked_black_24dp);
-//                        btImgLike.setImageResource(R.drawable.ic_like);
-//                    } else {
-//                        btImgLike.setImageResource(R.drawable.ic_like);
-//                        btImgDislike.setImageResource(R.drawable.ic_dislike);
-//                    }
+            if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
+                mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
+                mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+            } else if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
+                mButtonLike.setImageResource(R.drawable.ic_like);
+                mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
+            } else {
+                mButtonLike.setImageResource(R.drawable.ic_like);
+                mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+            }
         }
 
         //HanhNTHe: Tint

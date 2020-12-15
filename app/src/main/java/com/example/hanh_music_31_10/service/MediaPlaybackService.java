@@ -30,21 +30,13 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-//import com.example.activitymusic.Model.SongOnline;
-//import com.example.activitymusic.Provider.FavoriteSongsProvider;
-//import com.example.activitymusic.Activity.MainActivityMusic;
-//import com.example.activitymusic.Model.Song;
-//import com.example.activitymusic.R;
-//import com.example.activitymusic.Server.APIServer;
-//import com.example.activitymusic.Server.DataServer;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Song;
-import com.example.hanh_music_31_10.provider.FavoriteSongsProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-//import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
@@ -57,13 +49,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static android.media.AudioManager.AUDIOFOCUS_LOSS;
+import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
+
+//import com.example.activitymusic.Model.SongOnline;
+//import com.example.activitymusic.Provider.FavoriteSongsProvider;
+//import com.example.activitymusic.Activity.MainActivityMusic;
+//import com.example.activitymusic.Model.Song;
+//import com.example.activitymusic.R;
+//import com.example.activitymusic.Server.APIServer;
+//import com.example.activitymusic.Server.DataServer;
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
 //import pub.devrel.easypermissions.EasyPermissions;
 //import retrofit2.Call;
 //import retrofit2.Callback;
 //import retrofit2.Response;
-
-import static android.media.AudioManager.AUDIOFOCUS_LOSS;
-import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 
 
 public class MediaPlaybackService extends Service {
@@ -627,10 +628,10 @@ public class MediaPlaybackService extends Service {
 
     public int loadFavoriteStatus(int id) {
         int isFavorite = 0;
-        Cursor c = getApplicationContext().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, null, FavoriteSongsProvider.ID_PROVIDER + " = " + id, null, null);
+        Cursor c = getApplicationContext().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, null, FavoriteSongsTable.ID_PROVIDER + " = " + id, null, null);
         if (c != null && c.moveToFirst()) {
             do {
-                isFavorite = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.IS_FAVORITE)));
+                isFavorite = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsTable.IS_FAVORITE)));
             } while (c.moveToNext());
         }
         return isFavorite;

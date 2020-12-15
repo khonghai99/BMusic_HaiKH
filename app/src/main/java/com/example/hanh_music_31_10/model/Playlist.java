@@ -10,18 +10,21 @@ public class Playlist implements RecyclerData {
     private String mNameCategory;
     private List<Song> mSongList = new ArrayList<>();
 
-    public Playlist(int mIdCategory, String mNameCategory) {
-        this.mIdCategory = mIdCategory;
-        this.mNameCategory = mNameCategory;
+    public Playlist(){
     }
 
-    public Playlist(int mIdCategory, String mNameCategory, List<Song> mSongList) {
-        this.mIdCategory = mIdCategory;
-        this.mNameCategory = mNameCategory;
+    public Playlist(int mIdPlaylist, String mNamePlaylist) {
+        this.mIdCategory = mIdPlaylist;
+        this.mNameCategory = mNamePlaylist;
+    }
+
+    public Playlist(int mIdPlaylist, String mNamePlaylist, List<Song> mSongList) {
+        this.mIdCategory = mIdPlaylist;
+        this.mNameCategory = mNamePlaylist;
         this.mSongList = mSongList;
     }
 
-    public List<Song> getmSongList() {
+    public List<Song> getSongList() {
         return mSongList;
     }
 
@@ -29,7 +32,7 @@ public class Playlist implements RecyclerData {
         return mIdCategory;
     }
 
-    public String getNameCategory() {
+    public String getNamePlaylist() {
         return mNameCategory;
     }
 
@@ -37,7 +40,7 @@ public class Playlist implements RecyclerData {
         this.mIdCategory = mIdCategory;
     }
 
-    public void setNameCategory(String mNameCategory) {
+    public void setNamePlaylist(String mNameCategory) {
         this.mNameCategory = mNameCategory;
     }
 
