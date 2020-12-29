@@ -2,6 +2,7 @@ package com.example.hanh_music_31_10.ui.setting;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.auth.AuthActivity;
 
 public class SettingFragment extends Fragment {
 
@@ -34,8 +36,10 @@ public class SettingFragment extends Fragment {
         managerAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.settings,
-                        new ManagerAccFragment()).addToBackStack(null).commit();
+                //HanhNTHe: nếu đang nhập rồi thì hiển thị giao diện quản lý tài khoản,
+                // còn chưa thì yêu cầu đăng nhập
+                Intent intent = new Intent(getActivity(), AuthActivity.class);
+                startActivity(intent);
             }
         });
 

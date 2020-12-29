@@ -1,5 +1,6 @@
 package com.example.hanh_music_31_10.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +18,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.Song;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class DetailSongFragment extends Fragment implements View.OnClickListener {
     private ImageView mImageView;
@@ -57,6 +62,18 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         if (v == mDownloadSong) {
             //download song
+            //check xem login chưa, nếu chưa login thì yêu cầu logic hoặc sign up
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser user = auth.getCurrentUser();
+            if(user == null){
+                //neu chua dang nhap can dang nhap truoc can dang nhap truoc
+                Intent intent = new Intent(getActivity(), HomeAuthActivity.class);
+                startActivity(intent);
+            } else {
+                // neu dang dang nhap thi tai luon
+                Toast.makeText(getContext()," Tai bai hat ", Toast.LENGTH_LONG).show();
+            }
+
         } else if (v == mPlaySong) {
             //play music
         }
