@@ -6,6 +6,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
@@ -30,7 +33,14 @@ public class HomeSongItemHolder extends BaseRecyclerViewHolder {
         if (data instanceof Song) {
             Song song = (Song) data;
             //Glide.... de load anh :|
-            mImageView.setImageResource(R.drawable.home_test);
+            Glide.with(mImageView)
+                    .load(song.getImageUrl())
+                    .transition(GenericTransitionOptions.with(android.R.anim.fade_in))
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.placeholder_music))
+                    .into(mImageView);
+
+//            mImageView.setImageResource(R.drawable.home_test);
             mTextSongName.setText(song.getNameSong());
             mTextArtistsName.setText(song.getSinger());
         }

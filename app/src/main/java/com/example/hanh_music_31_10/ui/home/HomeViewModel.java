@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
@@ -18,6 +19,7 @@ public class HomeViewModel extends ViewModel {
     public HomeViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is home fragment");
+        mPlaylist.setValue(new ArrayList<>());
     }
 
     public LiveData<String> getText() {
