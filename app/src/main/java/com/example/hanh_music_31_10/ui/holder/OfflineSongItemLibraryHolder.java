@@ -1,5 +1,6 @@
 package com.example.hanh_music_31_10.ui.holder;
 
+import android.annotation.SuppressLint;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,8 +47,9 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying());
             }else {
                 updateEqualizerView(false);
-                mNumber.setText(""+(getLayoutPosition()+1));
+//                mNumber.setText(""+(getLayoutPosition()+1));
             }
+            mNumber.setText(""+(getLayoutPosition()+1));
             mNameSongOffline.setText(song.getNameSong());
             mDuration.setText(song.getDuration());
             mOptionOffline.setOnClickListener(new View.OnClickListener() {
@@ -61,12 +63,13 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
         }
     }
     //update sóng khi phát 1 bài hát
+    @SuppressLint("SetTextI18n")
     public void updateEqualizerView(boolean isPlay){
         if( isPlay ){
             mEqualizerView.animateBars();
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
-            mNumber.setText(""+(getLayoutPosition()+1));
+//            mNumber.setText(""+(getLayoutPosition()+1));
         }
         mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
         mNumber.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );

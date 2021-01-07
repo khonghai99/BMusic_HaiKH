@@ -12,6 +12,10 @@
     <color name="toolbar_color">#fcfbf9</color>
     <color name="toolbar_color_test">#371015</color>
 
+    <color name="top_background_recyclerview">#371015</color>
+    <color name="bottom_background_recyclerview">#071015</color>
+    <color name="center_background_recyclerview">#171015</color>
+
     <color name="bottom_layout">#aa141217</color>
     <color name="progress_tint">#FFFFFF</color>
     <color name="thum_tint">#FFFFFF</color>

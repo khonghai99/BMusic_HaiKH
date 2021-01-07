@@ -13,4 +13,6 @@ public interface Constants {
 
     String SONG_ID_NAME = "songID";
     String PLAYLIST_ID_NAME = "playlistID";
+    //hanhnthe : database người dùng tạo playlist trong thư viện
+    String FIREBASE_REALTIME_PLAYLIST_USER_PATH = "user_playlist";
 }

@@ -27,11 +27,13 @@ import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
+import com.example.hanh_music_31_10.ui.setting.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 //import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -157,6 +159,15 @@ public class MainActivity extends AppCompatActivity {
                 playSong(playSong.getPlayListSong(), playSong.getPlaySong());
             }
         });
+//
+//        AppCompatDelegate.setDefaultNightMode(getThemeNightMode() ? AppCompatDelegate.MODE_NIGHT_YES
+//                :AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM );
+    }
+
+    //HanhNTHe: setThemenight
+    private boolean getThemeNightMode(){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(SettingFragment.THEME_NIGHT, false);
     }
 
     @Override
@@ -212,8 +223,10 @@ public class MainActivity extends AppCompatActivity {
     public void playSong(ArrayList<Song> songs, Song song) {
 //        songs.add(song);
 //        songs.add(song);
-        mMediaPlaybackService.playSong(songs, song);
-        updateUI(song);
+        if (mMediaPlaybackService != null){
+            mMediaPlaybackService.playSong(songs, song);
+            updateUI(song);
+        }
     }
 
     public MediaPlaybackService getService() {

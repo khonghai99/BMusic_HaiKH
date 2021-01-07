@@ -13,7 +13,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="20dp"
-        android:background="@drawable/ic_baseline_library_music_24"
         android:id="@+id/image_view_detail"/>
 
     <LinearLayout

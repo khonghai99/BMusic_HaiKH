@@ -4,9 +4,9 @@
 
     <gradient
         Android:angle="90"
-        Android:centerColor="#f7e4dd"
-        Android:endColor="#fcfbf9"
-        Android:startColor="#fcfbf9"
+        Android:centerColor="@color/center_background_recyclerview"
+        Android:endColor="@color/top_background_recyclerview"
+        Android:startColor="@color/bottom_background_recyclerview"
         Android:type="linear" />
 
     <corners Android:radius="0dp" />

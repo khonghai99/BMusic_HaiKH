@@ -25,4 +25,8 @@ public class ImageFragment extends Fragment {
         mImageSongMedia = view.findViewById(R.id.image_song_media_play);
         return view;
     }
+
+    public void updateImageSong(){
+
+    }
 }

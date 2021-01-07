@@ -17,11 +17,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.Song;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.text.SimpleDateFormat;
 
 public class DetailSongFragment extends Fragment implements View.OnClickListener {
     private ImageView mImageView;
@@ -76,15 +81,22 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         } else if (v == mPlaySong) {
             //play music
+
         }
     }
 
     public void updateSong(Song song) {
         if (song != null) {
-            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
+//            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
+            Glide.with(mImageView)
+                    .load(song.getImageUrl())
+                    .transition(GenericTransitionOptions.with(android.R.anim.fade_in))
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.placeholder_music))
+                    .into(mImageView);
             mTextSong.setText(song.getNameSong());
             mArtistSong.setText(song.getSinger());
-            mDurationSong.setText(song.getDuration());
+            mDurationSong.setText(new SimpleDateFormat("mm:ss").format(Integer.parseInt(song.getDuration())));
         }
     }
 }

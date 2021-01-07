@@ -15,11 +15,16 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
     private ImageView mImageSong;
     private TextView mNameSong;
     private TextView mArtistSong;
     private ImageView mOptionSongInPlaylist;
+    private EqualizerView mEqualizerView;
+
+    private MediaPlaybackService mService;
 
     public SongItemInPlayListHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,13 +32,21 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
         mNameSong = itemView.findViewById(R.id.id_name_song);
         mArtistSong = itemView.findViewById(R.id.artist_song);
         mOptionSongInPlaylist = itemView.findViewById(R.id.id_option_song_playlist);
+        mEqualizerView = itemView.findViewById(R.id.equalizer);
     }
 
     @Override
     public void bindViewHolder(RecyclerData data) {
         if( data instanceof Song){
             Song song = (Song) data;
-            mImageSong.setImageResource(R.drawable.ic_baseline_library_music_24);
+//            mImageSong.setImageResource(R.drawable.ic_baseline_library_music_24);
+            if(mService != null){
+                Song playingSong = mService.getPlayingSong();
+                updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
+            }else {
+                updateEqualizerView(false, song);
+//                mNumber.setText(""+(getLayoutPosition()+1));
+            }
             mNameSong.setText(song.getNameSong());
             mArtistSong.setText(song.getSinger());
             mOptionSongInPlaylist.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +75,22 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
 
     }
 
+    //update sóng khi phát 1 bài hát
+    public void updateEqualizerView(boolean isPlay, Song song){
+        if( isPlay ){
+            mEqualizerView.animateBars();
+        } else if (!mEqualizerView.isAnimating()){
+            mEqualizerView.stopBars();
+            if (song.loadImageFromPath(song.getPathSong()) == null) {
+                mImageSong.setImageResource(R.drawable.ic_queue_music_black_24dp);
+            } else {
+                mImageSong.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
+            }
+        }
+        mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
+        mImageSong.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );
+    }
+
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +103,6 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setService(MediaPlaybackService service) {
-
+        mService = service;
     }
 }

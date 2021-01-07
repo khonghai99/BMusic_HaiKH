@@ -51,6 +51,7 @@ public class FavoriteSongFragment extends Fragment {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             mLibraryViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
+            mAdapter.notifyDataSetChanged();
         }
 
     };

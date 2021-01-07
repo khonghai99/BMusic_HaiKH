@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.auth.AuthActivity;
 
 public class SettingFragment extends Fragment {
@@ -53,7 +54,7 @@ public class SettingFragment extends Fragment {
                 }else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                 }
-                saveThemeNightMode(!isChecked);
+                saveThemeNightMode(isChecked);
             }
         });
 
