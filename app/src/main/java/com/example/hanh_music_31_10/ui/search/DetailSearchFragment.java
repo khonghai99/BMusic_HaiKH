@@ -1,12 +1,9 @@
 package com.example.hanh_music_31_10.ui.search;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,7 +49,7 @@ public class DetailSearchFragment extends Fragment {
 
         mTitleSearch = root.findViewById(R.id.title_search);
 
-        mRecyclerView = root.findViewById(R.id.recycler_view_search);
+        mRecyclerView = root.findViewById(R.id.recycler_view_podcasts);
         mRecyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());

@@ -15,6 +15,7 @@ import com.example.hanh_music_31_10.ui.holder.ImageSearchItemHolder;
 import com.example.hanh_music_31_10.ui.holder.OfflineSongItemLibraryHolder;
 import com.example.hanh_music_31_10.ui.holder.PlayListItemLibraryHolder;
 import com.example.hanh_music_31_10.ui.holder.SongItemInPlayListHolder;
+import com.example.hanh_music_31_10.ui.holder.SongSearchItemHolder;
 
 public class ViewHolderFactory {
 
@@ -29,6 +30,8 @@ public class ViewHolderFactory {
                 return new HomeSongItemHolder(view);
             case RecyclerViewType.TYPE_IMAGE_SEARCH:
                 return new ImageSearchItemHolder(view);
+            case RecyclerViewType.TYPE_SONG_SEARCH:
+                return new SongSearchItemHolder(view);
             case RecyclerViewType.TYPE_OFFLINE_SONG_LIBRARY:
                 return new OfflineSongItemLibraryHolder(view);
             case RecyclerViewType.TYPE_PLAYLIST_LIBRARY:
@@ -52,8 +55,12 @@ public class ViewHolderFactory {
                 return R.layout.block_song_category;
             case RecyclerViewType.TYPE_ITEM_SONG_IN_HOME:
                 return R.layout.item_list_in_block;
+
             case RecyclerViewType.TYPE_IMAGE_SEARCH:
                 return R.layout.item_grid_search_layout;
+            case RecyclerViewType.TYPE_SONG_SEARCH:
+                return R.layout.item_search_layout;
+
             case RecyclerViewType.TYPE_OFFLINE_SONG_LIBRARY:
                 return R.layout.item_list_offline;
             case RecyclerViewType.TYPE_PLAYLIST_LIBRARY:

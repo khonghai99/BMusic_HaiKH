@@ -23,10 +23,17 @@
         app:queryHint="@string/search_hint"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_search"
+        android:id="@+id/recycler_view_podcasts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/search_view" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search_view"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
 
