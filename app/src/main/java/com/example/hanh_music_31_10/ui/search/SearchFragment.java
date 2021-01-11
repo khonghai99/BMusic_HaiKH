@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Constants;
 import com.example.hanh_music_31_10.model.ImageSearchModel;
-import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
@@ -38,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SearchFragment extends Fragment {
@@ -73,15 +73,28 @@ public class SearchFragment extends Fragment {
             Object object = snapshot.getValue(Object.class);
             String json = gson.toJson(object);
 
-            Type listType = new TypeToken<ArrayList<Song>>() {
-            }.getType();
-            ArrayList<Song> data = gson.fromJson(json, listType);
+            try {
+                Type listType = new TypeToken<HashMap<String, Song>>() {
+                }.getType();
+                HashMap<String, Song> data = gson.fromJson(json, listType);
+                if (data != null) {
+                    mViewSearchAdapter.update(new ArrayList<>(data.values()));
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-//                for (String key : map.keySet()) {
-//                    data.add(map.get(key));
-//                }
-
-            mViewSearchAdapter.update(data);
+            try {
+                Type listType = new TypeToken<ArrayList<Song>>() {
+                }.getType();
+                ArrayList<Song> data = gson.fromJson(json, listType);
+                if (data != null) {
+                    mViewSearchAdapter.update(data);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -92,9 +105,9 @@ public class SearchFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup container, Bundle savedInstanceState) {
         searchViewModel =
-                new ViewModelProvider(this).get(SearchViewModel.class);
+            new ViewModelProvider(this).get(SearchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_search, container, false);
         searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -104,8 +117,10 @@ public class SearchFragment extends Fragment {
 
         mSearchView = root.findViewById(R.id.search_view);
 
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(
+            Context.SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(
+            searchManager.getSearchableInfo(getActivity().getComponentName()));
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -126,17 +141,20 @@ public class SearchFragment extends Fragment {
 
             void doFilterAsync(String queryText) {
                 boolean isSearchViewVisible = !TextUtils.isEmpty(queryText);
-                mRecyclerViewSearch.setVisibility(isSearchViewVisible ? View.VISIBLE : View.INVISIBLE);
-                mRecyclerViewPodCasts.setVisibility(isSearchViewVisible ? View.INVISIBLE : View.VISIBLE);
+                mRecyclerViewSearch.setVisibility(
+                    isSearchViewVisible ? View.VISIBLE : View.INVISIBLE);
+                mRecyclerViewPodCasts.setVisibility(
+                    isSearchViewVisible ? View.INVISIBLE : View.VISIBLE);
 
                 if (!isSearchViewVisible) return;
 
-                Query queryRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_REALTIME_SONG_PATH)
-                        .orderByChild("nameSong")
+                Query queryRef = FirebaseDatabase.getInstance().getReference(
+                    Constants.FIREBASE_REALTIME_SONG_PATH)
+                    .orderByChild("nameSong")
 //                .orderByValue()
-                        .startAt(queryText)
-                        .endAt(queryText + "\uf8ff")
-                        .limitToFirst(10);
+                    .startAt(queryText)
+                    .endAt(queryText + "\uf8ff")
+                    .limitToFirst(10);
                 queryRef.addValueEventListener(mValueEventListener);
             }
         });
@@ -148,7 +166,8 @@ public class SearchFragment extends Fragment {
         mGridLayout = new GridLayoutManager(getContext(), 2);
         mRecyclerViewPodCasts.setLayoutManager(mGridLayout);
 
-        BaseRecyclerAdapter<ImageSearchModel> adapter = new BaseRecyclerAdapter<ImageSearchModel>(getData(), mRecyclerViewAction) {
+        BaseRecyclerAdapter<ImageSearchModel> adapter = new BaseRecyclerAdapter<ImageSearchModel>(
+            getData(), mRecyclerViewAction) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_IMAGE_SEARCH;

@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
 //                    data.add(map.get(key));
 //                }
 
-                if (homeViewModel.getPlaylist().getValue().size() == 0)
+//                if (homeViewModel.getPlaylist().getValue().size() == 0)
                 homeViewModel.setPlaylist(data);
 
 //                Playlist playlist = map.get(map.keySet().toArray()[0]);
