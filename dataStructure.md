@@ -1,6 +1,5 @@
 # music_31_10
-#song_online :
-cấu trúc dữ liệu json trên database :
+#cấu trúc dữ liệu json trên database :
 - song:{
 	- id :{
 		- nameSong
@@ -9,9 +8,10 @@ cấu trúc dữ liệu json trên database :
 		- mp3
 		- lyrics 
 		- picture
+		- active
 		- Playlist:{
-			- id playlist: true
-			- id playlist: true
+			- id playlist
+			- id playlist
 			}
 		}
 	- id: {
@@ -24,9 +24,10 @@ cấu trúc dữ liệu json trên database :
 	- id :{
 		- namePlaylist
 		- member : {
-			- ID Song : true;
-			- id Song : true;
+			- id Song
+			- id Song
 			}
 		}
 	- id : {
-  ....}
+	         ....}
+	}
