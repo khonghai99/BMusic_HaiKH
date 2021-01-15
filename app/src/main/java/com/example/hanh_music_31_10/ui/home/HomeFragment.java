@@ -59,10 +59,15 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+        homeViewModel.openDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
             @Override
             public void onChanged(Song song) {
-                openDetailFragment();
+                System.out.println("Hanh NTHe song "+song);
+                if(song != null) {
+                    openDetailFragment();
+                    homeViewModel.setDetailSong(song);
+                    homeViewModel.setSongFirstClick(null);
+                }
             }
         });
 
@@ -82,6 +87,7 @@ public class HomeFragment extends Fragment {
     private void openDetailFragment() {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.home_fragment_container, new DetailSongFragment(), DetailSongFragment.class.getName())
+                .addToBackStack(null)
                 .commit();
     }
 

@@ -36,11 +36,14 @@ public class LibraryFragment extends Fragment {
         mLibraryViewModel =
                 new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
         View root = inflater.inflate(R.layout.fragment_library, container, false);
-        mLibraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
+        mLibraryViewModel.openDetailPlaylist().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
             @Override
             public void onChanged(Playlist playlist) {
-                if (playlist != null)
+                if (playlist != null){
                     LibraryFragment.this.openDetailFragment();
+                    mLibraryViewModel.setDetailPlaylist(playlist);
+                    mLibraryViewModel.setPlaylistFirstClick(null);
+                }
                 System.out.println("HanhNTHe: LibraryViewModel click playlist ");
             }
         });
@@ -72,12 +75,14 @@ public class LibraryFragment extends Fragment {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.container_fragment_library, new LibraryOverViewFragment(),
                         LibraryOverViewFragment.class.getName())
+                .addToBackStack(null)
                 .commit();
     }
 
     private void openDetailFragment() {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.container_fragment_library, new DetailPlayListFragment(), DetailPlayListFragment.class.getName())
+                .addToBackStack(null)
                 .commit();
     }
 

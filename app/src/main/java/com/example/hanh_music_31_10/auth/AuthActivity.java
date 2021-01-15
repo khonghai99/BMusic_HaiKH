@@ -84,9 +84,9 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(AuthActivity.this, "驗證Email已寄出", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, " Đã gửi đi email xác thực 驗證Email已寄出", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(AuthActivity.this, "驗證Email寄送失敗", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AuthActivity.this, "Không gửi được email xác thực 驗證Email寄送失敗", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -114,16 +114,6 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
-    /*
-        官網強調當你刪除帳號、設定主要 email 以及改變密碼的時候
-        都必須做 Re-authenticate 否則有機會會丟出 FirebaseAuthRecentLoginRequiredException
-
-        首先必須透過 AuthCredential 拿到 EmailAuthProvider 的憑證
-        接著透過 FirebaseUser 物件的 reauthenticate 方法將憑證傳入
-
-        因此我們在呼叫 FirebaseUser 物件的 updateEmail
-        要寫在 FirebaseUser 物件的 reauthenticate callback 完成以後才可以改變 Email
-     */
     public void reauthenticate(View view) {
         final FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {

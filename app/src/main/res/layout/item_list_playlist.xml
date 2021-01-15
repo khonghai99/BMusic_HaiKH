@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:gravity="center"
+            app:tint="@color/icon_color" />
         <es.claucookie.miniequalizerlibrary.EqualizerView
             android:id="@+id/equalizer"
             android:visibility="invisible"

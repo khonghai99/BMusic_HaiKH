@@ -2,23 +2,29 @@ package com.example.hanh_music_31_10.ui.library;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.AddSongToPlaylist;
 import com.example.hanh_music_31_10.activity.MainActivity;
+import com.example.hanh_music_31_10.activity.SettingsActivity;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -44,8 +50,23 @@ public class PlayListFragment extends Fragment {
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             // click vao 1 view trong playlist fragment chuyển sang fragment detail
 //            mOnClickListener.onViewClick(position, view, viewHolder);
-            mLibViewModel.setDetailPlaylist(mAdapter.getData().get(position));
+            mLibViewModel.setPlaylistFirstClick(mAdapter.getData().get(position));
             System.out.println("HanhNTHe: Click view playlist fragment " + view.toString());
+        }
+
+        @Override
+        public void updatePlaylistFromButton(Playlist playlist, CONTROL_UPDATE state) {
+            switch (state){
+                case UPDATE_NAME_PLAYLIST:
+                    editNamePlaylist(playlist);
+                    break;
+                case ADD_SONG_TO_PLAYLIST:
+                    addSongToPlaylist(playlist);
+                    break;
+                case DELETE_PLAYLIST:
+                    deletePlaylist(playlist);
+                    break;
+            }
         }
     };
 
@@ -126,11 +147,57 @@ public class PlayListFragment extends Fragment {
                 mListPlaylist.add(mNewPlaylist);
                 mAdapter.update(mListPlaylist);
                 mAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "TitlePlay: " + user, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
             }
         });
         AlertDialog dialog = alert.create();
         dialog.show();
+    }
+
+    private void editNamePlaylist(Playlist playlist){
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
+        final EditText titlePlaylist = (EditText) alertLayout.findViewById(R.id.input_name_playlist);
+        TextView title = alertLayout.findViewById(R.id.title_dialog_create_playList);
+        title.setText("Đổi tên Playlist");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            titlePlaylist.setHint(playlist.getNamePlaylist());
+        }
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setView(alertLayout);
+        alert.setCancelable(false);
+        alert.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alert.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // code for matching password
+                mListPlaylist.remove(playlist);
+                String user = titlePlaylist.getText().toString();
+                playlist.setNamePlaylist(user);
+                mListPlaylist.add(playlist);
+                mAdapter.update(mListPlaylist);
+                mAdapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog dialog = alert.create();
+        dialog.show();
+    }
+
+    private void deletePlaylist(Playlist playlist){
+
+    }
+    private void addSongToPlaylist(Playlist playlist){
+        Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
+        startActivity(intent);
     }
 
     private List<Playlist> getData() {

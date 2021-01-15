@@ -1,5 +1,6 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +38,7 @@ public class FavoriteSongFragment extends Fragment {
 
     private static final int LOADER_ID = 2;
     ArrayList<Song> mAllSongList;
+    ArrayList<Song> mAllFavoriteSong;
 
     static final String AUTHORITY = "com.android.example.provider.FavoriteSongs";
     static final String CONTENT_PATH = "backupdata";
@@ -54,6 +57,12 @@ public class FavoriteSongFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
 
+        @Override
+        public void updateSongFromMenuButton(Song song, CONTROL_UPDATE state) {
+            if(state == CONTROL_UPDATE.DELETE_SONG){
+                disLikeSong(song);
+            }
+        }
     };
 
     @Nullable
@@ -125,7 +134,32 @@ public class FavoriteSongFragment extends Fragment {
                 }
         }
         favorite.close();
+        mAllFavoriteSong = songFavorite;
         return songFavorite;
+    }
+
+    private void disLikeSong(Song song){
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+        values.put(FavoriteSongsTable.IS_FAVORITE, 1);
+        Cursor cursor = findSongById(song.getId());
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + song.getId() + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
+        Toast.makeText(getActivity().getBaseContext(),
+                "Đã xoá bài hát khỏi yêu thích", Toast.LENGTH_LONG).show();
+        mAllFavoriteSong.remove(song);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
+                new String[]{String.valueOf(id)}, null);
     }
 
 //    @NonNull

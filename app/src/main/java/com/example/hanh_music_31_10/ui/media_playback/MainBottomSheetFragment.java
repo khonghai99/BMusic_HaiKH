@@ -246,21 +246,6 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                 new String[]{String.valueOf(id)}, null);
     }
 
-
-//    public void likeSong(int id) {
-//        ContentValues values = new ContentValues();
-//        values.put(FavoriteSongsProvider.IS_FAVORITE, 2);
-//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
-//        Toast.makeText(getActivity(), "Liked Song", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    public void dislikeSong(int id) {
-//        ContentValues values = new ContentValues();
-//        values.put(FavoriteSongsProvider.IS_FAVORITE, 1);
-//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
-//        Toast.makeText(getActivity(), "Disliked Song", Toast.LENGTH_SHORT).show();
-//    }
-
     public void setDefaultFavoriteStatus(int id) {
 //        ContentValues values = new ContentValues();
 //        values.put(FavoriteSongsProvider.IS_FAVORITE, 0);

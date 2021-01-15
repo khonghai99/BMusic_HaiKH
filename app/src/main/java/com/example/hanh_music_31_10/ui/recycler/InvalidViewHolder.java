@@ -26,4 +26,5 @@ public class InvalidViewHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
         throw new IllegalArgumentException("You are using an invalid view holder. You need to create a viewType value in CCRecyclerViewType.java, then check CCViewHolderFactory.java and do the same job as TYPE_INVALID.");
     }
+
 }

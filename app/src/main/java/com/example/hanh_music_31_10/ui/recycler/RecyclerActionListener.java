@@ -22,10 +22,11 @@ public class RecyclerActionListener {
     //xử lý sự kiện của popupmenu
 
     //xoa bài hat
-    public void update(int position, View view, BaseRecyclerViewHolder viewHolder, int state) {
+    public void updateSongFromMenuButton(Song song, CONTROL_UPDATE state) {
     }
+    public void updatePlaylistFromButton(Playlist playlist, CONTROL_UPDATE state){}
 
-    enum CONTROL_UPDATE {
+    public enum CONTROL_UPDATE {
         DELETE_SONG, ADD_PLAYLIST, ADD_FAVORITE, DELETE_PLAYLIST, UPDATE_NAME_PLAYLIST, ADD_SONG_TO_PLAYLIST
     }
 }

@@ -1,9 +1,12 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.ActivityViewModel;
+import com.example.hanh_music_31_10.activity.AddSongToPlaylist;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
@@ -34,6 +38,7 @@ public class DetailPlayListFragment extends Fragment {
     private RecyclerView mListSong;
     private TextView mNotifyEmpty;
     BaseRecyclerAdapter<Song> mAdapter;
+    private LinearLayout mAddSongInPlaylistButton;
 
     private ActivityViewModel mActivityViewModel;
     private LibraryViewModel mLibraryViewModel;
@@ -60,6 +65,7 @@ public class DetailPlayListFragment extends Fragment {
         View root = inflater.inflate(R.layout.detail_playlist_fragment, container, false);
         mTitlePlayList = root.findViewById(R.id.title_playlist);
         mNotifyEmpty = root.findViewById(R.id.notify_empty);
+        mAddSongInPlaylistButton = root.findViewById(R.id.add_song_playlist_button);
 
         mListSong = root.findViewById(R.id.recycler_song_in_playlist);
         mListSong.setHasFixedSize(true);
@@ -80,21 +86,32 @@ public class DetailPlayListFragment extends Fragment {
 
         mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
         mLibraryViewModel.getDetailPlayList().observe(getViewLifecycleOwner(), new Observer<Playlist>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onChanged(Playlist playlist) {
                 if (playlist != null) {
-                    mTitlePlayList.setText(playlist.getNamePlaylist());
+                    mTitlePlayList.setText("Tên Playlist: "+playlist.getNamePlaylist());
                     if(playlist.getSongList().size() == 0){
                         mNotifyEmpty.setVisibility(View.VISIBLE);
                         mListSong.setVisibility(View.GONE);
+                        mAddSongInPlaylistButton.setVisibility(View.VISIBLE);
                         mNotifyEmpty.setText("Chưa có bài hát");
                     }else{
                         mNotifyEmpty.setVisibility(View.GONE);
+                        mAddSongInPlaylistButton.setVisibility(View.GONE);
                         mListSong.setVisibility(View.VISIBLE);
                         updateListSongInPlaylist(playlist.getSongList());
                         mActivityViewModel.setDetailPlaylist(null);
                     }
                 }
+            }
+        });
+
+        mAddSongInPlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
+                startActivity(intent);
             }
         });
 

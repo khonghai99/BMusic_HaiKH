@@ -1,5 +1,6 @@
 package com.example.hanh_music_31_10.ui.holder;
 
+import android.annotation.SuppressLint;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
     private EqualizerView mEqualizerView;
 
     private MediaPlaybackService mService;
+    private RecyclerActionListener mAction;
 
     public FavoriteSongItemLibraryHolder(@NonNull View itemView) {
         super(itemView);
@@ -60,14 +62,15 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
                     PopupMenu popupMenu = new PopupMenu(itemView.getContext(), mOptionFavorite);
                     popupMenu.inflate(R.menu.menu_favorite_song);
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @SuppressLint("NonConstantResourceId")
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.dis_like_song:
-//                                    addFavoriteSongsList(song.getId());
+                                    clickButtonMenu(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_SONG);
                                     return true;
                                 case R.id.add_playlist_song:
-//                                    removeFavoriteSongsList(song.getId());
+                                    clickButtonMenu(song, RecyclerActionListener.CONTROL_UPDATE.ADD_PLAYLIST);
                                     return true;
                                 default:
                                     return false;
@@ -88,7 +91,7 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
             if (song.loadImageFromPath(song.getPathSong()) == null) {
-                mImageFavorite.setImageResource(R.drawable.ic_queue_music_black_24dp);
+                mImageFavorite.setImageResource(R.drawable.tim);
             } else {
                 mImageFavorite.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
             }
@@ -99,6 +102,7 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        mAction = actionListener;
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,5 +114,10 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
     @Override
     public void setService(MediaPlaybackService service) {
         mService = service;
+    }
+
+    private void clickButtonMenu(Song song, RecyclerActionListener.CONTROL_UPDATE state){
+        System.out.println("HanhNTHe: click button song "+song+ " state "+state);
+        mAction.updateSongFromMenuButton(song, state);
     }
 }

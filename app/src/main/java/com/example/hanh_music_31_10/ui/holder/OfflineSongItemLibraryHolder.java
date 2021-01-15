@@ -29,6 +29,8 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
     private PopupMenu mPopupMenu;
     private MediaPlaybackService mService;
 
+    private RecyclerActionListener mAction;
+
     public OfflineSongItemLibraryHolder(@NonNull View itemView) {
         super(itemView);
         mNumber = itemView.findViewById(R.id.id_number);
@@ -57,6 +59,23 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 public void onClick(View v) {
                     mPopupMenu = new PopupMenu(itemView.getContext(), mOptionOffline);
                     mPopupMenu.inflate(R.menu.menu_offline_song);
+                    mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.like_song:
+                                    updateSongFromMenu(song, RecyclerActionListener.CONTROL_UPDATE.ADD_FAVORITE);
+                                    return true;
+                                case R.id.delete_song:
+                                    updateSongFromMenu(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_SONG);
+                                    return true;
+                                case R.id.add_playlist_song:
+                                    return true;
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
                     mPopupMenu.show();
                 }
             });
@@ -77,36 +96,21 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        mAction = actionListener;
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 actionListener.onViewClick(getAdapterPosition(), v, OfflineSongItemLibraryHolder.this);
             }
         });
-
-        if(mPopupMenu != null){
-            mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.like_song:
-//                                    addFavoriteSongsList(song.getId());
-                            return true;
-                        case R.id.delete_song:
-//                                    removeFavoriteSongsList(song.getId());
-                            return true;
-                        case R.id.add_playlist_song:
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            });
-        }
     }
 
     @Override
     public void setService(MediaPlaybackService service) {
         mService = service;
+    }
+
+    private void updateSongFromMenu(Song song, RecyclerActionListener.CONTROL_UPDATE state){
+        mAction.updateSongFromMenuButton(song, state);
     }
 }

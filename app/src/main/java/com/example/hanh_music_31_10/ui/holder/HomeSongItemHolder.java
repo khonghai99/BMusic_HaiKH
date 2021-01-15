@@ -60,4 +60,5 @@ public class HomeSongItemHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
 
     }
+
 }

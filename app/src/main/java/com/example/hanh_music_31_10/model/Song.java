@@ -6,10 +6,11 @@ import android.media.MediaMetadataRetriever;
 
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class Song implements RecyclerData {
+public class Song implements RecyclerData, Serializable {
 
     private int id;
     private String nameSong;

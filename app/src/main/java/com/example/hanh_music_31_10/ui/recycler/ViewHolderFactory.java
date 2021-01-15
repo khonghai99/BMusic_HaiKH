@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.LayoutRes;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.ui.holder.AddSongInPlayListItemHolder;
 import com.example.hanh_music_31_10.ui.holder.BlockHomeCategoryHolder;
 import com.example.hanh_music_31_10.ui.holder.DetailSearchItemHolder;
 import com.example.hanh_music_31_10.ui.holder.FavoriteSongItemLibraryHolder;
@@ -42,6 +43,8 @@ public class ViewHolderFactory {
                 return new SongItemInPlayListHolder(view);
             case RecyclerViewType.TYPE_DETAIL_SEARCH:
                 return new DetailSearchItemHolder(view);
+            case RecyclerViewType.TYPE_ADD_SONG_IN_PLAYLIST:
+                return new AddSongInPlayListItemHolder(view);
         }
         return new InvalidViewHolder(view);
     }
@@ -71,6 +74,8 @@ public class ViewHolderFactory {
                 return R.layout.item_song_in_playlist;
             case RecyclerViewType.TYPE_DETAIL_SEARCH:
                 return R.layout.item_list_search;
+            case RecyclerViewType.TYPE_ADD_SONG_IN_PLAYLIST:
+                return R.layout.add_song_playlist_item;
         }
         return 0;
     }

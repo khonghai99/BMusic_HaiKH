@@ -37,4 +37,5 @@ public class ImageSearchItemHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
 
     }
+
 }

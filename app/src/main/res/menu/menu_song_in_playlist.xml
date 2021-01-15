@@ -8,5 +8,6 @@
     <item
         android:id="@+id/add_favorite"
         android:icon="@drawable/ic_recent_black_24dp"
-        android:title="Thêm vào yêu thích" />
+        android:title="Thêm vào yêu thích"
+        android:visible="false"/>
 </menu>

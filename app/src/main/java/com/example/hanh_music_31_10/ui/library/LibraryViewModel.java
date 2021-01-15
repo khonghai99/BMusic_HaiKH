@@ -8,8 +8,6 @@ import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 
-import java.util.List;
-
 public class LibraryViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
@@ -17,6 +15,8 @@ public class LibraryViewModel extends ViewModel {
     private final MutableLiveData<PlaySong> mPlaySong = new MutableLiveData<>();
     // nhan su kien khi click vao mot bai hat
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
+
+    private final MutableLiveData<Playlist> mPlaylistFirstClick = new MutableLiveData<>();
 
     public LibraryViewModel() {
         mText = new MutableLiveData<>();
@@ -42,13 +42,11 @@ public class LibraryViewModel extends ViewModel {
     public void setPlaylist(PlaySong mPlaylist) {
         this.mPlaySong.setValue(mPlaylist);
     }
-//
-//    public MutableLiveData<Song> getClickSong(){
-//        return mClickSong;
-//    }
-//    public void setClickSong(Song song){
-//        this.mClickSong.setValue(song);
-//    }
 
-
+    public MutableLiveData<Playlist> openDetailPlaylist(){
+        return mPlaylistFirstClick;
+    }
+    public void setPlaylistFirstClick( Playlist playlist){
+        this.mPlaylistFirstClick.setValue(playlist);
+    }
 }

@@ -26,6 +26,8 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
 
     private MediaPlaybackService mService;
 
+    private RecyclerActionListener mAction;
+
     public SongItemInPlayListHolder(@NonNull View itemView) {
         super(itemView);
         mImageSong = itemView.findViewById(R.id.id_image_song);
@@ -59,9 +61,10 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.delete_song_in_playlist:
-//                                    addFavoriteSongsList(song.getId());
+                                    updateSongFromButton(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_SONG);
                                     return true;
                                 case R.id.add_favorite:
+                                    updateSongFromButton(song, RecyclerActionListener.CONTROL_UPDATE.ADD_FAVORITE);
                                     return true;
                                 default:
                                     return false;
@@ -93,6 +96,7 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        mAction = actionListener;
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,4 +109,9 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
         mService = service;
     }
+
+    private void updateSongFromButton(Song song, RecyclerActionListener.CONTROL_UPDATE state){
+        mAction.updateSongFromMenuButton(song, state);
+    }
+
 }

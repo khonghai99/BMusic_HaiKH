@@ -15,6 +15,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> mText;
     private final MutableLiveData<Song> mDetailSong = new MutableLiveData<>();
     private final MutableLiveData<List<Playlist>> mPlaylist = new MutableLiveData<>();
+    private final MutableLiveData<Song> mSongFirstClick = new MutableLiveData<>();
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
@@ -28,6 +29,13 @@ public class HomeViewModel extends ViewModel {
 
     public MutableLiveData<Song> getDetailSong() {
         return mDetailSong;
+    }
+
+    public MutableLiveData<Song> openDetailSong(){
+        return mSongFirstClick;
+    }
+    public void setSongFirstClick(Song song){
+        this.mSongFirstClick.setValue(song);
     }
 
     public void setDetailSong(Song mSong) {

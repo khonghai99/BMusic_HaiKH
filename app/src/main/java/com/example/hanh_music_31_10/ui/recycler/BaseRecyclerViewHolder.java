@@ -5,6 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 
 public abstract class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
@@ -19,4 +20,5 @@ public abstract class BaseRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     //HanhNTHe: service
     public abstract void setService(MediaPlaybackService service);
+
 }

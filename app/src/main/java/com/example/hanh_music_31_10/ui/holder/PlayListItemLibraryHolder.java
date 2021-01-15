@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Playlist;
+import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
@@ -21,6 +22,8 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
     private TextView mNamePlayList;
     private TextView mTotalSong;
     private ImageView mOptionPlaylist;
+
+    private RecyclerActionListener mAction;
 
     public PlayListItemLibraryHolder(@NonNull View itemView) {
         super(itemView);
@@ -49,12 +52,13 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.rename_playlist:
-//                                    addFavoriteSongsList(song.getId());
+                                    updatePlaylistFromMenuButton(mPlayList, RecyclerActionListener.CONTROL_UPDATE.UPDATE_NAME_PLAYLIST);
                                     return true;
                                 case R.id.delete_playlist:
-//                                    removeFavoriteSongsList(song.getId());
+                                    updatePlaylistFromMenuButton(mPlayList, RecyclerActionListener.CONTROL_UPDATE.DELETE_PLAYLIST);
                                     return true;
                                 case R.id.add_song_to_playlist:
+                                    updatePlaylistFromMenuButton(mPlayList, RecyclerActionListener.CONTROL_UPDATE.ADD_SONG_TO_PLAYLIST);
                                     return true;
                                 default:
                                     return false;
@@ -70,6 +74,7 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        mAction = actionListener;
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,5 +87,8 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setService(MediaPlaybackService service) {
+    }
+    private void updatePlaylistFromMenuButton(Playlist playlist, RecyclerActionListener.CONTROL_UPDATE state){
+        mAction.updatePlaylistFromButton(playlist, state);
     }
 }

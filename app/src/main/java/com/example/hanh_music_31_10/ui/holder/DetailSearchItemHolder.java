@@ -56,4 +56,5 @@ public class DetailSearchItemHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
 
     }
+
 }

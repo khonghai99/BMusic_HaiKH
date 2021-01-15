@@ -67,4 +67,5 @@ public class BlockHomeCategoryHolder extends BaseRecyclerViewHolder {
     public void setService(MediaPlaybackService service) {
 
     }
+
 }

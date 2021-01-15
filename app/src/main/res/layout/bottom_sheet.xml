@@ -230,7 +230,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint = "@color/icon_color"/>
+            app:tint = "@color/icon_color"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/total_time_song_playback"

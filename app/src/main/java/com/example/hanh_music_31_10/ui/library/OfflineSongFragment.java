@@ -53,7 +53,15 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         public void clickSong(Song song) {
         }
 
-//        @Override
+        @Override
+        public void updateSongFromMenuButton(Song song, CONTROL_UPDATE state) {
+            if(state == CONTROL_UPDATE.ADD_FAVORITE){
+
+            }else if(state == CONTROL_UPDATE.DELETE_SONG){
+
+            }
+        }
+        //        @Override
 //        public Song getSongPlaying() {
 //           return ((MainActivity) getActivity()).getService().getPlayingSong();
 //        }

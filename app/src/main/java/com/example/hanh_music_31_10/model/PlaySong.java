@@ -1,9 +1,10 @@
 package com.example.hanh_music_31_10.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlaySong {
+public class PlaySong implements Serializable {
 
     private Song mPlaySong;
     private ArrayList<Song> mPlayListSong;

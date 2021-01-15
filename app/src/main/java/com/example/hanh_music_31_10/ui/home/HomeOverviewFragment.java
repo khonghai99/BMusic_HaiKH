@@ -43,7 +43,7 @@ public class HomeOverviewFragment extends Fragment {
 
         @Override
         public void clickSong(Song song) {
-            homeViewModel.setDetailSong(song);
+            homeViewModel.setSongFirstClick(song);
         }
     };
 

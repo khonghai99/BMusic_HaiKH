@@ -5,6 +5,7 @@
         android:title="@string/dis_like_song" />
     <item
         android:id="@+id/add_playlist_song"
-        android:title="@string/add_playlist"/>
+        android:title="@string/add_playlist"
+        android:visible="false"/>
 
 </menu>
