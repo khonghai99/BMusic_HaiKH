@@ -1,6 +1,7 @@
 package com.example.hanh_music_31_10.ui.holder;
 
 import android.annotation.SuppressLint;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -59,6 +60,14 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 public void onClick(View v) {
                     mPopupMenu = new PopupMenu(itemView.getContext(), mOptionOffline);
                     mPopupMenu.inflate(R.menu.menu_offline_song);
+                    Menu menu = mPopupMenu.getMenu();
+                    MenuItem itemLike = menu.findItem(R.id.like_song);
+                    MenuItem itemDisLike = menu.findItem(R.id.dis_like_song);
+                    if ( mService.loadFavoriteStatus(song.getId()) == 2){
+                        itemLike.setVisible(false);
+                    } else {
+                        itemDisLike.setVisible(false);
+                    }
                     mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -71,6 +80,8 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                                     return true;
                                 case R.id.add_playlist_song:
                                     return true;
+                                case R.id.dis_like_song:
+                                    updateSongFromMenu(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_FAVORITE_SONG);
                                 default:
                                     return false;
                             }

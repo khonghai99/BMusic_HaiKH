@@ -59,7 +59,7 @@ public class FavoriteSongFragment extends Fragment {
 
         @Override
         public void updateSongFromMenuButton(Song song, CONTROL_UPDATE state) {
-            if(state == CONTROL_UPDATE.DELETE_SONG){
+            if(state == CONTROL_UPDATE.DELETE_FAVORITE_SONG){
                 disLikeSong(song);
             }
         }

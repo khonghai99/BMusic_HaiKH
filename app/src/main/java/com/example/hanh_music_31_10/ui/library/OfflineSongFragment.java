@@ -1,11 +1,13 @@
 package com.example.hanh_music_31_10.ui.library;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,8 @@ import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
+import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
@@ -50,21 +54,20 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         }
 
         @Override
-        public void clickSong(Song song) {
-        }
-
-        @Override
         public void updateSongFromMenuButton(Song song, CONTROL_UPDATE state) {
-            if(state == CONTROL_UPDATE.ADD_FAVORITE){
-
-            }else if(state == CONTROL_UPDATE.DELETE_SONG){
-
+            switch (state) {
+                case ADD_FAVORITE:
+                    likeSong(song);
+                    break;
+                case DELETE_SONG:
+                    //xoa bai hat offline
+                    deleteSongOffline(song);
+                    break;
+                case DELETE_FAVORITE_SONG:
+                    disLikeSong(song);
+                    break;
             }
         }
-        //        @Override
-//        public Song getSongPlaying() {
-//           return ((MainActivity) getActivity()).getService().getPlayingSong();
-//        }
     };
 
     @Nullable
@@ -90,14 +93,6 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView.setAdapter(mAdapter);
 
         mLibraryViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
-//        mLibraryViewModel.getPlaylist().observe(getViewLifecycleOwner(), new Observer<PlaySong>() {
-//            @Override
-//            public void onChanged(PlaySong song) {
-////                ((MainActivity) getActivity()).playSong();
-//                System.out.println("HanhNTHe: OfflineSongFragment click song ");
-//            }
-//        });
-
         return view;
     }
 
@@ -175,11 +170,6 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
                 String timeSong = formatTimeSong.format(duration);
                 Song song = new Song(id, title, path, artist, albumID, timeSong);
                 songList.add(song);
-
-//                if (!checkIdExitFavoriteSongs(id)){
-//                    addIdProviderForFavoriteSongsList(id);
-//                }
-
             } while (data.moveToNext());
         }
         mAdapter.update(songList);
@@ -187,6 +177,49 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    }
+
+    private void likeSong(Song song) {
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+        values.put(FavoriteSongsTable.IS_FAVORITE, 2);
+        Cursor cursor = findSongById(song.getId());
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + song.getId() + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
+        Toast.makeText(getActivity().getBaseContext(),
+                "Đã thêm bài hát vào yêu thích", Toast.LENGTH_LONG).show();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
+                new String[]{String.valueOf(id)}, null);
+    }
+
+    private void disLikeSong(Song song) {
+        ContentValues values = new ContentValues();
+        values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+        values.put(FavoriteSongsTable.IS_FAVORITE, 1);
+        Cursor cursor = findSongById(song.getId());
+        if (cursor != null && cursor.moveToFirst()) {
+            getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                    "id_provider = \"" + song.getId() + "\"", null);
+        } else {
+            getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+        }
+        Toast.makeText(getActivity().getBaseContext(),
+                "Đã xoá bài hát khỏi yêu thích", Toast.LENGTH_LONG).show();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void deleteSongOffline(Song song) {
+
     }
 
 //    public ArrayList<Integer> loadIdProviderFromFavoriteSongs(){

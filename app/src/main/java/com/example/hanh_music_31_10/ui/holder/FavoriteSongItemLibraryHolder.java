@@ -67,7 +67,7 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.dis_like_song:
-                                    clickButtonMenu(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_SONG);
+                                    clickButtonMenu(song, RecyclerActionListener.CONTROL_UPDATE.DELETE_FAVORITE_SONG);
                                     return true;
                                 case R.id.add_playlist_song:
                                     clickButtonMenu(song, RecyclerActionListener.CONTROL_UPDATE.ADD_PLAYLIST);

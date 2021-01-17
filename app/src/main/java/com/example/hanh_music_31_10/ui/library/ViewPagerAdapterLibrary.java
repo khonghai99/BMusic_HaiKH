@@ -50,11 +50,11 @@ public class ViewPagerAdapterLibrary extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Offline";
+                return "Ngoại tuyến";
             case 1:
                 return "PlayList";
             case 2:
-                return "Favorite";
+                return "Yêu thích";
         }
         return null;
     }

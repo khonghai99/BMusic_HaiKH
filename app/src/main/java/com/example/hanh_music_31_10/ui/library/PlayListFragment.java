@@ -56,7 +56,7 @@ public class PlayListFragment extends Fragment {
 
         @Override
         public void updatePlaylistFromButton(Playlist playlist, CONTROL_UPDATE state) {
-            switch (state){
+            switch (state) {
                 case UPDATE_NAME_PLAYLIST:
                     editNamePlaylist(playlist);
                     break;
@@ -92,7 +92,7 @@ public class PlayListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(manager);
 
-        mAdapter = new BaseRecyclerAdapter<Playlist>( actionListener, ((MainActivity) getActivity()).getService()) {
+        mAdapter = new BaseRecyclerAdapter<Playlist>(actionListener, ((MainActivity) getActivity()).getService()) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_PLAYLIST_LIBRARY;
@@ -154,7 +154,7 @@ public class PlayListFragment extends Fragment {
         dialog.show();
     }
 
-    private void editNamePlaylist(Playlist playlist){
+    private void editNamePlaylist(Playlist playlist) {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
         final EditText titlePlaylist = (EditText) alertLayout.findViewById(R.id.input_name_playlist);
@@ -192,10 +192,11 @@ public class PlayListFragment extends Fragment {
         dialog.show();
     }
 
-    private void deletePlaylist(Playlist playlist){
-
+    private void deletePlaylist(Playlist playlist) {
+        //delete playlist user
     }
-    private void addSongToPlaylist(Playlist playlist){
+
+    private void addSongToPlaylist(Playlist playlist) {
         Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
         startActivity(intent);
     }
