@@ -21,7 +21,7 @@
             app:tint="@color/icon_color" />
         <es.claucookie.miniequalizerlibrary.EqualizerView
             android:id="@+id/equalizer"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"/>

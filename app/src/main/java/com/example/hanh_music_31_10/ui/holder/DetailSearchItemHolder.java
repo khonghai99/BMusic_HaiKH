@@ -6,6 +6,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
@@ -14,12 +17,17 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 public class DetailSearchItemHolder extends BaseRecyclerViewHolder {
 
     private ImageView mImageSearch;
     private TextView mNameSearch;
     private TextView mArtistSearch;
     private ImageView mForWard;
+    private EqualizerView mEqualizerView;
+
+    private MediaPlaybackService mService;
 
     public DetailSearchItemHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,6 +35,7 @@ public class DetailSearchItemHolder extends BaseRecyclerViewHolder {
         mNameSearch = itemView.findViewById(R.id.id_name_search);
         mArtistSearch = itemView.findViewById(R.id.artist_search);
         mForWard = itemView.findViewById(R.id.forward);
+        mEqualizerView = itemView.findViewById(R.id.equalizer);
     }
 
     @Override
@@ -34,27 +43,49 @@ public class DetailSearchItemHolder extends BaseRecyclerViewHolder {
         if (data instanceof Song) {
             Song song = (Song) data;
             //load anh
-            mImageSearch.setImageResource(R.drawable.ic_baseline_library_music_24);
+            if(mService != null){
+                Song playingSong = mService.getPlayingSong();
+                updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
+            }else {
+                updateEqualizerView(false, song);
+//                mNumber.setText(""+(getLayoutPosition()+1));
+            }
+//            mImageSearch.setImageResource(R.drawable.ic_baseline_library_music_24);
             mNameSearch.setText(song.getNameSong());
             mArtistSearch.setText(song.getSinger());
-            mForWard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
         }
-
+    }
+    //update sóng khi phát 1 bài hát
+    public void updateEqualizerView(boolean isPlay, Song song){
+        if( isPlay ){
+            mEqualizerView.animateBars();
+        } else if (!mEqualizerView.isAnimating()){
+            mEqualizerView.stopBars();
+            //Glide.... de load anh :|
+            Glide.with(mImageSearch)
+                    .load(song.getImageUrl())
+                    .transition(GenericTransitionOptions.with(android.R.anim.fade_in))
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.ic_baseline_library_music_24))
+                    .into(mImageSearch);
+        }
+        mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.GONE);
+        mImageSearch.setVisibility(isPlay ? View.GONE : View.VISIBLE );
     }
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
-
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onViewClick(getAdapterPosition(), v, DetailSearchItemHolder.this);
+            }
+        });
     }
 
     @Override
     public void setService(MediaPlaybackService service) {
-
+        mService = service;
     }
 
 }

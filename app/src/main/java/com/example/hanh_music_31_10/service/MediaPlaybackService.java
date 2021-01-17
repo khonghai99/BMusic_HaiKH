@@ -549,10 +549,10 @@ public class MediaPlaybackService extends Service {
     public void shuffleSong() {
         if (mShuffle == 0) {
             mShuffle = 1;
-            showToast("Shuffle On");
+            showToast("Bật phát ngẫu nhiên");
         } else {
             mShuffle = 0;
-            showToast("Shuffle Off");
+            showToast("Tắt phát ngẫu nhiên");
         }
         mServiceCallback.onUpdate();
         saveData();
@@ -561,13 +561,13 @@ public class MediaPlaybackService extends Service {
     public void loopSong() {
         if (mLoopStatus == 0) {
             mLoopStatus = 1;
-            showToast("Loop List");
+            showToast("Lặp danh sách");
         } else if (mLoopStatus == 1) {
             mLoopStatus = 2;
-            showToast("Loop One");
+            showToast("Lặp bài hát đang phát");
         } else if (mLoopStatus == 2) {
             mLoopStatus = 0;
-            showToast("No Loop");
+            showToast("Bỏ lặp");
         }
         mServiceCallback.onUpdate();
         saveData();

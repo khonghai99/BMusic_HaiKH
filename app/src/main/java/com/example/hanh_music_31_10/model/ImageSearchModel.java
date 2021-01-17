@@ -1,28 +1,22 @@
 package com.example.hanh_music_31_10.model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-
-import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
-import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 
 public class ImageSearchModel implements RecyclerData {
-    private int mId;
+    private String mCategory;
     private int mImageSearchUrl;
 
-    public ImageSearchModel(int mId, int mImageSearchUrl) {
-        this.mId = mId;
+    public ImageSearchModel(String mCategory, int mImageSearchUrl) {
+        this.mCategory = mCategory;
         this.mImageSearchUrl = mImageSearchUrl;
     }
 
-    public int getId() {
-        return mId;
+    public String getNameCategory() {
+        return mCategory;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
+    public void setId(String mId) {
+        this.mCategory = mId;
     }
 
     public int getImageSearchUrl() {
@@ -33,17 +27,6 @@ public class ImageSearchModel implements RecyclerData {
         this.mImageSearchUrl = mImageSearchUrl;
     }
 
-    //lay anh theo bitmap neu co path
-    public Bitmap loadImageFromPath(String path) {
-        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-        try {
-            mediaMetadataRetriever.setDataSource(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        byte[] data = mediaMetadataRetriever.getEmbeddedPicture();
-        return data == null ? null : BitmapFactory.decodeByteArray(data, 0, data.length);
-    }
 
     @Override
     public int getViewType() {

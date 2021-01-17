@@ -1,214 +1,70 @@
 package com.example.hanh_music_31_10.ui.search;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
-import com.example.hanh_music_31_10.model.Constants;
+import com.example.hanh_music_31_10.activity.SettingsActivity;
 import com.example.hanh_music_31_10.model.ImageSearchModel;
-import com.example.hanh_music_31_10.model.Song;
-import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
-import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
-import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
-import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.example.hanh_music_31_10.model.Playlist;
+import com.example.hanh_music_31_10.ui.library.DetailPlayListFragment;
+import com.example.hanh_music_31_10.ui.library.LibraryFragment;
+import com.example.hanh_music_31_10.ui.library.LibraryOverViewFragment;
+import com.example.hanh_music_31_10.ui.library.LibraryViewModel;
 
 public class SearchFragment extends Fragment {
 
-    private SearchViewModel searchViewModel;
-    private SearchView mSearchView;
-    private RecyclerView mRecyclerViewPodCasts;
-    private RecyclerView mRecyclerViewSearch;
-    private GridLayoutManager mGridLayout;
-    BaseRecyclerAdapter<Song> mViewSearchAdapter;
+    private SearchViewModel mSearchViewModel;
 
-    RecyclerActionListener mRecyclerViewAction = new RecyclerActionListener() {
-        @Override
-        public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-        }
-
-        @Override
-        public void onViewLongClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-        }
-
-        @Override
-        public void clickSong(Song song) {
-            super.clickSong(song);
-        }
-    };
-
-    private ValueEventListener mValueEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            System.out.println(snapshot);
-            Gson gson = new Gson();
-
-            Object object = snapshot.getValue(Object.class);
-            String json = gson.toJson(object);
-
-            try {
-                Type listType = new TypeToken<HashMap<String, Song>>() {
-                }.getType();
-                HashMap<String, Song> data = gson.fromJson(json, listType);
-                if (data != null) {
-                    mViewSearchAdapter.update(new ArrayList<>(data.values()));
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            try {
-                Type listType = new TypeToken<ArrayList<Song>>() {
-                }.getType();
-                ArrayList<Song> data = gson.fromJson(json, listType);
-                if (data != null) {
-                    mViewSearchAdapter.update(data);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
-
-        }
-    };
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-        ViewGroup container, Bundle savedInstanceState) {
-        searchViewModel =
-            new ViewModelProvider(this).get(SearchViewModel.class);
+                             ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        mSearchViewModel =
+                new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_search, container, false);
-        searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        mSearchViewModel.openDetailSearch().observe(getViewLifecycleOwner(), new Observer<ImageSearchModel>() {
             @Override
-            public void onChanged(@Nullable String s) {
+            public void onChanged(ImageSearchModel image) {
+                System.out.println("HanhNTHe: search click image " +image);
+                if (image != null) {
+                    SearchFragment.this.openDetailFragment();
+                    mSearchViewModel.setDetailImageSearch(image);
+                    mSearchViewModel.setImageSearchFirstClick(null);
+                }
+                System.out.println("HanhNTHe: search click image ");
             }
         });
 
-        mSearchView = root.findViewById(R.id.search_view);
-
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(
-            Context.SEARCH_SERVICE);
-        mSearchView.setSearchableInfo(
-            searchManager.getSearchableInfo(getActivity().getComponentName()));
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextChange(String newText) {
-//                mSearchString = newText;
-                doFilterAsync(newText);
-                Toast.makeText(getContext(), "Test1 " + newText, Toast.LENGTH_LONG).show();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-//                mSearchString = query;
-                doFilterAsync(query);
-                Toast.makeText(getContext(), "Test2 query: " + query, Toast.LENGTH_LONG).show();
-
-                return true;
-            }
-
-            void doFilterAsync(String queryText) {
-                boolean isSearchViewVisible = !TextUtils.isEmpty(queryText);
-                mRecyclerViewSearch.setVisibility(
-                    isSearchViewVisible ? View.VISIBLE : View.INVISIBLE);
-                mRecyclerViewPodCasts.setVisibility(
-                    isSearchViewVisible ? View.INVISIBLE : View.VISIBLE);
-
-                if (!isSearchViewVisible) return;
-
-                Query queryRef = FirebaseDatabase.getInstance().getReference(
-                    Constants.FIREBASE_REALTIME_SONG_PATH)
-                    .orderByChild("nameSong")
-//                .orderByValue()
-                    .startAt(queryText)
-                    .endAt(queryText + "\uf8ff")
-                    .limitToFirst(10);
-                queryRef.addValueEventListener(mValueEventListener);
-            }
-        });
-        System.out.println("HanhNTHe; searchManager " + searchManager);
-
-        mRecyclerViewPodCasts = root.findViewById(R.id.recycler_view_podcasts);
-        mRecyclerViewPodCasts.setHasFixedSize(true);
-
-        mGridLayout = new GridLayoutManager(getContext(), 2);
-        mRecyclerViewPodCasts.setLayoutManager(mGridLayout);
-
-        BaseRecyclerAdapter<ImageSearchModel> adapter = new BaseRecyclerAdapter<ImageSearchModel>(
-            getData(), mRecyclerViewAction) {
-            @Override
-            public int getItemViewType(int position) {
-                return RecyclerViewType.TYPE_IMAGE_SEARCH;
-            }
-        };
-
-        mRecyclerViewPodCasts.setAdapter(adapter);
-
-        mRecyclerViewSearch = root.findViewById(R.id.recycler_view_search);
-        mRecyclerViewSearch.setHasFixedSize(true);
-        mRecyclerViewSearch.setLayoutManager(new LinearLayoutManager(getContext()));
-        mViewSearchAdapter = new BaseRecyclerAdapter<Song>(new ArrayList<>(), mRecyclerViewAction) {
-            @Override
-            public int getItemViewType(int position) {
-                return RecyclerViewType.TYPE_SONG_SEARCH;
-            }
-        };
-        mRecyclerViewSearch.setAdapter(mViewSearchAdapter);
-
+        System.out.println("HanhNTHe; search onCreateView ");
+        openOverviewFragment();
         return root;
     }
 
-    private List<ImageSearchModel> getData() {
-        List<ImageSearchModel> data = new ArrayList<ImageSearchModel>();
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        data.add(new ImageSearchModel(1, R.drawable.icon_default_song));
-        return data;
+
+    private void openOverviewFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.container_fragment_search, new SearchOverViewFragment(),
+                        SearchOverViewFragment.class.getName())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openDetailFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.container_fragment_search, new DetailSearchFragment(), DetailSearchFragment.class.getName())
+                .addToBackStack(null)
+                .commit();
     }
 
 }

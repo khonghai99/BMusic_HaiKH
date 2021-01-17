@@ -143,13 +143,13 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 if (mMediaPlaybackService.mIsPlayOnline) {
-                    Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này!", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
                         setDefaultFavoriteStatus(mMediaPlaybackService.getId());
                         mButtonLike.setImageResource(R.drawable.ic_like);
                         mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-                        Toast.makeText(getActivity(), "Unliked Song", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
                     } else {
                         likeSong(mMediaPlaybackService.getId());
                         mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
@@ -169,7 +169,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                         setDefaultFavoriteStatus(mMediaPlaybackService.getId());
                         mButtonLike.setImageResource(R.drawable.ic_like);
                         mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-                        Toast.makeText(getActivity(), "Undisliked Song", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
                     } else {
                         dislikeSong(mMediaPlaybackService.getId());
                         mButtonLike.setImageResource(R.drawable.ic_like);
@@ -221,7 +221,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
         }
         Toast.makeText(getActivity().getBaseContext(),
-                "Đẫ thêm bài hát vào yêu thích", Toast.LENGTH_LONG).show();
+                "Đã thêm bài hát vào yêu thích", Toast.LENGTH_LONG).show();
     }
 
     private void dislikeSong(int id) {
