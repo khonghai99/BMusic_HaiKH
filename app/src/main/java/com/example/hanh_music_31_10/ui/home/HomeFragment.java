@@ -93,6 +93,38 @@ public class HomeFragment extends Fragment {
 
     //Create data
     private void getData() {
+        ArrayList<Playlist> mData = new ArrayList<>();
+
+        new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Gson gson = new Gson();
+
+                Object object = dataSnapshot.getValue(Object.class);
+                String json = gson.toJson(object);
+
+                Type listType = new TypeToken<ArrayList<Song>>() {}.getType();
+                ArrayList<Song> data = gson.fromJson(json, listType);
+                Playlist playlist = new Playlist(1,"Mới phát hành", data);
+
+
+
+//                for (String key : map.keySet()) {
+//                    data.add(map.get(key));
+//                }
+
+//                if (homeViewModel.getPlaylist().getValue().size() == 0)
+                mData.add(playlist);
+
+//                Playlist playlist = map.get(map.keySet().toArray()[0]);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
         new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_HOME_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -109,7 +141,10 @@ public class HomeFragment extends Fragment {
 //                }
 
 //                if (homeViewModel.getPlaylist().getValue().size() == 0)
-                homeViewModel.setPlaylist(data);
+//                homeViewModel.setPlaylist(data);
+                for (int i =0; i < data.size() ; i++)
+                    mData.add(data.get(i));
+                homeViewModel.setPlaylist(mData);
 
 //                Playlist playlist = map.get(map.keySet().toArray()[0]);
             }
@@ -119,6 +154,8 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+
 
 //        List<Song> dataSong = new ArrayList<Song>();
 //        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));

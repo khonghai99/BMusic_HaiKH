@@ -10,10 +10,6 @@ public class PagerAdapterBottom extends FragmentStatePagerAdapter {
         super(fm, behavior);
     }
 
-//    public PagerAdapter(@NonNull FragmentManager fm) {
-//        super(fm);
-//    }
-
     @NonNull
     @Override
     public Fragment getItem(int position) {

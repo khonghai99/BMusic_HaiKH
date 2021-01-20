@@ -1,8 +1,10 @@
 package com.example.hanh_music_31_10.ui.library;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,7 +33,10 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +49,8 @@ public class PlayListFragment extends Fragment {
 
     private LibraryViewModel mLibViewModel;
     BaseRecyclerAdapter<Playlist> mAdapter;
+
+    ArrayList<Playlist> mListPref;
 
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
@@ -103,6 +110,8 @@ public class PlayListFragment extends Fragment {
         mLibViewModel =
                 new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
 
+        mListPref = listPlaylistPref();
+        mAdapter.update(mListPref);
         return view;
     }
 
@@ -144,8 +153,15 @@ public class PlayListFragment extends Fragment {
                 String user = titlePlaylist.getText().toString();
                 mNewPlaylist = new Playlist();
                 mNewPlaylist.setNamePlaylist(user);
-                mListPlaylist.add(mNewPlaylist);
-                mAdapter.update(mListPlaylist);
+                if(mListPref != null){
+                    mListPref.add(mNewPlaylist);
+                    saveData(mListPref);
+                    mAdapter.update(mListPref);
+                } else {
+                    mListPlaylist.add(mNewPlaylist);
+                    saveData(mListPlaylist);
+                    mAdapter.update(mListPlaylist);
+                }
                 mAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
             }
@@ -179,11 +195,19 @@ public class PlayListFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // code for matching password
-                mListPlaylist.remove(playlist);
                 String user = titlePlaylist.getText().toString();
                 playlist.setNamePlaylist(user);
-                mListPlaylist.add(playlist);
-                mAdapter.update(mListPlaylist);
+                if(mListPref != null){
+                    mListPref.remove(playlist);
+                    mListPref.add(playlist);
+                    saveData(mListPref);
+                    mAdapter.update(mListPref);
+                } else {
+                    mListPlaylist.remove(playlist);
+                    mListPlaylist.add(playlist);
+                    saveData(mListPlaylist);
+                    mAdapter.update(mListPlaylist);
+                }
                 mAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
             }
@@ -193,12 +217,39 @@ public class PlayListFragment extends Fragment {
     }
 
     private void deletePlaylist(Playlist playlist) {
+        if(mListPref != null){
+            mListPref.remove(playlist);
+            saveData(mListPref);
+            mAdapter.update(mListPref);
+        } else {
+            mListPlaylist.remove(playlist);
+            saveData(mListPlaylist);
+            mAdapter.update(mListPlaylist);
+        }
+        mAdapter.notifyDataSetChanged();
         //delete playlist user
     }
 
     private void addSongToPlaylist(Playlist playlist) {
         Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
         startActivity(intent);
+    }
+
+    private void saveData(ArrayList<Playlist> listPlaylist) {
+        SharedPreferences.Editor editor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+        Gson gson = new Gson();
+        String json = null;
+        json = gson.toJson(listPlaylist);
+        editor.putString("PLAYLIST", json);
+        editor.apply();
+    }
+
+    public ArrayList<Playlist> listPlaylistPref() {
+        Gson gson = new Gson();
+        SharedPreferences mSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String json = mSharedPreferences.getString("PLAYLIST", null);
+        Type type = new TypeToken<ArrayList<Playlist>>() {}.getType();
+        return gson.fromJson(json, type);
     }
 
     private List<Playlist> getData() {

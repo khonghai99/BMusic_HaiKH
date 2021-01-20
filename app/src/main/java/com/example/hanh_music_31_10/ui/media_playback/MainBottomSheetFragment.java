@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.hanh_music_31_10.R;
@@ -32,6 +33,7 @@ import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
 import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
+import com.example.hanh_music_31_10.ui.library.LibraryViewModel;
 import com.example.hanh_music_31_10.ui.receiver.TimerReceiver;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -66,6 +68,8 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
     private MediaPlaybackService mMediaPlaybackService;
     private boolean mCheckService = false;
 
+    MediaPlaybackModel mediaPlaybackModel;
+
     @Override
     public int getTheme() {
         return R.style.BottomSheetDialogTheme;
@@ -75,12 +79,14 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.ccnews_fragment_articles, container, false);
+        mediaPlaybackModel =
+                new ViewModelProvider(requireActivity()).get(MediaPlaybackModel.class);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        PagerAdapterBottom pagerAdapter = new PagerAdapterBottom(getChildFragmentManager(), 0);
+        PagerAdapterBottom pagerAdapter = new PagerAdapterBottom(getChildFragmentManager(), 0 );
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager_playback);
         mViewPager.setAdapter(pagerAdapter);
 
@@ -380,6 +386,8 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                 mImageSongTop.setImageBitmap(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()));
 //                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
             }
+            //update ImageFragment
+            mediaPlaybackModel.setPathImage(mMediaPlaybackService.getPathSong());
 
             if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
                 mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
