@@ -1,7 +1,14 @@
 package com.example.hanh_music_31_10.ui.home;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,15 +35,31 @@ import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.search.SearchViewModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class DetailSongFragment extends Fragment implements View.OnClickListener {
+    private static final int STORAGE_PERMISSION_REQUEST_CODE = 1001;
     private ImageView mImageView;
     private TextView mTextSong;
     private TextView mArtistSong;
@@ -46,6 +71,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
     private HomeViewModel homeViewModel;
     private ActivityViewModel mActivityViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,13 +125,23 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             //check xem login chưa, nếu chưa login thì yêu cầu logic hoặc sign up
             FirebaseAuth auth = FirebaseAuth.getInstance();
             FirebaseUser user = auth.getCurrentUser();
-            if(user == null){
+            if (user == null) {
                 //neu chua dang nhap can dang nhap truoc can dang nhap truoc
                 Intent intent = new Intent(getActivity(), HomeAuthActivity.class);
                 startActivity(intent);
             } else {
                 // neu dang dang nhap thi tai luon
-                Toast.makeText(getContext()," Tai bai hat ", Toast.LENGTH_LONG).show();
+                if (ContextCompat.checkSelfPermission(requireActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            STORAGE_PERMISSION_REQUEST_CODE);
+                } else {
+                    // Permission has already been granted
+                    downloadSong();
+                }
+
             }
 
         } else if (v == mPlaySong) {
@@ -129,4 +165,124 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             mDurationSong.setText(new SimpleDateFormat("mm:ss").format(Integer.parseInt(song.getDuration())));
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[]
+            permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case STORAGE_PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // check whether storage permission granted or not.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        // do what you want;
+                        downloadSong();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void downloadSong() {
+        if (song == null) return;
+        try {
+            String result = java.net.URLDecoder.decode(song.getLinkUrl(), StandardCharsets.UTF_8.name());
+            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(result);
+            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri downloadUrl) {
+                    Toast.makeText(getContext(), " Tai bai hat ", Toast.LENGTH_LONG).show();
+                    new DownloadFileFromURL().execute(downloadUrl.toString(), song.getNameSong() + ".mp3");
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            // not going to happen - value came from JDK's own StandardCharsets
+        }
+    }
+
+    private static class DownloadFileFromURL extends AsyncTask<String, String, Void> {
+
+        /**
+         * Before starting background thread Show Progress Bar Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        /**
+         * Downloading file in background thread
+         */
+        @Override
+        protected Void doInBackground(String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0]);
+                URLConnection connection = url.openConnection();
+                connection.connect();
+
+                // this will be useful so that you can show a tipical 0-100%
+                // progress bar
+                int lenghtOfFile = connection.getContentLength();
+
+                // download the file
+                InputStream input = new BufferedInputStream(url.openStream(),
+                        8192);
+
+                File file = new File(Environment
+                        .getExternalStorageDirectory().toString()
+                        + "/Download/" + f_url[1]);
+                // Output stream
+                OutputStream output = new FileOutputStream(file);
+
+                byte data[] = new byte[1024];
+
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+
+                    // writing data to file
+                    output.write(data, 0, count);
+                }
+
+                // flushing output
+                output.flush();
+
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: quangnhe", e.getMessage());
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * Updating progress bar
+         * */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        @Override
+        protected void onPostExecute(Void file_url) {
+
+            // dismiss the dialog after the file was downloaded
+        }
+
+    }
+
 }
