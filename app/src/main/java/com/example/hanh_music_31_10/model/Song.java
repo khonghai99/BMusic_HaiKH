@@ -21,9 +21,10 @@ public class Song implements RecyclerData, Serializable {
     private int idCategory;
     private String imageUrl;
     private String linkUrl;
+    private boolean isOffline = false;
 
     public Song() {
-        this(0, "", "", "", "", "");
+        this(0, "", "", "", "", "", 0, "", "");
     }
 
     public Song(int id, String nameSong, String pathSong, String singer, String albumID, String duration, int idCategory, String mImageUrl) {
@@ -46,6 +47,7 @@ public class Song implements RecyclerData, Serializable {
     //song offline
     public Song(int id, String nameSong, String imageUrl, String artist, String albumID, String timeSong) {
         this(id, nameSong, imageUrl, artist, albumID, timeSong, 0, "", "");
+        isOffline = true;
     }
 
     public String getImageUrl() {
@@ -172,5 +174,9 @@ public class Song implements RecyclerData, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, nameSong, pathSong, singer, albumID, duration, idCategory, imageUrl, linkUrl);
+    }
+
+    public boolean isOffline() {
+        return isOffline;
     }
 }
