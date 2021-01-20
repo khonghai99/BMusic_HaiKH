@@ -60,7 +60,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:id="@+id/download_song">
+            android:id="@+id/download_song"
+            android:paddingBottom="30dp">
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -72,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:text="@string/download"
                 android:textSize="16dp"
                 android:gravity="center|top"

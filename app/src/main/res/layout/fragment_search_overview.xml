@@ -20,7 +20,8 @@
         app:queryBackground="@null"
         android:background="@drawable/shapebgsearch"
         app:submitBackground="@null"
-        app:queryHint="@string/search_hint"/>
+        app:queryHint="@string/search_hint"
+        android:inputType="textCapSentences"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_podcasts"

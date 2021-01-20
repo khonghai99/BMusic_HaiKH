@@ -21,6 +21,7 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
+import com.example.hanh_music_31_10.ui.search.SearchViewModel;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -95,7 +96,8 @@ public class HomeFragment extends Fragment {
     private void getData() {
         ArrayList<Playlist> mData = new ArrayList<>();
 
-        new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH).addListenerForSingleValueEvent(new ValueEventListener() {
+        new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH)
+                .limitToLast(5).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
@@ -103,18 +105,20 @@ public class HomeFragment extends Fragment {
                 Object object = dataSnapshot.getValue(Object.class);
                 String json = gson.toJson(object);
 
-                Type listType = new TypeToken<ArrayList<Song>>() {}.getType();
-                ArrayList<Song> data = gson.fromJson(json, listType);
-                Playlist playlist = new Playlist(1,"Mới phát hành", data);
-
-
-
-//                for (String key : map.keySet()) {
-//                    data.add(map.get(key));
-//                }
-
-//                if (homeViewModel.getPlaylist().getValue().size() == 0)
-                mData.add(playlist);
+//                Type listType = new TypeToken<ArrayList<Song>>() {}.getType();
+//                ArrayList<Song> data = gson.fromJson(json, listType);
+                try {
+                    Type listType = new TypeToken<HashMap<String, Song>>() {
+                    }.getType();
+                    HashMap<String, Song> data = gson.fromJson(json, listType);
+                    if (data != null) {
+                        Playlist playlist = new Playlist(1,"Mới phát hành", new ArrayList<>(data.values()));
+                        mData.add(playlist);
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 //                Playlist playlist = map.get(map.keySet().toArray()[0]);
             }

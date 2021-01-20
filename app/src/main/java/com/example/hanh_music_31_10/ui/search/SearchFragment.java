@@ -18,6 +18,8 @@ import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.SettingsActivity;
 import com.example.hanh_music_31_10.model.ImageSearchModel;
 import com.example.hanh_music_31_10.model.Playlist;
+import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.ui.home.DetailSongFragment;
 import com.example.hanh_music_31_10.ui.library.DetailPlayListFragment;
 import com.example.hanh_music_31_10.ui.library.LibraryFragment;
 import com.example.hanh_music_31_10.ui.library.LibraryOverViewFragment;
@@ -46,6 +48,18 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        mSearchViewModel.openDetailHomeFragment().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                System.out.println("Hanh NTHe song "+song);
+                if(song != null) {
+                    openDetailHomeFragment();
+                    mSearchViewModel.setClickSong(song);
+                    mSearchViewModel.setItemSearchFirstClick(null);
+                }
+            }
+        });
+
         System.out.println("HanhNTHe; search onCreateView ");
         openOverviewFragment();
         return root;
@@ -63,6 +77,13 @@ public class SearchFragment extends Fragment {
     private void openDetailFragment() {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.container_fragment_search, new DetailSearchFragment(), DetailSearchFragment.class.getName())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void openDetailHomeFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.container_fragment_search, new DetailSongFragment(), DetailSongFragment.class.getName())
                 .addToBackStack(null)
                 .commit();
     }

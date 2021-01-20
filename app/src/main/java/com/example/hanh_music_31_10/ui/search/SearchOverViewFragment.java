@@ -59,6 +59,9 @@ public class SearchOverViewFragment extends Fragment {
 
         @Override
         public void onViewLongClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
+            //thưc hien goi detail fragment
+            searchViewModel.setItemSearchFirstClick(mViewSearchAdapter.getData().get(position));
+            System.out.println("hanhNTHe: click song search "+position);
         }
 
         @Override

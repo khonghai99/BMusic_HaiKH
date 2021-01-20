@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.ui.search.SearchViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -56,7 +57,26 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
         homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
             @Override
             public void onChanged(Song song) {
-                updateSong(song);
+                System.out.println("HanhNTHe: DetailSongFragment 1 "+song);
+                if (song != null){
+                    updateSong(song);
+                    System.out.println("HanhNTHe: DetailSongFragment 2 "+song);
+//                    homeViewModel.setDetailSong(null);
+                }
+            }
+        });
+
+        SearchViewModel mSearchViewModel =
+                new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+        mSearchViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                System.out.println("HanhNTHe: DetailSongFragment 3 "+song);
+                if (song != null){
+                    updateSong(song);
+                    System.out.println("HanhNTHe: DetailSongFragment 4 "+song);
+                    mSearchViewModel.setClickSong(null);
+                }
             }
         });
 
@@ -87,6 +107,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
     public void updateSong(Song song) {
         if (song != null) {
+            System.out.println("HanhNTHe: DetailSongFragment 5 "+song);
 //            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
             Glide.with(mImageView)
                     .load(song.getImageUrl())

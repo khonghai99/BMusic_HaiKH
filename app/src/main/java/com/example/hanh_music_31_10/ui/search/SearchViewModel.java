@@ -16,6 +16,8 @@ public class SearchViewModel extends ViewModel {
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
     private final MutableLiveData<ImageSearchModel> mImageSearchFirstClick = new MutableLiveData<>();
 
+    private final MutableLiveData<Song> mItemSearchFirstClick = new MutableLiveData<>();
+
 
     public SearchViewModel() {
         mText = new MutableLiveData<>();
@@ -47,5 +49,14 @@ public class SearchViewModel extends ViewModel {
     public void setClickSong(Song song){
         this.mClickSong.setValue(song);
     }
+
+    public void setItemSearchFirstClick(Song song){
+        this.mItemSearchFirstClick.setValue(song);
+    }
+
+    public LiveData<Song> openDetailHomeFragment() {
+        return mItemSearchFirstClick;
+    }
+
 
 }

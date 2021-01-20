@@ -45,6 +45,12 @@ public class SongSearchItemHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onViewLongClick(getAdapterPosition(), v, SongSearchItemHolder.this);
+            }
+        });
     }
 
     @Override
