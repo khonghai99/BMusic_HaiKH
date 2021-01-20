@@ -27,6 +27,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -35,6 +36,12 @@ import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
 import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
+import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -42,9 +49,11 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
@@ -196,7 +205,7 @@ public class MediaPlaybackService extends Service {
         }
 
         Bitmap bitmap = null;
-        if (mIsPlayOnline){
+        if (mPLayingSong.isOffline()){
             bitmap = mImgSong;
         } else {
             if (loadImageFromPath(getPathSong()) == null){
@@ -244,14 +253,14 @@ public class MediaPlaybackService extends Service {
     }
 
     public String getNameSong() {
-//        if (mIsPlayOnline) {
+//        if (!mPLayingSong.isOffline()) {
 //            return mPlayingSongOnline.getNAMESONG();
 //        }
         return mPLayingSong.getNameSong();
     }
 
     public String getArtist() {
-//        if (mIsPlayOnline) {
+//        if (!mPLayingSong.isOffline()) {
 //            return mPlayingSongOnline.getSINGER();
 //        }
         return mPLayingSong.getSinger();
@@ -359,19 +368,45 @@ public class MediaPlaybackService extends Service {
             }
         }
 
-        if (mIsPlayOnline) {
+        if (!mPLayingSong.isOffline()) {
 //            mMediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(mPlayingSongOnline.getLINKSONG()));
 //            getImgSong();
-            mServiceCallback.onUpdate();
+            try {
+                String result = java.net.URLDecoder.decode(mPLayingSong.getLinkUrl(), StandardCharsets.UTF_8.name());
+                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(result);
+                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri downloadUrl) {
+                        mMediaPlayer = MediaPlayer.create(getApplicationContext(), downloadUrl);
+                        onReadyPlaying();
+                    }
+                });
+                mServiceCallback.onUpdate();
+            } catch (UnsupportedEncodingException e) {
+                // not going to happen - value came from JDK's own StandardCharsets
+            }
+
+//            addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    mMediaPlayer = MediaPlayer.create(getApplicationContext(), task.getResult());
+//                    onReadyPlaying();
+//                }
+//            });
+
         } else {
             try {
                 Uri uri = Uri.parse(mPLayingSong.getPathSong());
                 mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+                onReadyPlaying();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private void onReadyPlaying() {
         if (mMediaPlayer == null) {
             showToast("\t\t\t\tSong not exist !\nPlease chose different Song");
             if (mLoopStatus == 0) {
@@ -380,11 +415,11 @@ public class MediaPlaybackService extends Service {
                 nextSong();
             }
         } else {
-            if (mIsPlayOnline) {
-//                mIndexofPlayingSong = mListSongOnline.indexOf(mPlayingSongOnline);
-            } else {
-                mIndexofPlayingSong = mPlayingSongList.indexOf(mPLayingSong);
-            }
+//            if (!mPLayingSong.isOffline()) {
+////                mIndexofPlayingSong = mListSongOnline.indexOf(mPlayingSongOnline);
+//            } else {
+//                mIndexofPlayingSong = mPlayingSongList.indexOf(mPLayingSong);
+//            }
             play();
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -406,6 +441,7 @@ public class MediaPlaybackService extends Service {
         mIsPlayOnline = false;
         this.mPlayingSongList = listSong;
         this.mPLayingSong = song;
+        mIndexofPlayingSong = mPlayingSongList.indexOf(mPLayingSong);
         preparePlay();
     }
 
@@ -425,7 +461,7 @@ public class MediaPlaybackService extends Service {
 
     public void nextSong() {
         if (isMusicPlay()) {
-            if (mIsPlayOnline) {
+            /*if (!mPLayingSong.isOffline()) {
 //                if (mShuffle == 0) {
 //                    if (mIndexofPlayingSong == mListSongOnline.size() - 1) {
 //                        mIndexofPlayingSong = 0;
@@ -439,7 +475,7 @@ public class MediaPlaybackService extends Service {
 //                    mIndexofPlayingSong = rd.nextInt(mListSongOnline.size());
 //                    mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
 //                }
-            } else {
+            } else */{
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         mIndexofPlayingSong = 0;
@@ -460,7 +496,7 @@ public class MediaPlaybackService extends Service {
 
     public void nextSongNoloop() {
         if (isMusicPlay()) {
-            if (mIsPlayOnline) {
+           /* if (!mPLayingSong.isOffline()) {
 //                if (mShuffle == 0) {
 //                    if (mIndexofPlayingSong == mListSongOnline.size() - 1) {
 //                        stop();
@@ -478,7 +514,7 @@ public class MediaPlaybackService extends Service {
 //                    mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
 //                    preparePlay();
 //                }
-            } else {
+            } else*/ {
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         stop();
@@ -501,7 +537,7 @@ public class MediaPlaybackService extends Service {
     }
 
     public void previousSong() {
-        if (mIsPlayOnline) {
+       /* if (!mPLayingSong.isOffline()) {
 //            if (isMusicPlay()) {
 //                if (getCurrentDuration() > 3000) {
 //                    preparePlay();
@@ -522,7 +558,7 @@ public class MediaPlaybackService extends Service {
 //                    preparePlay();
 //                }
 //            }
-        } else {
+        } else*/ {
             if (isMusicPlay()) {
                 if (getCurrentDuration() > 3000) {
                     preparePlay();
@@ -641,23 +677,23 @@ public class MediaPlaybackService extends Service {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         Gson gson = new Gson();
         String json = null;
-        if (mIsPlayOnline) {
+        /*if (!mPLayingSong.isOffline()) {
 //            editor.putString("SONG_ID", mPlayingSongOnline.getID());
 //            json = gson.toJson(mListSongOnline);
-        } else {
+        } else*/ {
             editor.putInt("SONG_ID", mPLayingSong.getId());
             json = gson.toJson(mPlayingSongList);
         }
         editor.putString("SONG_LIST", json);
         editor.putInt("LoopStatus", mLoopStatus);
         editor.putInt("ShuffleStatus", mShuffle);
-        editor.putBoolean("IS_PLAY_ONLINE", mIsPlayOnline);
+        editor.putBoolean("IS_PLAY_ONLINE", !mPLayingSong.isOffline());
         editor.apply();
     }
 
     public void loadData() {
         Gson gson = new Gson();
-        mIsPlayOnline = mSharedPreferences.getBoolean("IS_PLAY_ONLINE", false);
+        boolean mIsPlayOnline = mSharedPreferences.getBoolean("IS_PLAY_ONLINE", false);
         String json = mSharedPreferences.getString("SONG_LIST", null);
         if (mIsPlayOnline) {
 //            Type type = new TypeToken<ArrayList<SongOnline>>() {
@@ -889,4 +925,7 @@ public class MediaPlaybackService extends Service {
 //        });
 //    }
 
+    public boolean isPlayOnline() {
+        return !mPLayingSong.isOffline();
+    }
 }

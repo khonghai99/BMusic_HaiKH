@@ -148,7 +148,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         mButtonLike.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMediaPlaybackService.mIsPlayOnline) {
+                if (mMediaPlaybackService.isPlayOnline()) {
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này!", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
@@ -168,7 +168,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
         mButtonDisLike.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMediaPlaybackService.mIsPlayOnline) {
+                if (mMediaPlaybackService.isPlayOnline()) {
                     Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
@@ -375,7 +375,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 
         mNamSongTop.setText(mMediaPlaybackService.getNameSong());
         mArtistSongTop.setText(mMediaPlaybackService.getArtist());
-        if (mMediaPlaybackService.mIsPlayOnline) {
+        if (mMediaPlaybackService.isPlayOnline()) {
 //                    Glide.with(getContext()).load(mMediaPlaybackService.getPlayingSongOnline().getIMAGE()).error(R.drawable.icon_default_song).into(imgSong);
 //                    Glide.with(getContext()).load(mMediaPlaybackService.getPlayingSongOnline().getIMAGE()).error(R.drawable.icon_default_song).into(imgSongSmall);
         } else {

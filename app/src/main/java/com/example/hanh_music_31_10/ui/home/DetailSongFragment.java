@@ -21,13 +21,18 @@ import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.ActivityViewModel;
 import com.example.hanh_music_31_10.auth.HomeAuthActivity;
+import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.search.SearchViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class DetailSongFragment extends Fragment implements View.OnClickListener {
     private ImageView mImageView;
@@ -37,7 +42,10 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
     private LinearLayout mDownloadSong;
     private ImageView mPlaySong;
 
+    private Song song;
+
     private HomeViewModel homeViewModel;
+    private ActivityViewModel mActivityViewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,6 +88,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             }
         });
 
+        mActivityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
         return view;
     }
 
@@ -101,13 +110,13 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         } else if (v == mPlaySong) {
             //play music
-
+            mActivityViewModel.setPlaylist(new PlaySong(song, new ArrayList<>(Collections.singletonList(song))));
         }
     }
 
     public void updateSong(Song song) {
         if (song != null) {
-            System.out.println("HanhNTHe: DetailSongFragment 5 "+song);
+            this.song = song;
 //            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
             Glide.with(mImageView)
                     .load(song.getImageUrl())

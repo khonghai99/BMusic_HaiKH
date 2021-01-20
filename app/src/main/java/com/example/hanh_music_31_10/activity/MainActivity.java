@@ -253,6 +253,10 @@ public class MainActivity extends AppCompatActivity {
 
     //update ui
     private void updateUI(Song song) {
+        if (song == null) {
+            return;
+        }
+
         if (mBottomControl.getVisibility() == View.GONE) {
             mBottomControl.setVisibility(View.VISIBLE);
             Animation alpha = new AlphaAnimation(0.00f, 1.00f);
