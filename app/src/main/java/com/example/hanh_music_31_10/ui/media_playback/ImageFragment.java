@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.ui.library.LibraryFragment;
@@ -44,6 +46,11 @@ public class ImageFragment extends Fragment {
     public void updateImageSong(String imagePath){
         if (loadImageFromPath(imagePath) == null) {
             mImageSongMedia.setImageResource(R.drawable.icon_default_song);
+//            Glide.with(mImageSongMedia)
+//                    .load(song.getImageUrl())
+//                    .apply(RequestOptions.
+//                            placeholderOf(R.drawable.icon_default_song))
+//                    .into(mImageSong);
         } else {
             mImageSongMedia.setImageBitmap(loadImageFromPath(imagePath));
         }

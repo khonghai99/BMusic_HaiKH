@@ -24,6 +24,7 @@ import com.example.hanh_music_31_10.auth.AuthActivity;
 public class SettingFragment extends Fragment {
 
     public static final String THEME_NIGHT = "theme_night";
+    public static boolean mNight = false;
 
     public SettingFragment() {
     }
@@ -51,8 +52,12 @@ public class SettingFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    mNight = true;
+                    System.out.println("HanhNTHe; getThemeNightMode night true ");
                 }else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    mNight = false;
+                    System.out.println("HanhNTHe; getThemeNightMode night false ");
                 }
                 saveThemeNightMode(isChecked);
             }

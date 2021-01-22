@@ -1,6 +1,7 @@
 package com.example.hanh_music_31_10.ui.home;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -31,9 +32,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.ActivityViewModel;
+import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
+import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.search.SearchViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,6 +74,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
     private HomeViewModel homeViewModel;
     private ActivityViewModel mActivityViewModel;
+    MediaPlaybackService mService;
 
     @Nullable
     @Override
@@ -85,6 +89,14 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         mDownloadSong.setOnClickListener(this);
         mPlaySong.setOnClickListener(this);
+
+        mService = ((MainActivity)getActivity()).getService();
+        mService.listenChangeDetailFragment(new MediaPlaybackService.IServiceCallback1() {
+            @Override
+            public void onUpdateDetailFragent() {
+                updateSong(song);
+            }
+        });
 
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
@@ -146,7 +158,15 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         } else if (v == mPlaySong) {
             //play music
-            mActivityViewModel.setPlaylist(new PlaySong(song, new ArrayList<>(Collections.singletonList(song))));
+            if(mService != null){
+                if(mService.isMusicPlay() && mService.isPlaying()){
+                    mPlaySong.setImageResource(R.drawable.ic_play_circle_filled_orange_24dp);
+                    mService.pause();
+                } else {
+                    mPlaySong.setImageResource(R.drawable.ic_pause_circle_filled_orange_24dp);
+                    mActivityViewModel.setPlaylist(new PlaySong(song, new ArrayList<>(Collections.singletonList(song))));
+                }
+            }
         }
     }
 
@@ -163,7 +183,14 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             mTextSong.setText(song.getNameSong());
             mArtistSong.setText(song.getSinger());
             mDurationSong.setText(new SimpleDateFormat("mm:ss").format(Integer.parseInt(song.getDuration())));
+//            MediaPlaybackService mService = ((MainActivity)getActivity()).getService();
+            if( mService != null) {
+                Song playingSong = ((MainActivity)getActivity()).getService().getPlayingSong();
+                mPlaySong.setImageResource(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying()
+                        ? R.drawable.ic_pause_circle_filled_orange_24dp : R.drawable.ic_play_circle_filled_orange_24dp);
+            }
         }
+
     }
 
     @Override
@@ -185,6 +212,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
                 break;
         }
     }
+    public Context mContext;
 
     private void downloadSong() {
         if (song == null) return;
@@ -194,7 +222,8 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri downloadUrl) {
-                    Toast.makeText(getContext(), " Tai bai hat ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), " Tải bài hát ", Toast.LENGTH_LONG).show();
+                    mContext = getContext();
                     new DownloadFileFromURL().execute(downloadUrl.toString(), song.getNameSong() + ".mp3");
                 }
             });
@@ -279,7 +308,6 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
          * **/
         @Override
         protected void onPostExecute(Void file_url) {
-
             // dismiss the dialog after the file was downloaded
         }
 

@@ -28,6 +28,9 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
@@ -382,10 +385,16 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             if (mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()) == null) {
                 mImageSongTop.setImageResource(R.drawable.icon_default_song);
 //                     set fragment image   image.setImageResource(R.drawable.icon_default_song);
+                Glide.with(mImageSongTop)
+                        .load(mMediaPlaybackService.getPlayingSong().getImageUrl())
+                        .apply(RequestOptions.
+                                placeholderOf(R.drawable.icon_default_song))
+                        .into(mImageSongTop);
             } else {
                 mImageSongTop.setImageBitmap(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()));
 //                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
             }
+
             //update ImageFragment
             mediaPlaybackModel.setPathImage(mMediaPlaybackService.getPathSong());
 

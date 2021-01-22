@@ -94,6 +94,7 @@ public class MediaPlaybackService extends Service {
     public boolean mIsPlayOnline = false;
     private int mIndexofPlayingSong;
     private IServiceCallback mServiceCallback;
+    private IServiceCallback1 mServiceCallback1;
     private int mLoopStatus = 0;
     private int mShuffle = 0;
     private SharedPreferences mSharedPreferences;
@@ -342,6 +343,7 @@ public class MediaPlaybackService extends Service {
                 mMediaPlayer.start();
                 showNotification();
                 mServiceCallback.onUpdate();
+                mServiceCallback1.onUpdateDetailFragent();
             }
         }
     }
@@ -350,6 +352,7 @@ public class MediaPlaybackService extends Service {
         mMediaPlayer.pause();
         showNotification();
         mServiceCallback.onUpdate();
+        mServiceCallback1.onUpdateDetailFragent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_DETACH);
         }
@@ -359,6 +362,7 @@ public class MediaPlaybackService extends Service {
         mMediaPlayer.stop();
         showNotification();
         mServiceCallback.onUpdate();
+        mServiceCallback1.onUpdateDetailFragent();
     }
 
     public void preparePlay() {
@@ -382,6 +386,7 @@ public class MediaPlaybackService extends Service {
                     }
                 });
                 mServiceCallback.onUpdate();
+                mServiceCallback1.onUpdateDetailFragent();
             } catch (UnsupportedEncodingException e) {
                 // not going to happen - value came from JDK's own StandardCharsets
             }
@@ -657,6 +662,9 @@ public class MediaPlaybackService extends Service {
     public void listenChangeStatus(IServiceCallback callbackService) {
         this.mServiceCallback = callbackService;
     }
+    public void listenChangeDetailFragment(IServiceCallback1 callbackService) {
+        this.mServiceCallback1 = callbackService;
+    }
 
     void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -754,6 +762,10 @@ public class MediaPlaybackService extends Service {
     //interface
     public interface IServiceCallback {
         void onUpdate();
+    }
+
+    public interface IServiceCallback1 {
+        void onUpdateDetailFragent();
     }
 
 

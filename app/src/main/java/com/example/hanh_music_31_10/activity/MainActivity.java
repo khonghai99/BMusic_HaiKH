@@ -22,6 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
@@ -159,15 +162,17 @@ public class MainActivity extends AppCompatActivity {
                 playSong(playSong.getPlayListSong(), playSong.getPlaySong());
             }
         });
-//
-//        AppCompatDelegate.setDefaultNightMode(getThemeNightMode() ? AppCompatDelegate.MODE_NIGHT_YES
-//                :AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM );
+        getThemeNightMode();
     }
 
     //HanhNTHe: setThemenight
-    private boolean getThemeNightMode(){
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(SettingFragment.THEME_NIGHT, false);
+    private void getThemeNightMode(){
+        System.out.println("HanhNTHe: getThemeNightMode "+SettingFragment.mNight);
+        if(SettingFragment.mNight){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
     }
 
     @Override
@@ -266,6 +271,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (song.loadImageFromPath(song.getPathSong()) == null) {
             mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song));
+            Glide.with(mImageSong)
+                    .load(song.getImageUrl())
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.icon_default_song))
+                    .into(mImageSong);
         } else {
             mImageSong.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
         }
