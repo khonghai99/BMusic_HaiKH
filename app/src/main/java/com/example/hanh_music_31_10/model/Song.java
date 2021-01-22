@@ -1,16 +1,19 @@
 package com.example.hanh_music_31_10.model;
 
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.provider.MediaStore;
 
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class Song implements RecyclerData, Serializable {
+    private static final SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
 
     private int id;
     private String nameSong;
@@ -47,6 +50,22 @@ public class Song implements RecyclerData, Serializable {
     //song offline
     public Song(int id, String nameSong, String imageUrl, String artist, String albumID, String timeSong) {
         this(id, nameSong, imageUrl, artist, albumID, timeSong, 0, "", "");
+        isOffline = true;
+    }
+
+    public Song(Cursor data) {
+        this();
+        this.id = Integer.parseInt(data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID)));
+        this.nameSong = data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE));
+        this.pathSong = data.getString(data.getColumnIndex(MediaStore.Audio.Media.DATA));
+        this.singer = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+        this.albumID = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+        try {
+            int duration = Integer.parseInt(data.getString(data.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+            this.duration = formatTimeSong.format(duration);
+        } catch (NumberFormatException e) {
+            this.duration = "N/A";
+        }
         isOffline = true;
     }
 

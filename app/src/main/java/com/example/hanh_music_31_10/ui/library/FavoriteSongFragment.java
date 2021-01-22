@@ -30,7 +30,6 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,16 +99,11 @@ public class FavoriteSongFragment extends Fragment {
         Cursor c = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
         if (c != null && c.moveToFirst()){
             do {
-                int id = Integer.parseInt(c.getString(c.getColumnIndex(MediaStore.Audio.Media._ID)));
-                String title = c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                String data = c.getString(c.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String artist = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String albumid = c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-                int duration = Integer.parseInt(c.getString(c.getColumnIndex(MediaStore.Audio.Media.DURATION)));
-                SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
-                String timeSong = formatTimeSong.format(duration);
-                Song song = new Song(id, title, data, artist, albumid, timeSong);
-                list.add(song);
+                try {
+                    list.add(new Song(c));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } while (c.moveToNext());
         }
         return list;

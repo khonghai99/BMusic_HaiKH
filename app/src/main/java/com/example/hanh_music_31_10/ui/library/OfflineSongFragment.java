@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -45,6 +44,7 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
 
     private ActivityViewModel mLibraryViewModel;
 
+    private static final SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
 
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
@@ -153,23 +153,12 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
         ArrayList<Song> songList = new ArrayList<>();
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
-            int indexIdColumn = data.getColumnIndex(MediaStore.Audio.Media._ID);
-            int indexTitleColumn = data.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int indexDataColumn = data.getColumnIndex(MediaStore.Audio.Media.DATA);
-            int indexArtistColumn = data.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int indexAlbumIDColumn = data.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
-            int indexDurationColumn = data.getColumnIndex(MediaStore.Audio.Media.DURATION);
             do {
-                int id = Integer.parseInt(data.getString(indexIdColumn));
-                String title = data.getString(indexTitleColumn);
-                String path = data.getString(indexDataColumn);
-                String artist = data.getString(indexArtistColumn);
-                String albumID = data.getString(indexAlbumIDColumn);
-                int duration = Integer.parseInt(data.getString(indexDurationColumn));
-                SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
-                String timeSong = formatTimeSong.format(duration);
-                Song song = new Song(id, title, path, artist, albumID, timeSong);
-                songList.add(song);
+                try {
+                    songList.add(new Song(data));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } while (data.moveToNext());
         }
         mAdapter.update(songList);

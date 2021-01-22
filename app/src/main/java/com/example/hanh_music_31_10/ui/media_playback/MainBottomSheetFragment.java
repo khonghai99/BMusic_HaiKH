@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
@@ -36,7 +35,6 @@ import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
 import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
-import com.example.hanh_music_31_10.ui.library.LibraryViewModel;
 import com.example.hanh_music_31_10.ui.receiver.TimerReceiver;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -89,7 +87,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        PagerAdapterBottom pagerAdapter = new PagerAdapterBottom(getChildFragmentManager(), 0 );
+        PagerAdapterBottom pagerAdapter = new PagerAdapterBottom(getChildFragmentManager(), 0);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager_playback);
         mViewPager.setAdapter(pagerAdapter);
 
@@ -101,99 +99,69 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             updatePlaySongUI();
         }
 
-        mButtonPlaySong.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaPlaybackService.isMusicPlay()) {
-                    if (mMediaPlaybackService.isPlaying()) {
-                        mMediaPlaybackService.pause();
-                    } else if (!mMediaPlaybackService.isPlaying()) {
-                        mMediaPlaybackService.play();
-                    }
+        mButtonPlaySong.setOnClickListener(view17 -> {
+            if (mMediaPlaybackService.isMusicPlay()) {
+                if (mMediaPlaybackService.isPlaying()) {
+                    mMediaPlaybackService.pause();
+                } else if (!mMediaPlaybackService.isPlaying()) {
+                    mMediaPlaybackService.play();
+                }
+            } else {
+                mMediaPlaybackService.preparePlay();
+            }
+        });
+
+        mButtonNext.setOnClickListener(view16 -> {
+            if (mMediaPlaybackService.isMusicPlay()) {
+                mMediaPlaybackService.nextSong();
+            }
+        });
+
+        mButtonPrevious.setOnClickListener(view15 -> {
+            if (mMediaPlaybackService.isMusicPlay()) {
+                mMediaPlaybackService.previousSong();
+            }
+        });
+
+        mRepeatSong.setOnClickListener(view14 -> mMediaPlaybackService.loopSong());
+
+        mShuffleSong.setOnClickListener(view13 -> mMediaPlaybackService.shuffleSong());
+
+        mButtonLike.setOnClickListener(view12 -> {
+            if (mMediaPlaybackService.isPlayOnline()) {
+                Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
+                    setDefaultFavoriteStatus(mMediaPlaybackService.getId());
+                    mButtonLike.setImageResource(R.drawable.ic_like);
+                    mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+                    Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
                 } else {
-                    mMediaPlaybackService.preparePlay();
+                    likeSong(mMediaPlaybackService.getId());
+                    mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
+                    mButtonDisLike.setImageResource(R.drawable.ic_dislike);
                 }
             }
         });
 
-        mButtonNext.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaPlaybackService.isMusicPlay()) {
-                    mMediaPlaybackService.nextSong();
-                }
-            }
-        });
-
-        mButtonPrevious.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaPlaybackService.isMusicPlay()) {
-                    mMediaPlaybackService.previousSong();
-                }
-            }
-        });
-
-        mRepeatSong.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMediaPlaybackService.loopSong();
-            }
-        });
-
-        mShuffleSong.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMediaPlaybackService.shuffleSong();
-            }
-        });
-
-        mButtonLike.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaPlaybackService.isPlayOnline()) {
-                    Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này!", Toast.LENGTH_SHORT).show();
+        mButtonDisLike.setOnClickListener(view1 -> {
+            if (mMediaPlaybackService.isPlayOnline()) {
+                Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
+            } else {
+                if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
+                    setDefaultFavoriteStatus(mMediaPlaybackService.getId());
+                    mButtonLike.setImageResource(R.drawable.ic_like);
+                    mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+                    Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
-                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
-                        mButtonLike.setImageResource(R.drawable.ic_like);
-                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-                        Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
-                    } else {
-                        likeSong(mMediaPlaybackService.getId());
-                        mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
-                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-                    }
+                    dislikeSong(mMediaPlaybackService.getId());
+                    mButtonLike.setImageResource(R.drawable.ic_like);
+                    mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
                 }
             }
         });
 
-        mButtonDisLike.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMediaPlaybackService.isPlayOnline()) {
-                    Toast.makeText(getContext(), "Cần download bài hát để sử dụng tính năng này !", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
-                        setDefaultFavoriteStatus(mMediaPlaybackService.getId());
-                        mButtonLike.setImageResource(R.drawable.ic_like);
-                        mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-                        Toast.makeText(getActivity(), "Đã bỏ thích bài hát", Toast.LENGTH_SHORT).show();
-                    } else {
-                        dislikeSong(mMediaPlaybackService.getId());
-                        mButtonLike.setImageResource(R.drawable.ic_like);
-                        mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
-                    }
-                }
-            }
-        });
-
-        mButtonMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog();
-            }
-        });
+        mButtonMenu.setOnClickListener(v -> showDialog());
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -286,22 +254,6 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             bottomSheetBehavior.setSkipCollapsed(true);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
-//        int offsetTop = getContext().getResources().getDimensionPixelOffset(R.dimen.ccnews_padding_16);
-//        bottomSheetBehavior.setFitToContents(false);
-//        bottomSheetBehavior.setExpandedOffset(offsetTop);
-//        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//                if (newState == BottomSheetBehavior.STATE_DRAGGING && !mPullDownEnable) {
-//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-//                }
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -378,36 +330,36 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
 
         mNamSongTop.setText(mMediaPlaybackService.getNameSong());
         mArtistSongTop.setText(mMediaPlaybackService.getArtist());
-        if (mMediaPlaybackService.isPlayOnline()) {
-//                    Glide.with(getContext()).load(mMediaPlaybackService.getPlayingSongOnline().getIMAGE()).error(R.drawable.icon_default_song).into(imgSong);
-//                    Glide.with(getContext()).load(mMediaPlaybackService.getPlayingSongOnline().getIMAGE()).error(R.drawable.icon_default_song).into(imgSongSmall);
-        } else {
-            if (mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()) == null) {
-                mImageSongTop.setImageResource(R.drawable.icon_default_song);
-//                     set fragment image   image.setImageResource(R.drawable.icon_default_song);
-                Glide.with(mImageSongTop)
-                        .load(mMediaPlaybackService.getPlayingSong().getImageUrl())
-                        .apply(RequestOptions.
-                                placeholderOf(R.drawable.icon_default_song))
-                        .into(mImageSongTop);
-            } else {
-                mImageSongTop.setImageBitmap(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()));
-//                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
-            }
-
+        if (mMediaPlaybackService.getPlayingSong().isOffline()) {
             //update ImageFragment
+            Glide.with(mImageSongTop)
+                    .load(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()))
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.icon_default_song))
+                    .into(mImageSongTop);
             mediaPlaybackModel.setPathImage(mMediaPlaybackService.getPathSong());
+//            mImageSongTop.setImageBitmap(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()));
+//                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
+        } else {
+//                mImageSongTop.setImageResource(R.drawable.icon_default_song);
+//                     set fragment image   image.setImageResource(R.drawable.icon_default_song);
+            Glide.with(mImageSongTop)
+                    .load(mMediaPlaybackService.getPlayingSong().getImageUrl())
+                    .apply(RequestOptions.
+                            placeholderOf(R.drawable.icon_default_song))
+                    .into(mImageSongTop);
+            mediaPlaybackModel.setPathImage(mMediaPlaybackService.getPlayingSong().getImageUrl());
+        }
 
-            if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
-                mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
-                mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-            } else if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
-                mButtonLike.setImageResource(R.drawable.ic_like);
-                mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
-            } else {
-                mButtonLike.setImageResource(R.drawable.ic_like);
-                mButtonDisLike.setImageResource(R.drawable.ic_dislike);
-            }
+        if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 2) {
+            mButtonLike.setImageResource(R.drawable.ic_liked_black_24dp);
+            mButtonDisLike.setImageResource(R.drawable.ic_dislike);
+        } else if (mMediaPlaybackService.loadFavoriteStatus(mMediaPlaybackService.getId()) == 1) {
+            mButtonLike.setImageResource(R.drawable.ic_like);
+            mButtonDisLike.setImageResource(R.drawable.ic_disliked_black_24dp);
+        } else {
+            mButtonLike.setImageResource(R.drawable.ic_like);
+            mButtonDisLike.setImageResource(R.drawable.ic_dislike);
         }
 
         //HanhNTHe: Tint
@@ -479,17 +431,14 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             positiveButton.setEnabled(true);
         }
 
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (positiveButton.getText().equals("Bắt đầu hẹn giờ")) {
-                    mMediaPlaybackService.setCurrentTimeTimer(seekBarTimer.getProgress());
-                    dialogTimer.dismiss();
-                    startAlarm();
-                } else {
-                    mMediaPlaybackService.setCurrentTimeTimer(0);
-                    dialogTimer.dismiss();
-                }
+        positiveButton.setOnClickListener(v -> {
+            if (positiveButton.getText().equals("Bắt đầu hẹn giờ")) {
+                mMediaPlaybackService.setCurrentTimeTimer(seekBarTimer.getProgress());
+                dialogTimer.dismiss();
+                startAlarm();
+            } else {
+                mMediaPlaybackService.setCurrentTimeTimer(0);
+                dialogTimer.dismiss();
             }
         });
 

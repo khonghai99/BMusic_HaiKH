@@ -27,7 +27,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -36,10 +35,7 @@ import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
 import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
-import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -343,7 +339,7 @@ public class MediaPlaybackService extends Service {
                 mMediaPlayer.start();
                 showNotification();
                 mServiceCallback.onUpdate();
-                mServiceCallback1.onUpdateDetailFragent();
+                if (mServiceCallback1 != null) mServiceCallback1.onUpdateDetailFragent();
             }
         }
     }
@@ -352,7 +348,7 @@ public class MediaPlaybackService extends Service {
         mMediaPlayer.pause();
         showNotification();
         mServiceCallback.onUpdate();
-        mServiceCallback1.onUpdateDetailFragent();
+        if (mServiceCallback1 != null) mServiceCallback1.onUpdateDetailFragent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_DETACH);
         }
@@ -362,7 +358,7 @@ public class MediaPlaybackService extends Service {
         mMediaPlayer.stop();
         showNotification();
         mServiceCallback.onUpdate();
-        mServiceCallback1.onUpdateDetailFragent();
+        if (mServiceCallback1 != null) mServiceCallback1.onUpdateDetailFragent();
     }
 
     public void preparePlay() {
@@ -386,7 +382,7 @@ public class MediaPlaybackService extends Service {
                     }
                 });
                 mServiceCallback.onUpdate();
-                mServiceCallback1.onUpdateDetailFragent();
+                if (mServiceCallback1 != null) mServiceCallback1.onUpdateDetailFragent();
             } catch (UnsupportedEncodingException e) {
                 // not going to happen - value came from JDK's own StandardCharsets
             }

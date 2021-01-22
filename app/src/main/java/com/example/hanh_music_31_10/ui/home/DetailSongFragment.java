@@ -4,8 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.GenericTransitionOptions;
@@ -38,7 +34,6 @@ import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.search.SearchViewModel;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,19 +41,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class DetailSongFragment extends Fragment implements View.OnClickListener {
@@ -90,39 +81,29 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
         mDownloadSong.setOnClickListener(this);
         mPlaySong.setOnClickListener(this);
 
-        mService = ((MainActivity)getActivity()).getService();
-        mService.listenChangeDetailFragment(new MediaPlaybackService.IServiceCallback1() {
-            @Override
-            public void onUpdateDetailFragent() {
-                updateSong(song);
-            }
-        });
+        mService = ((MainActivity) getActivity()).getService();
+        if (mService != null)
+            mService.listenChangeDetailFragment(() -> updateSong(song));
 
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
-            @Override
-            public void onChanged(Song song) {
-                System.out.println("HanhNTHe: DetailSongFragment 1 "+song);
-                if (song != null){
-                    updateSong(song);
-                    System.out.println("HanhNTHe: DetailSongFragment 2 "+song);
+        homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), song -> {
+            System.out.println("HanhNTHe: DetailSongFragment 1 " + song);
+            if (song != null) {
+                updateSong(song);
+                System.out.println("HanhNTHe: DetailSongFragment 2 " + song);
 //                    homeViewModel.setDetailSong(null);
-                }
             }
         });
 
         SearchViewModel mSearchViewModel =
                 new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
-        mSearchViewModel.getClickSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
-            @Override
-            public void onChanged(Song song) {
-                System.out.println("HanhNTHe: DetailSongFragment 3 "+song);
-                if (song != null){
-                    updateSong(song);
-                    System.out.println("HanhNTHe: DetailSongFragment 4 "+song);
-                    mSearchViewModel.setClickSong(null);
-                }
+        mSearchViewModel.getClickSong().observe(getViewLifecycleOwner(), song -> {
+            System.out.println("HanhNTHe: DetailSongFragment 3 " + song);
+            if (song != null) {
+                updateSong(song);
+                System.out.println("HanhNTHe: DetailSongFragment 4 " + song);
+                mSearchViewModel.setClickSong(null);
             }
         });
 
@@ -158,8 +139,8 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         } else if (v == mPlaySong) {
             //play music
-            if(mService != null){
-                if(mService.isMusicPlay() && mService.isPlaying()){
+            if (mService != null) {
+                if (mService.isMusicPlay() && mService.isPlaying()) {
                     mPlaySong.setImageResource(R.drawable.ic_play_circle_filled_orange_24dp);
                     mService.pause();
                 } else {
@@ -184,8 +165,8 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             mArtistSong.setText(song.getSinger());
             mDurationSong.setText(new SimpleDateFormat("mm:ss").format(Integer.parseInt(song.getDuration())));
 //            MediaPlaybackService mService = ((MainActivity)getActivity()).getService();
-            if( mService != null) {
-                Song playingSong = ((MainActivity)getActivity()).getService().getPlayingSong();
+            if (mService != null) {
+                Song playingSong = ((MainActivity) getActivity()).getService().getPlayingSong();
                 mPlaySong.setImageResource(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying()
                         ? R.drawable.ic_pause_circle_filled_orange_24dp : R.drawable.ic_play_circle_filled_orange_24dp);
             }
@@ -212,6 +193,7 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
                 break;
         }
     }
+
     public Context mContext;
 
     private void downloadSong() {
@@ -219,13 +201,10 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
         try {
             String result = java.net.URLDecoder.decode(song.getLinkUrl(), StandardCharsets.UTF_8.name());
             StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(result);
-            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri downloadUrl) {
-                    Toast.makeText(getContext(), " Tải bài hát ", Toast.LENGTH_LONG).show();
-                    mContext = getContext();
-                    new DownloadFileFromURL().execute(downloadUrl.toString(), song.getNameSong() + ".mp3");
-                }
+            storageReference.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+                Toast.makeText(getContext(), " Tải bài hát ", Toast.LENGTH_LONG).show();
+                mContext = getContext();
+                new DownloadFileFromURL().execute(downloadUrl.toString(), song.getNameSong() + ".mp3");
             });
         } catch (UnsupportedEncodingException e) {
             // not going to happen - value came from JDK's own StandardCharsets
@@ -298,14 +277,14 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
 
         /**
          * Updating progress bar
-         * */
+         */
         protected void onProgressUpdate(String... progress) {
             // setting progress percentage
         }
 
         /**
          * After completing background task Dismiss the progress dialog
-         * **/
+         **/
         @Override
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog after the file was downloaded
