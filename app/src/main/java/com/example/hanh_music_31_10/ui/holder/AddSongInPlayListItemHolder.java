@@ -7,6 +7,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.AddSongToPlaylist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
@@ -25,22 +26,24 @@ public class AddSongInPlayListItemHolder extends BaseRecyclerViewHolder {
 
     @Override
     public void bindViewHolder(RecyclerData data) {
-        if(data instanceof Song){
+        if (data instanceof Song) {
             Song song = (Song) data;
-            System.out.println("hanhnthe song name "+song.getNameSong());
+            System.out.println("hanhnthe song name " + song.getNameSong());
             mSelectSong.setText(song.getNameSong());
+            mSelectSong.setOnCheckedChangeListener(null);
+        } else if (data instanceof AddSongToPlaylist.CheckboxSong) {
+            AddSongToPlaylist.CheckboxSong cbSong = (AddSongToPlaylist.CheckboxSong) data;
+            System.out.println("hanhnthe song name " + cbSong.mSong.getNameSong());
+            mSelectSong.setText(cbSong.mSong.getNameSong());
+            mSelectSong.setChecked(cbSong.mChecked);
+            mSelectSong.setOnCheckedChangeListener((buttonView, isChecked) -> cbSong.mChecked = isChecked);
         }
 
     }
 
     @Override
     public void setupClickableViews(RecyclerActionListener actionListener) {
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onViewClick(getAdapterPosition(), v, AddSongInPlayListItemHolder.this);
-            }
-        });
+        itemView.setOnClickListener(v -> actionListener.onViewClick(getAdapterPosition(), v, AddSongInPlayListItemHolder.this));
     }
 
     @Override
@@ -49,12 +52,7 @@ public class AddSongInPlayListItemHolder extends BaseRecyclerViewHolder {
 
     //Listener nhận sự kiện khi các Checkbox thay đổi trạng thái
     CompoundButton.OnCheckedChangeListener m_listener
-            = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            System.out.println("HanhNTHe: compoundButton "+compoundButton +"  text "+compoundButton.getText());
-        }
-    };
+            = (compoundButton, b) -> System.out.println("HanhNTHe: compoundButton " + compoundButton + "  text " + compoundButton.getText());
 
     //Gán Listener vào CheckBox
     void attachListener() {

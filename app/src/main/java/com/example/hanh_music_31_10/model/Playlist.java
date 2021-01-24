@@ -12,11 +12,13 @@ public class Playlist implements RecyclerData {
     private List<Song> songList = new ArrayList<>();
 
     public Playlist(){
+        songList = new ArrayList<>();
     }
 
     public Playlist(int mIdPlaylist, String mNamePlaylist) {
         this.idCategory = mIdPlaylist;
         this.namePlaylist = mNamePlaylist;
+        songList = new ArrayList<>();
     }
 
     public Playlist(int mIdPlaylist, String mNamePlaylist, List<Song> songList) {

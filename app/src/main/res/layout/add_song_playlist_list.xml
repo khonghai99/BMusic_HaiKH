@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/test"
+            android:id="@+id/update_playlist"
             android:text="Thêm"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/hint"
+            android:id="@+id/cancel_playlist"
             android:layout_weight="1"
             android:text="Hủy"
             android:layout_width="0dp"

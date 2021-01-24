@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,29 +25,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.AddSongToPlaylist;
 import com.example.hanh_music_31_10.activity.MainActivity;
-import com.example.hanh_music_31_10.activity.SettingsActivity;
+import com.example.hanh_music_31_10.model.Constants;
 import com.example.hanh_music_31_10.model.Playlist;
-import com.example.hanh_music_31_10.model.Song;
-import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
+import com.example.hanh_music_31_10.ui.recycler.FirebaseListAdapter;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
+import com.firebase.client.Firebase;
+import com.firebase.client.Query;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PlayListFragment extends Fragment {
+    public static final String NAME_PLAYLIST_KEY = "namePlaylist";
+
     private LinearLayout mButtonNewPlayList;
     private RecyclerView mRecyclerView;
 
-    private Playlist mNewPlaylist;
     private ArrayList<Playlist> mListPlaylist = new ArrayList<>();
 
     private LibraryViewModel mLibViewModel;
-    BaseRecyclerAdapter<Playlist> mAdapter;
+    FirebaseListAdapter<Playlist> mAdapter;
 
     ArrayList<Playlist> mListPref;
 
@@ -57,7 +58,9 @@ public class PlayListFragment extends Fragment {
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             // click vao 1 view trong playlist fragment chuyển sang fragment detail
 //            mOnClickListener.onViewClick(position, view, viewHolder);
-            mLibViewModel.setPlaylistFirstClick(mAdapter.getData().get(position));
+            Playlist playlist = mAdapter.getData().get(position);
+            mLibViewModel.setPlaylistFirstClick(playlist);
+            mLibViewModel.setCurrentRef(getRef().child(mAdapter.getKey(playlist)).toString());
             System.out.println("HanhNTHe: Click view playlist fragment " + view.toString());
         }
 
@@ -99,22 +102,34 @@ public class PlayListFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(manager);
 
-        mAdapter = new BaseRecyclerAdapter<Playlist>(actionListener, ((MainActivity) getActivity()).getService()) {
+        mLibViewModel =
+                new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
+
+        setupPlaylist();
+//        mListPref = listPlaylistPref();
+//        mAdapter.update(mListPref);
+        return view;
+    }
+
+    private void setupPlaylist() {
+        Query query = getRef().orderByKey();
+        mAdapter = new FirebaseListAdapter<Playlist>(actionListener, ((MainActivity) getActivity()).getService(), query, Playlist.class) {
             @Override
             public int getItemViewType(int position) {
                 return RecyclerViewType.TYPE_PLAYLIST_LIBRARY;
             }
         };
         mRecyclerView.setAdapter(mAdapter);
-
-        mLibViewModel =
-                new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
-
-        mListPref = listPlaylistPref();
-        mAdapter.update(mListPref);
-        return view;
     }
 
+    private Firebase getRef() {
+        String pathUser = "noUser";
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            pathUser = String.valueOf(FirebaseAuth.getInstance().getCurrentUser().getEmail().hashCode());
+        }
+
+        return new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_PLAYLIST_USER_PATH).child(pathUser);
+    }
     private void disPlayDialogCreatePlayList() {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
@@ -151,17 +166,18 @@ public class PlayListFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 // code for matching password
                 String user = titlePlaylist.getText().toString();
-                mNewPlaylist = new Playlist();
+                Playlist mNewPlaylist = new Playlist();
                 mNewPlaylist.setNamePlaylist(user);
-                if(mListPref != null){
+                if (mListPref != null) {
                     mListPref.add(mNewPlaylist);
                     saveData(mListPref);
-                    mAdapter.update(mListPref);
+//                    mAdapter.update(mListPref);
                 } else {
                     mListPlaylist.add(mNewPlaylist);
                     saveData(mListPlaylist);
-                    mAdapter.update(mListPlaylist);
+//                    mAdapter.update(mListPlaylist);
                 }
+                getRef().push().setValue(mNewPlaylist);
                 mAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
             }
@@ -197,18 +213,19 @@ public class PlayListFragment extends Fragment {
                 // code for matching password
                 String user = titlePlaylist.getText().toString();
                 playlist.setNamePlaylist(user);
-                if(mListPref != null){
+                if (mListPref != null) {
                     mListPref.remove(playlist);
                     mListPref.add(playlist);
                     saveData(mListPref);
-                    mAdapter.update(mListPref);
+//                    mAdapter.update(mListPref);
                 } else {
                     mListPlaylist.remove(playlist);
                     mListPlaylist.add(playlist);
                     saveData(mListPlaylist);
-                    mAdapter.update(mListPlaylist);
+//                    mAdapter.update(mListPlaylist);
                 }
-                mAdapter.notifyDataSetChanged();
+                getRef().child(mAdapter.getKey(playlist)).child(NAME_PLAYLIST_KEY).setValue(user);
+//                mAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
             }
         });
@@ -217,16 +234,17 @@ public class PlayListFragment extends Fragment {
     }
 
     private void deletePlaylist(Playlist playlist) {
-        if(mListPref != null){
+        if (mListPref != null) {
             mListPref.remove(playlist);
             saveData(mListPref);
-            mAdapter.update(mListPref);
+//            mAdapter.update(mListPref);
         } else {
             mListPlaylist.remove(playlist);
             saveData(mListPlaylist);
-            mAdapter.update(mListPlaylist);
+//            mAdapter.update(mListPlaylist);
         }
-        mAdapter.notifyDataSetChanged();
+        getRef().child(mAdapter.getKey(playlist)).removeValue();
+//        mAdapter.notifyDataSetChanged();
         //delete playlist user
     }
 
@@ -248,52 +266,8 @@ public class PlayListFragment extends Fragment {
         Gson gson = new Gson();
         SharedPreferences mSharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         String json = mSharedPreferences.getString("PLAYLIST", null);
-        Type type = new TypeToken<ArrayList<Playlist>>() {}.getType();
+        Type type = new TypeToken<ArrayList<Playlist>>() {
+        }.getType();
         return gson.fromJson(json, type);
-    }
-
-    private List<Playlist> getData() {
-        List<Playlist> data = new ArrayList<Playlist>();
-        List<Song> dataSong = new ArrayList<Song>();
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        data.add(new Playlist(1, "em khong sai chung ta sai", dataSong));
-        List<Song> dataSong1 = new ArrayList<Song>();
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, " Ta da Tung Yeu ", dataSong1));
-        List<Song> dataSong2 = new ArrayList<Song>();
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, "Muon mang la tu luc", dataSong2));
-        List<Song> dataSong3 = new ArrayList<Song>();
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, "Anh yeu nguoi khac roi", dataSong3));
-        return data;
     }
 }

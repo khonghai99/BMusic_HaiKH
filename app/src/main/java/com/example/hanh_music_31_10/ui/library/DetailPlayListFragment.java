@@ -26,8 +26,10 @@ import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
+import com.example.hanh_music_31_10.ui.recycler.FirebaseListAdapter;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
+import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,18 +72,6 @@ public class DetailPlayListFragment extends Fragment {
         mListSong = root.findViewById(R.id.recycler_song_in_playlist);
         mListSong.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        mListSong.setLayoutManager(layoutManager);
-
-        mAdapter = new BaseRecyclerAdapter<Song>(mRecyclerActionListener, ((MainActivity) getActivity()).getService()) {
-            @Override
-            public int getItemViewType(int position) {
-                return RecyclerViewType.TYPE_SONG_IN_PLAYLIST;
-            }
-        };
-
-        mListSong.setAdapter(mAdapter);
-
         mActivityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
 
         mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
@@ -91,7 +81,7 @@ public class DetailPlayListFragment extends Fragment {
             public void onChanged(Playlist playlist) {
                 if (playlist != null) {
                     mTitlePlayList.setText("Tên Playlist: "+playlist.getNamePlaylist());
-                    if(playlist.getSongList().size() == 0){
+                    if(mAdapter.getItemCount() == 0){
                         mNotifyEmpty.setVisibility(View.VISIBLE);
                         mListSong.setVisibility(View.GONE);
                         mAddSongInPlaylistButton.setVisibility(View.VISIBLE);
@@ -107,10 +97,41 @@ public class DetailPlayListFragment extends Fragment {
             }
         });
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mListSong.setLayoutManager(layoutManager);
+
+        mAdapter = new FirebaseListAdapter<Song>(mRecyclerActionListener, ((MainActivity) getActivity()).getService(),
+                new Firebase(mLibraryViewModel.getCurrentRef()).child("songList").orderByKey(), Song.class) {
+            @Override
+            public int getItemViewType(int position) {
+                return RecyclerViewType.TYPE_SONG_IN_PLAYLIST;
+            }
+
+            @Override
+            public void onContentChange() {
+                super.onContentChange();
+                if (mAdapter.getItemCount() == 0) {
+                    mNotifyEmpty.setVisibility(View.VISIBLE);
+                    mListSong.setVisibility(View.GONE);
+                    mAddSongInPlaylistButton.setVisibility(View.VISIBLE);
+                    mNotifyEmpty.setText("Chưa có bài hát");
+                } else {
+                    mNotifyEmpty.setVisibility(View.GONE);
+                    mAddSongInPlaylistButton.setVisibility(View.GONE);
+                    mListSong.setVisibility(View.VISIBLE);
+                    mActivityViewModel.setDetailPlaylist(null);
+                }
+            }
+        };
+
+        mListSong.setAdapter(mAdapter);
+
+
         mAddSongInPlaylistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
+                intent.putExtra(AddSongToPlaylist.EXTRA_PLAYLIST, mLibraryViewModel.getCurrentRef());
                 startActivity(intent);
             }
         });

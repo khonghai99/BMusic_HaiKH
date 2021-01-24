@@ -1,6 +1,7 @@
 package com.example.hanh_music_31_10.model;
 
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
+import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 
 public class ImageSearchModel implements RecyclerData {
     private String mCategory;
@@ -30,7 +31,7 @@ public class ImageSearchModel implements RecyclerData {
 
     @Override
     public int getViewType() {
-        return 0;
+        return RecyclerViewType.TYPE_ADD_SONG_IN_PLAYLIST;
     }
 
     @Override

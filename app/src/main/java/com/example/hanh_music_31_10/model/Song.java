@@ -7,11 +7,15 @@ import android.media.MediaMetadataRetriever;
 import android.provider.MediaStore;
 
 import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 
+@IgnoreExtraProperties
 public class Song implements RecyclerData, Serializable {
     private static final SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
 
@@ -24,7 +28,8 @@ public class Song implements RecyclerData, Serializable {
     private int idCategory;
     private String imageUrl;
     private String linkUrl;
-    private boolean isOffline = false;
+
+    @Exclude private boolean isOffline = false;
 
     public Song() {
         this(0, "", "", "", "", "", 0, "", "");
@@ -195,7 +200,11 @@ public class Song implements RecyclerData, Serializable {
         return Objects.hash(id, nameSong, pathSong, singer, albumID, duration, idCategory, imageUrl, linkUrl);
     }
 
+    @JsonIgnore
+    @Exclude
     public boolean isOffline() {
         return isOffline;
     }
+
+    public void setOffline(){}
 }

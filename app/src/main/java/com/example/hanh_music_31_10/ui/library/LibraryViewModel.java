@@ -16,6 +16,8 @@ public class LibraryViewModel extends ViewModel {
     // nhan su kien khi click vao mot bai hat
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
 
+    private String mCurrentRef;
+
     private final MutableLiveData<Playlist> mPlaylistFirstClick = new MutableLiveData<>();
 
     public LibraryViewModel() {
@@ -48,5 +50,13 @@ public class LibraryViewModel extends ViewModel {
     }
     public void setPlaylistFirstClick( Playlist playlist){
         this.mPlaylistFirstClick.setValue(playlist);
+    }
+
+    public String getCurrentRef() {
+        return mCurrentRef;
+    }
+
+    public void setCurrentRef(String mCurrentRef) {
+        this.mCurrentRef = mCurrentRef;
     }
 }
