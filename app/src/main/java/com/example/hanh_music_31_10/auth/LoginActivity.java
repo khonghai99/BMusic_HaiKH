@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.MainActivity;
-import com.example.hanh_music_31_10.ui.home.DetailSongFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -64,10 +63,14 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-
+                            if (user.isEmailVerified()) {
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Tài khoản chưa được xác thực.\nKhông thể đăng nhập!!!", Toast.LENGTH_LONG).show();
+                                mAuth.signOut();
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

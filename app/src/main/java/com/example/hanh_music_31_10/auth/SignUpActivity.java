@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,10 +24,15 @@ public class SignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private View mLayout;
+    private Button mConfirmView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        mLayout = findViewById(R.id.layout_sign_in);
+        mConfirmView = findViewById(R.id.btn_sign_up_accept);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -61,11 +67,29 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignUpActivity.this, "Sent email", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(SignUpActivity.this, "ERR sent email", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
 
-                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            finish();
-
+                            mLayout.setVisibility(View.GONE);
+                            mConfirmView.setVisibility(View.VISIBLE);
+                            mConfirmView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+;
+                            mAuth.signOut();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
