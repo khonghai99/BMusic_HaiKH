@@ -11,7 +11,7 @@ public class Playlist implements RecyclerData {
     private String namePlaylist;
     private List<Song> songList = new ArrayList<>();
 
-    public Playlist(){
+    public Playlist() {
         songList = new ArrayList<>();
     }
 
@@ -60,7 +60,8 @@ public class Playlist implements RecyclerData {
     public boolean areItemsTheSame(RecyclerData other) {
         if (areContentsTheSame(other)) {
             Playlist obj = (Playlist) other;
-            return songList.equals(obj.songList);
+            return idCategory == obj.idCategory
+                    && namePlaylist.equals(obj.namePlaylist);
         }
         return false;
     }

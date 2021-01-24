@@ -2,7 +2,6 @@ package com.example.hanh_music_31_10.ui.library;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.AddSongToPlaylist;
 import com.example.hanh_music_31_10.activity.MainActivity;
+import com.example.hanh_music_31_10.auth.HomeAuthActivity;
 import com.example.hanh_music_31_10.model.Constants;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
@@ -46,12 +46,12 @@ public class PlayListFragment extends Fragment {
     private LinearLayout mButtonNewPlayList;
     private RecyclerView mRecyclerView;
 
-    private ArrayList<Playlist> mListPlaylist = new ArrayList<>();
+//    private ArrayList<Playlist> mListPlaylist = new ArrayList<>();
 
     private LibraryViewModel mLibViewModel;
     FirebaseListAdapter<Playlist> mAdapter;
 
-    ArrayList<Playlist> mListPref;
+//    ArrayList<Playlist> mListPref;
 
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
@@ -89,12 +89,14 @@ public class PlayListFragment extends Fragment {
         View view = inflater.inflate(R.layout.playlist_library_fragment, container, false);
 
         mButtonNewPlayList = view.findViewById(R.id.line1);
-        mButtonNewPlayList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // chuyen giao dien tao playlist
-                disPlayDialogCreatePlayList();
+        mButtonNewPlayList.setOnClickListener(v -> {
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                Intent intent = new Intent(getContext(), HomeAuthActivity.class);
+                startActivity(intent);
+                return;
             }
+            // chuyen giao dien tao playlist
+            disPlayDialogCreatePlayList();
         });
         mRecyclerView = view.findViewById(R.id.recycler_playlist);
         mRecyclerView.setHasFixedSize(true);
@@ -130,57 +132,34 @@ public class PlayListFragment extends Fragment {
 
         return new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_PLAYLIST_USER_PATH).child(pathUser);
     }
+
     private void disPlayDialogCreatePlayList() {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.dialog_create_playlist, null);
         final EditText titlePlaylist = (EditText) alertLayout.findViewById(R.id.input_name_playlist);
 
-//        final Button exitButton = (Button) alertLayout.findViewById(R.id.btn_exit);
-//        exitButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // su kien exit
-//            }
-//        });
-//
-//        final Button agreeButton = (Button) alertLayout.findViewById(R.id.btn_action);
-//        agreeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setView(alertLayout);
         alert.setCancelable(false);
-        alert.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show();
-            }
-        });
+        alert.setNegativeButton("Hủy", (dialog, which) -> Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show());
 
-        alert.setPositiveButton("Tạo Playlist", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // code for matching password
-                String user = titlePlaylist.getText().toString();
-                Playlist mNewPlaylist = new Playlist();
-                mNewPlaylist.setNamePlaylist(user);
-                if (mListPref != null) {
-                    mListPref.add(mNewPlaylist);
-                    saveData(mListPref);
-//                    mAdapter.update(mListPref);
-                } else {
-                    mListPlaylist.add(mNewPlaylist);
-                    saveData(mListPlaylist);
-//                    mAdapter.update(mListPlaylist);
-                }
-                getRef().push().setValue(mNewPlaylist);
-                mAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
-            }
+        alert.setPositiveButton("Tạo Playlist", (dialog, which) -> {
+            // code for matching password
+            String user = titlePlaylist.getText().toString();
+            Playlist mNewPlaylist = new Playlist();
+            mNewPlaylist.setNamePlaylist(user);
+//                if (mListPref != null) {
+//                    mListPref.add(mNewPlaylist);
+//                    saveData(mListPref);
+////                    mAdapter.update(mListPref);
+//                } else {
+//                    mListPlaylist.add(mNewPlaylist);
+//                    saveData(mListPlaylist);
+////                    mAdapter.update(mListPlaylist);
+//                }
+            getRef().push().setValue(mNewPlaylist);
+            mAdapter.notifyDataSetChanged();
+            Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
         });
         AlertDialog dialog = alert.create();
         dialog.show();
@@ -200,49 +179,41 @@ public class PlayListFragment extends Fragment {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setView(alertLayout);
         alert.setCancelable(false);
-        alert.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show();
-            }
-        });
+        alert.setNegativeButton("Hủy", (dialog, which) -> Toast.makeText(getContext(), "Đã Hủy", Toast.LENGTH_SHORT).show());
 
-        alert.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // code for matching password
-                String user = titlePlaylist.getText().toString();
-                playlist.setNamePlaylist(user);
-                if (mListPref != null) {
-                    mListPref.remove(playlist);
-                    mListPref.add(playlist);
-                    saveData(mListPref);
-//                    mAdapter.update(mListPref);
-                } else {
-                    mListPlaylist.remove(playlist);
-                    mListPlaylist.add(playlist);
-                    saveData(mListPlaylist);
-//                    mAdapter.update(mListPlaylist);
-                }
-                getRef().child(mAdapter.getKey(playlist)).child(NAME_PLAYLIST_KEY).setValue(user);
+        alert.setPositiveButton("Cập nhật", (dialog, which) -> {
+            // code for matching password
+            String user = titlePlaylist.getText().toString();
+            playlist.setNamePlaylist(user);
+//                if (mListPref != null) {
+//                    mListPref.remove(playlist);
+//                    mListPref.add(playlist);
+//                    saveData(mListPref);
+////                    mAdapter.update(mListPref);
+//                } else {
+//                    mListPlaylist.remove(playlist);
+//                    mListPlaylist.add(playlist);
+//                    saveData(mListPlaylist);
+////                    mAdapter.update(mListPlaylist);
+//                }
+            getRef().child(mAdapter.getKey(playlist)).child(NAME_PLAYLIST_KEY).setValue(user);
 //                mAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
         });
         AlertDialog dialog = alert.create();
         dialog.show();
     }
 
     private void deletePlaylist(Playlist playlist) {
-        if (mListPref != null) {
-            mListPref.remove(playlist);
-            saveData(mListPref);
-//            mAdapter.update(mListPref);
-        } else {
-            mListPlaylist.remove(playlist);
-            saveData(mListPlaylist);
-//            mAdapter.update(mListPlaylist);
-        }
+//        if (mListPref != null) {
+//            mListPref.remove(playlist);
+//            saveData(mListPref);
+////            mAdapter.update(mListPref);
+//        } else {
+//            mListPlaylist.remove(playlist);
+//            saveData(mListPlaylist);
+////            mAdapter.update(mListPlaylist);
+//        }
         getRef().child(mAdapter.getKey(playlist)).removeValue();
 //        mAdapter.notifyDataSetChanged();
         //delete playlist user
@@ -250,6 +221,7 @@ public class PlayListFragment extends Fragment {
 
     private void addSongToPlaylist(Playlist playlist) {
         Intent intent = new Intent(getActivity(), AddSongToPlaylist.class);
+        intent.putExtra(AddSongToPlaylist.EXTRA_PLAYLIST, getRef().child(mAdapter.getKey(playlist)).toString());
         startActivity(intent);
     }
 

@@ -67,6 +67,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 if (previousChildName == null) {
                     mModels.add(0, model);
                     mKeys.add(0, key);
+                    notifyItemInserted(0);
                 } else {
                     int previousIndex = mKeys.indexOf(previousChildName);
                     int nextIndex = previousIndex + 1;
@@ -77,6 +78,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                         mModels.add(nextIndex, model);
                         mKeys.add(nextIndex, key);
                     }
+                    notifyItemInserted(nextIndex);
                 }
 
                 onContentChange();
@@ -93,6 +95,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 mModels.set(index, newModel);
 
                 onContentChange();
+                notifyItemChanged(index);
             }
 
             @Override
@@ -106,6 +109,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 mKeys.remove(index);
                 mModels.remove(index);
 
+                notifyItemRemoved(index);
                 onContentChange();
             }
 
@@ -122,6 +126,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 if (previousChildName == null) {
                     mModels.add(0, newModel);
                     mKeys.add(0, key);
+                    notifyItemInserted(0);
                 } else {
                     int previousIndex = mKeys.indexOf(previousChildName);
                     int nextIndex = previousIndex + 1;
@@ -132,6 +137,7 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                         mModels.add(nextIndex, newModel);
                         mKeys.add(nextIndex, key);
                     }
+                    notifyItemMoved(previousIndex, nextIndex);
                 }
                 onContentChange();
             }
