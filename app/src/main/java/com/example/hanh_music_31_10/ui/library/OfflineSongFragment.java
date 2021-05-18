@@ -97,51 +97,6 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    private List<Song> getData() {
-        List<Playlist> data = new ArrayList<Playlist>();
-        List<Song> dataSong = new ArrayList<Song>();
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-        data.add(new Playlist(1, "em khong sai chung ta sai", dataSong));
-        List<Song> dataSong1 = new ArrayList<Song>();
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, " Ta da Tung Yeu ", dataSong1));
-        List<Song> dataSong2 = new ArrayList<Song>();
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, "Muon mang la tu luc", dataSong2));
-        List<Song> dataSong3 = new ArrayList<Song>();
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-        data.add(new Playlist(1, "Anh yeu nguoi khac roi", dataSong3));
-        return dataSong3;
-    }
-
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
@@ -210,36 +165,4 @@ public class OfflineSongFragment extends Fragment implements LoaderManager.Loade
     private void deleteSongOffline(Song song) {
 
     }
-
-//    public ArrayList<Integer> loadIdProviderFromFavoriteSongs(){
-//        ArrayList<Integer> listId = new ArrayList<>();
-//        Cursor c = getActivity().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, null, null, null, null);
-//        if (c.moveToFirst()){
-//            do {
-//                int id = Integer.parseInt(c.getString(c.getColumnIndex(FavoriteSongsProvider.ID_PROVIDER)));
-//                listId.add(id);
-//            } while (c.moveToNext());
-//        }
-//        return listId;
-//    }
-//
-//    public boolean checkIdExitFavoriteSongs(int id){
-//        ArrayList<Integer> list = loadIdProviderFromFavoriteSongs();
-//        if (list.contains(id))
-//            return true;
-//        else
-//            return false;
-//    }
-//
-//    public void addIdProviderForFavoriteSongsList(int id) {
-//        ContentValues values = new ContentValues();
-//
-//        values.put(FavoriteSongsProvider.ID_PROVIDER,
-//                id);
-//
-//        Uri uri = getActivity().getContentResolver().insert(
-//                FavoriteSongsProvider.CONTENT_URI, values);
-//        Toast.makeText(getActivity(),
-//                uri.toString(), Toast.LENGTH_LONG).show();
-//    }
 }

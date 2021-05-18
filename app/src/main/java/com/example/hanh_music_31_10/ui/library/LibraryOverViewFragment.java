@@ -43,11 +43,4 @@ public class LibraryOverViewFragment extends Fragment {
                 new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
 
     }
-
-//    @Override
-//    public void onClick(View v) {
-//        // khi click vào một view trong các fragment
-//        System.out.println("HanhNTHe: Click view viewpager "+v.toString());
-////        if(v == R.layout.playlist_library_fragment)
-//    }
 }

@@ -12,19 +12,12 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
     private final MutableLiveData<Song> mDetailSong = new MutableLiveData<>();
     private final MutableLiveData<List<Playlist>> mPlaylist = new MutableLiveData<>();
     private final MutableLiveData<Song> mSongFirstClick = new MutableLiveData<>();
 
     public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
         mPlaylist.setValue(new ArrayList<>());
-    }
-
-    public LiveData<String> getText() {
-        return mText;
     }
 
     public MutableLiveData<Song> getDetailSong() {

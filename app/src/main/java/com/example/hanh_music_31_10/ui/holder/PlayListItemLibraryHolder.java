@@ -79,7 +79,6 @@ public class PlayListItemLibraryHolder extends BaseRecyclerViewHolder {
             @Override
             public void onClick(View v) {
                 actionListener.onViewClick(getAdapterPosition(), v, PlayListItemLibraryHolder.this);
-                System.out.println("HanhNTHe: Click view playlist item ");
 
             }
         });

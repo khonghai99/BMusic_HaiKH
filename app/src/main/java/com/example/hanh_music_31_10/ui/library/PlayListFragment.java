@@ -46,22 +46,16 @@ public class PlayListFragment extends Fragment {
     private LinearLayout mButtonNewPlayList;
     private RecyclerView mRecyclerView;
 
-//    private ArrayList<Playlist> mListPlaylist = new ArrayList<>();
-
     private LibraryViewModel mLibViewModel;
     FirebaseListAdapter<Playlist> mAdapter;
-
-//    ArrayList<Playlist> mListPref;
 
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             // click vao 1 view trong playlist fragment chuyển sang fragment detail
-//            mOnClickListener.onViewClick(position, view, viewHolder);
             Playlist playlist = mAdapter.getData().get(position);
             mLibViewModel.setPlaylistFirstClick(playlist);
             mLibViewModel.setCurrentRef(getRef().child(mAdapter.getKey(playlist)).toString());
-            System.out.println("HanhNTHe: Click view playlist fragment " + view.toString());
         }
 
         @Override
@@ -108,8 +102,6 @@ public class PlayListFragment extends Fragment {
                 new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
 
         setupPlaylist();
-//        mListPref = listPlaylistPref();
-//        mAdapter.update(mListPref);
         return view;
     }
 
@@ -148,15 +140,6 @@ public class PlayListFragment extends Fragment {
             String user = titlePlaylist.getText().toString();
             Playlist mNewPlaylist = new Playlist();
             mNewPlaylist.setNamePlaylist(user);
-//                if (mListPref != null) {
-//                    mListPref.add(mNewPlaylist);
-//                    saveData(mListPref);
-////                    mAdapter.update(mListPref);
-//                } else {
-//                    mListPlaylist.add(mNewPlaylist);
-//                    saveData(mListPlaylist);
-////                    mAdapter.update(mListPlaylist);
-//                }
             getRef().push().setValue(mNewPlaylist);
             mAdapter.notifyDataSetChanged();
             Toast.makeText(getContext(), "Đã tạo danh sách phát: " + user, Toast.LENGTH_SHORT).show();
@@ -185,19 +168,7 @@ public class PlayListFragment extends Fragment {
             // code for matching password
             String user = titlePlaylist.getText().toString();
             playlist.setNamePlaylist(user);
-//                if (mListPref != null) {
-//                    mListPref.remove(playlist);
-//                    mListPref.add(playlist);
-//                    saveData(mListPref);
-////                    mAdapter.update(mListPref);
-//                } else {
-//                    mListPlaylist.remove(playlist);
-//                    mListPlaylist.add(playlist);
-//                    saveData(mListPlaylist);
-////                    mAdapter.update(mListPlaylist);
-//                }
             getRef().child(mAdapter.getKey(playlist)).child(NAME_PLAYLIST_KEY).setValue(user);
-//                mAdapter.notifyDataSetChanged();
             Toast.makeText(getContext(), "Đã cập nhật tên thành: " + user, Toast.LENGTH_SHORT).show();
         });
         AlertDialog dialog = alert.create();
@@ -205,18 +176,7 @@ public class PlayListFragment extends Fragment {
     }
 
     private void deletePlaylist(Playlist playlist) {
-//        if (mListPref != null) {
-//            mListPref.remove(playlist);
-//            saveData(mListPref);
-////            mAdapter.update(mListPref);
-//        } else {
-//            mListPlaylist.remove(playlist);
-//            saveData(mListPlaylist);
-////            mAdapter.update(mListPlaylist);
-//        }
         getRef().child(mAdapter.getKey(playlist)).removeValue();
-//        mAdapter.notifyDataSetChanged();
-        //delete playlist user
     }
 
     private void addSongToPlaylist(Playlist playlist) {

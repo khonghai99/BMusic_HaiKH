@@ -38,13 +38,11 @@ public class SearchFragment extends Fragment {
         mSearchViewModel.openDetailSearch().observe(getViewLifecycleOwner(), new Observer<ImageSearchModel>() {
             @Override
             public void onChanged(ImageSearchModel image) {
-                System.out.println("HanhNTHe: search click image " +image);
                 if (image != null) {
                     SearchFragment.this.openDetailFragment();
                     mSearchViewModel.setDetailImageSearch(image);
                     mSearchViewModel.setImageSearchFirstClick(null);
                 }
-                System.out.println("HanhNTHe: search click image ");
             }
         });
 
@@ -60,7 +58,6 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        System.out.println("HanhNTHe; search onCreateView ");
         openOverviewFragment();
         return root;
     }

@@ -10,19 +10,12 @@ import com.example.hanh_music_31_10.model.Song;
 
 public class ActivityViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
     private final MutableLiveData<Playlist> mDetailPlaylist = new MutableLiveData<>();
     private final MutableLiveData<PlaySong> mPlaySong = new MutableLiveData<>();
     // nhan su kien khi click vao mot bai hat
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
 
     public ActivityViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
     }
 
     public MutableLiveData<Playlist> getDetailPlayList() {
@@ -40,12 +33,5 @@ public class ActivityViewModel extends ViewModel {
     public void setPlaylist(PlaySong mPlaylist) {
         this.mPlaySong.setValue(mPlaylist);
     }
-//
-//    public MutableLiveData<Song> getClickSong(){
-//        return mClickSong;
-//    }
-//    public void setClickSong(Song song){
-//        this.mClickSong.setValue(song);
-//    }
 
 }

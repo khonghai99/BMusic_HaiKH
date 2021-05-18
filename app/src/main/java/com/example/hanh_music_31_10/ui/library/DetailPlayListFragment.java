@@ -3,6 +3,7 @@ package com.example.hanh_music_31_10.ui.library;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class DetailPlayListFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onChanged(Playlist playlist) {
+                Log.i("HaiKH", "onChanged: 1");
                 if (playlist != null) {
                     mTitlePlayList.setText("Tên Playlist: "+playlist.getNamePlaylist());
                     if(mAdapter.getItemCount() == 0){

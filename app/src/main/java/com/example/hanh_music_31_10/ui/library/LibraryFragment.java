@@ -44,11 +44,9 @@ public class LibraryFragment extends Fragment {
                     mLibraryViewModel.setDetailPlaylist(playlist);
                     mLibraryViewModel.setPlaylistFirstClick(null);
                 }
-                System.out.println("HanhNTHe: LibraryViewModel click playlist ");
             }
         });
 
-        System.out.println("HanhNTHe; lib onCreateView ");
         openOverviewFragment();
         return root;
     }
@@ -56,19 +54,16 @@ public class LibraryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        System.out.println("HanhNTHe: lib onstart ");
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        System.out.println("HanhNTHe: lib onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("HanhNTHe: lib onPause ");
     }
 
     private void openOverviewFragment() {

@@ -238,7 +238,6 @@ public class MediaPlaybackService extends Service {
         super.onDestroy();
         unregisterReceiver(mHeadsetPlugReceiver);
         getMediaPlayer().stop();
-        System.out.println("HanhNTHe: service onDestroy " );
     }
 
     // method
@@ -369,8 +368,6 @@ public class MediaPlaybackService extends Service {
         }
 
         if (!mPLayingSong.isOffline()) {
-//            mMediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(mPlayingSongOnline.getLINKSONG()));
-//            getImgSong();
             try {
                 String result = java.net.URLDecoder.decode(mPLayingSong.getLinkUrl(), StandardCharsets.UTF_8.name());
                 StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(result);
@@ -386,14 +383,6 @@ public class MediaPlaybackService extends Service {
             } catch (UnsupportedEncodingException e) {
                 // not going to happen - value came from JDK's own StandardCharsets
             }
-
-//            addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Uri> task) {
-//                    mMediaPlayer = MediaPlayer.create(getApplicationContext(), task.getResult());
-//                    onReadyPlaying();
-//                }
-//            });
 
         } else {
             try {
@@ -416,11 +405,6 @@ public class MediaPlaybackService extends Service {
                 nextSong();
             }
         } else {
-//            if (!mPLayingSong.isOffline()) {
-////                mIndexofPlayingSong = mListSongOnline.indexOf(mPlayingSongOnline);
-//            } else {
-//                mIndexofPlayingSong = mPlayingSongList.indexOf(mPLayingSong);
-//            }
             play();
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -446,76 +430,28 @@ public class MediaPlaybackService extends Service {
         preparePlay();
     }
 
-//    public void playSongOnline(SongOnline songOnline, ArrayList<SongOnline> listSongOline) {
-//        mIsPlayOnline = true;
-//        mListSongOnline = listSongOline;
-//        mPlayingSongOnline = songOnline;
-//        preparePlay();
-//        DataServer dataServer = APIServer.getServer();
-//        Call<String> callback = dataServer.UpdateViewSong(Integer.parseInt(songOnline.getID()));
-//        onRemoveSongPlayList(callback, getBaseContext());
-//
-////        Call<String> callback2 = dataServer.InsertPlayList(Integer.parseInt(songOnline.getID()),"danh sách phát");
-////        onRemoveSongPlayList(callback2, getBaseContext());
-//
-//    }
-
     public void nextSong() {
         if (isMusicPlay()) {
-            /*if (!mPLayingSong.isOffline()) {
-//                if (mShuffle == 0) {
-//                    if (mIndexofPlayingSong == mListSongOnline.size() - 1) {
-//                        mIndexofPlayingSong = 0;
-//                        mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                    } else {
-//                        mIndexofPlayingSong += 1;
-//                        mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                    }
-//                } else {
-//                    Random rd = new Random();
-//                    mIndexofPlayingSong = rd.nextInt(mListSongOnline.size());
-//                    mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                }
-            } else */{
+           {
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         mIndexofPlayingSong = 0;
-                        mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
                     } else {
                         mIndexofPlayingSong += 1;
-                        mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
                     }
                 } else {
                     Random rd = new Random();
                     mIndexofPlayingSong = rd.nextInt(mPlayingSongList.size());
-                    mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
                 }
-            }
+               mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
+           }
             preparePlay();
         }
     }
 
     public void nextSongNoloop() {
         if (isMusicPlay()) {
-           /* if (!mPLayingSong.isOffline()) {
-//                if (mShuffle == 0) {
-//                    if (mIndexofPlayingSong == mListSongOnline.size() - 1) {
-//                        stop();
-//                        playSongOnline(mPlayingSongOnline, mListSongOnline);
-//                        preparePlay();
-//                        pause();
-//                    } else {
-//                        mIndexofPlayingSong += 1;
-//                        mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                        preparePlay();
-//                    }
-//                } else {
-//                    Random rd = new Random();
-//                    mIndexofPlayingSong = rd.nextInt(mListSongOnline.size());
-//                    mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                    preparePlay();
-//                }
-            } else*/ {
+           {
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         stop();
@@ -538,48 +474,21 @@ public class MediaPlaybackService extends Service {
     }
 
     public void previousSong() {
-       /* if (!mPLayingSong.isOffline()) {
-//            if (isMusicPlay()) {
-//                if (getCurrentDuration() > 3000) {
-//                    preparePlay();
-//                } else {
-//                    if (mShuffle == 0) {
-//                        if (mIndexofPlayingSong == 0) {
-//                            mIndexofPlayingSong = mListSongOnline.size() - 1;
-//                            mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                        } else {
-//                            mIndexofPlayingSong -= 1;
-//                            mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                        }
-//                    } else {
-//                        Random rd = new Random();
-//                        mIndexofPlayingSong = rd.nextInt(mListSongOnline.size());
-//                        mPlayingSongOnline = mListSongOnline.get(mIndexofPlayingSong);
-//                    }
-//                    preparePlay();
-//                }
-//            }
-        } else*/ {
-            if (isMusicPlay()) {
-                if (getCurrentDuration() > 3000) {
-                    preparePlay();
-                } else {
-                    if (mShuffle == 0) {
-                        if (mIndexofPlayingSong == 0) {
-                            mIndexofPlayingSong = mPlayingSongList.size() - 1;
-                            mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
-                        } else {
-                            mIndexofPlayingSong -= 1;
-                            mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
-                        }
+        if (isMusicPlay()) {
+            if (getCurrentDuration() <= 3000) {
+                if (mShuffle == 0) {
+                    if (mIndexofPlayingSong == 0) {
+                        mIndexofPlayingSong = mPlayingSongList.size() - 1;
                     } else {
-                        Random rd = new Random();
-                        mIndexofPlayingSong = rd.nextInt(mPlayingSongList.size());
-                        mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
+                        mIndexofPlayingSong -= 1;
                     }
-                    preparePlay();
+                } else {
+                    Random rd = new Random();
+                    mIndexofPlayingSong = rd.nextInt(mPlayingSongList.size());
                 }
+                mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
             }
+            preparePlay();
         }
     }
 
@@ -633,16 +542,7 @@ public class MediaPlaybackService extends Service {
                 mPLayingSong = mPlayingSongList.get(i);
             }
         }
-        System.out.println("HanhNTHe: setPreviousExitSong mPlayingSong "+mPLayingSong);
     }
-
-//    public void setPreviousExitSong(String id) {
-//        for (int i = 0; i < mListSongOnline.size(); i++) {
-//            if (mListSongOnline.get(i).getID().equals(id)) {
-//                mPlayingSongOnline = mListSongOnline.get(i);
-//            }
-//        }
-//    }
 
     public Bitmap loadImageFromPath(String path) {
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
@@ -681,10 +581,7 @@ public class MediaPlaybackService extends Service {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         Gson gson = new Gson();
         String json = null;
-        /*if (!mPLayingSong.isOffline()) {
-//            editor.putString("SONG_ID", mPlayingSongOnline.getID());
-//            json = gson.toJson(mListSongOnline);
-        } else*/ {
+        {
             editor.putInt("SONG_ID", mPLayingSong.getId());
             json = gson.toJson(mPlayingSongList);
         }
@@ -700,13 +597,6 @@ public class MediaPlaybackService extends Service {
         boolean mIsPlayOnline = mSharedPreferences.getBoolean("IS_PLAY_ONLINE", false);
         String json = mSharedPreferences.getString("SONG_LIST", null);
         if (mIsPlayOnline) {
-//            Type type = new TypeToken<ArrayList<SongOnline>>() {
-//            }.getType();
-//            mListSongOnline = gson.fromJson(json, type);
-//            if (mListSongOnline == null) {
-//                mListSongOnline = new ArrayList<>();
-//            }
-//            setPreviousExitSong(mSharedPreferences.getString("SONG_ID", null));
         } else {
             Type type = new TypeToken<ArrayList<Song>>() {
             }.getType();
@@ -765,35 +655,6 @@ public class MediaPlaybackService extends Service {
     }
 
 
-//    class PLaySong extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            return strings[0];
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String baihat) {
-//            super.onPostExecute(baihat);
-//            try {
-//                mMediaPlayer = new MediaPlayer();
-//                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-////                mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-////                    @Override
-////                    public void onCompletion(MediaPlayer mediaPlayer) {
-////                        mMediaPlayer.stop();
-////                        mediaPlayer.reset();
-////                    }
-////                });
-//                mMediaPlayer.setDataSource(baihat);
-//                mMediaPlayer.prepare();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            play();
-//        }
-//    }
-
     public class LoadImageFromUrl extends AsyncTask<String, Void, Bitmap> {
 
         protected Bitmap doInBackground(String... urls) {
@@ -819,27 +680,7 @@ public class MediaPlaybackService extends Service {
     NotificationManagerCompat notificationManager;
     NotificationCompat.Builder builder;
 
-    public boolean isSDCardPresent() {
-        if (Environment.getExternalStorageState().equals(
 
-                Environment.MEDIA_MOUNTED)) {
-            return true;
-        }
-        return false;
-    }
-
-//    public void onDownloadSongOnline(String Url, Context context){
-//        if (isSDCardPresent()) {
-//            if (EasyPermissions.hasPermissions(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                new DownloadFile(Url).execute(Url);
-//            } else {
-//                EasyPermissions.requestPermissions(context, "This app needs access to your file storage so that it can write files.", 300, Manifest.permission.READ_EXTERNAL_STORAGE);
-//            }
-//
-//        } else {
-//            Toast.makeText(context, "SD Card not found", Toast.LENGTH_LONG).show();
-//        }
-//    }
     private class DownloadFile extends AsyncTask<String, Integer, String> {
 
         private String mUrl;
@@ -903,35 +744,9 @@ public class MediaPlaybackService extends Service {
         @Override
         protected void onPostExecute(String message) {
             notificationManager.cancel(2);
-//          builder.setContentText("Download complete") ;
-//           notificationManager.notify(3, builder.build());
 
         }
     }
-
-// Update View
-    // DataServer dataServer = APIServer.getServer();
-    //Call<String> callback = dataServer.UpdateViewSong(Integer.parseInt(id_Song));
-// sau dó gọi hàm onRemoveSongPlayList
-
-//    public void onRemoveSongPlayList(Call<String> callback, final Context context) {
-//        callback.enqueue(new Callback<String>() {
-//            @Override
-//            public void onResponse(Call<String> call, Response<String> response) {
-//                String result = response.body();
-//                if (result.equals("true")) {
-//                    Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-//                } else
-//                    Toast.makeText(context, "Thất bại", Toast.LENGTH_SHORT).show();
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<String> call, Throwable t) {
-//                Toast.makeText(context, "Mất kết nối Internet", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
     public boolean isPlayOnline() {
         return !mPLayingSong.isOffline();

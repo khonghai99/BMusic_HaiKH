@@ -88,21 +88,16 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         homeViewModel.getDetailSong().observe(getViewLifecycleOwner(), song -> {
-            System.out.println("HanhNTHe: DetailSongFragment 1 " + song);
             if (song != null) {
                 updateSong(song);
-                System.out.println("HanhNTHe: DetailSongFragment 2 " + song);
-//                    homeViewModel.setDetailSong(null);
             }
         });
 
         SearchViewModel mSearchViewModel =
                 new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
         mSearchViewModel.getClickSong().observe(getViewLifecycleOwner(), song -> {
-            System.out.println("HanhNTHe: DetailSongFragment 3 " + song);
             if (song != null) {
                 updateSong(song);
-                System.out.println("HanhNTHe: DetailSongFragment 4 " + song);
                 mSearchViewModel.setClickSong(null);
             }
         });
@@ -154,7 +149,6 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
     public void updateSong(Song song) {
         if (song != null) {
             this.song = song;
-//            mImageView.setImageResource(R.drawable.ic_baseline_library_music_24);
             Glide.with(mImageView)
                     .load(song.getImageUrl())
                     .transition(GenericTransitionOptions.with(android.R.anim.fade_in))
@@ -164,7 +158,6 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
             mTextSong.setText(song.getNameSong());
             mArtistSong.setText(song.getSinger());
             mDurationSong.setText(new SimpleDateFormat("mm:ss").format(Integer.parseInt(song.getDuration())));
-//            MediaPlaybackService mService = ((MainActivity)getActivity()).getService();
             if (mService != null) {
                 Song playingSong = ((MainActivity) getActivity()).getService().getPlayingSong();
                 mPlaySong.setImageResource(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying()
@@ -268,7 +261,6 @@ public class DetailSongFragment extends Fragment implements View.OnClickListener
                 input.close();
 
             } catch (Exception e) {
-                Log.e("Error: quangnhe", e.getMessage());
                 e.printStackTrace();
             }
 

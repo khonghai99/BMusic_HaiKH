@@ -178,12 +178,6 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-//        btImgListSong.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getFragmentManager().popBackStack();
-//            }
-//        });
     }
 
     private void likeSong(int id) {
@@ -224,9 +218,6 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     public void setDefaultFavoriteStatus(int id) {
-//        ContentValues values = new ContentValues();
-//        values.put(FavoriteSongsProvider.IS_FAVORITE, 0);
-//        getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, "ID_PROVIDER = " + id, null);
 
         ContentValues values = new ContentValues();
         values.put(FavoriteSongsTable.ID_PROVIDER, id);
@@ -265,29 +256,9 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
             mCheckService = true;
         }
 
-//        getMusicActivity().setServiceConnectListenner2(new MainActivityMusic.IServiceConnectListenner2() {
-//            @Override
-//            public void onConnect() {
-//                mMediaPlaybackService = getMusicActivity().mMediaPlaybackService;
-//                mCheckService = true;
-//
-//                if (!mMediaPlaybackService.isMusicPlay()) {
-//                    if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
-//                        mMediaPlaybackService.loadData();
-//                        updateSaveSong();
-//                    }
-//                }
-//            }
-//        });
 
         if (mCheckService) {
             updatePlaySongUI();
-//            if (!mMediaPlaybackService.isMusicPlay()) {
-//                if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
-//                    mMediaPlaybackService.loadData();
-//                    updateSaveSong();
-//                }
-//            }
         }
     }
 
@@ -338,11 +309,7 @@ public class MainBottomSheetFragment extends BottomSheetDialogFragment {
                             placeholderOf(R.drawable.icon_default_song))
                     .into(mImageSongTop);
             mediaPlaybackModel.setPathImage(mMediaPlaybackService.getPathSong());
-//            mImageSongTop.setImageBitmap(mMediaPlaybackService.getPlayingSong().loadImageFromPath(mMediaPlaybackService.getPathSong()));
-//                        imgSongSmall.setImageBitmap(loadImageFromPath(mMediaPlaybackService.getPathSong()));
         } else {
-//                mImageSongTop.setImageResource(R.drawable.icon_default_song);
-//                     set fragment image   image.setImageResource(R.drawable.icon_default_song);
             Glide.with(mImageSongTop)
                     .load(mMediaPlaybackService.getPlayingSong().getImageUrl())
                     .apply(RequestOptions.

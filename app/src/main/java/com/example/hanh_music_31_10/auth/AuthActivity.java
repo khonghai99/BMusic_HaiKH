@@ -129,20 +129,18 @@ public class AuthActivity extends AppCompatActivity {
                             String email = tl_username.getEditText().getText().toString();
                             String password = tl_password.getEditText().getText().toString();
 
-                            // 取得用戶憑證
                             AuthCredential credential = EmailAuthProvider.getCredential(email, password);
 
                             user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(AuthActivity.this, "重新認證成功", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AuthActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
-                                        // 重新認證成功後，才可修改用戶Email or Password
                                         // add code to update Email/Password
 
                                     } else {
-                                        Toast.makeText(AuthActivity.this, "重新認證失敗", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AuthActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

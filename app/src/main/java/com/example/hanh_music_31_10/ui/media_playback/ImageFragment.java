@@ -44,7 +44,6 @@ public class ImageFragment extends Fragment {
     public void updateImageSong(String imagePath){
         Bitmap bitmap = loadImageFromPath(imagePath);
         if (bitmap == null) {
-//            mImageSongMedia.setImageResource(R.drawable.icon_default_song);
             Glide.with(mImageSongMedia)
                     .load(imagePath)
                     .apply(RequestOptions.

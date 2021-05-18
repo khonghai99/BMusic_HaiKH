@@ -50,7 +50,6 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying());
             }else {
                 updateEqualizerView(false);
-//                mNumber.setText(""+(getLayoutPosition()+1));
             }
             mNumber.setText(""+(getLayoutPosition()+1));
             mNameSongOffline.setText(song.getNameSong());
@@ -99,7 +98,6 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
             mEqualizerView.animateBars();
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
-//            mNumber.setText(""+(getLayoutPosition()+1));
         }
         mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
         mNumber.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );

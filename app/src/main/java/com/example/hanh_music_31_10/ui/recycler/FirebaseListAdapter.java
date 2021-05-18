@@ -33,8 +33,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
 
     private final Query mRef;
     private final Class<T> mModelClass;
-//    private final int mLayout;
-//    private final LayoutInflater mInflater;
     private final List<T> mModels;
     private final List<String> mKeys;
     private final ChildEventListener mListener;
@@ -49,8 +47,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
         super(actionListener, service);
         this.mRef = mRef;
         this.mModelClass = mModelClass;
-//        this.mLayout = mLayout;
-//        mInflater = LayoutInflater.from(context);
         mModels = new ArrayList<>();
         mKeys = new ArrayList<>();
         mRef.keepSynced(true);
@@ -62,7 +58,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 T model = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 String key = dataSnapshot.getKey();
 
-                Log.d("QuangNHe", "FirebaseListAdapter onChildAdded " + key + " | " + previousChildName + " | " + model);
                 // Insert into the correct location, based on previousChildName
                 if (previousChildName == null) {
                     mModels.add(0, model);
@@ -91,7 +86,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 int index = mKeys.indexOf(key);
 
-                Log.d("QuangNHe", "FirebaseListAdapter onChildChanged " + key + " | " + newModel);
                 mModels.set(index, newModel);
 
                 onContentChange();
@@ -105,7 +99,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 String key = dataSnapshot.getKey();
                 int index = mKeys.indexOf(key);
 
-                Log.d("QuangNHe", "FirebaseListAdapter onChildRemoved " + key + " | " + dataSnapshot);
                 mKeys.remove(index);
                 mModels.remove(index);
 
@@ -120,7 +113,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
                 String key = dataSnapshot.getKey();
                 T newModel = dataSnapshot.getValue(FirebaseListAdapter.this.mModelClass);
                 int index = mKeys.indexOf(key);
-                Log.d("QuangNHe", "FirebaseListAdapter onChildMoved " + key + " | " + newModel);
                 mModels.remove(index);
                 mKeys.remove(index);
                 if (previousChildName == null) {
@@ -157,11 +149,6 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
         mKeys.clear();
     }
 
-//    @Override
-//    public int getCount() {
-//        return mModels.size();
-//    }
-//
     @Nullable
     public String getKey(T model) {
         if (mModels.contains(model)) {
@@ -175,30 +162,10 @@ public abstract class FirebaseListAdapter<T extends RecyclerData> extends BaseRe
         return i;
     }
 
-//    @Override
-//    public View getView(int i, View view, ViewGroup viewGroup) {
-//        if (view == null) {
-//            view = mInflater.inflate(mLayout, viewGroup, false);
-//        }
-//
-//        T model = mModels.get(i);
-//        // Call out to subclass to marshall this model into the provided view
-//        populateView(view, model);
-//        return view;
-//    }
 
     @CallSuper
     public void onContentChange() {
         update(mModels);
     }
-    /**
-     * Each time the data at the given Firebase location changes, this method will be called for each item that needs
-     * to be displayed. The arguments correspond to the mLayout and mModelClass given to the constructor of this class.
-     * <p/>
-     * Your implementation should populate the view using the data contained in the model.
-     *
-     * @param v     The view to populate
-     * @param model The object containing the data used to populate the view
-     */
-//    protected abstract void populateView(View v, T model);
+
 }

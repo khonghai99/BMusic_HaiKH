@@ -40,7 +40,6 @@ public class HomeSongItemHolder extends BaseRecyclerViewHolder {
                             placeholderOf(R.drawable.placeholder_music))
                     .into(mImageView);
 
-//            mImageView.setImageResource(R.drawable.home_test);
             mTextSongName.setText(song.getNameSong());
             mTextArtistsName.setText(song.getSinger());
         }

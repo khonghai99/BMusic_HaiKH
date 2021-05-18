@@ -25,26 +25,14 @@ public class ImageSearchItemHolder extends BaseRecyclerViewHolder {
     public ImageSearchItemHolder(@NonNull View itemView) {
         super(itemView);
         mImageSearchButton = itemView.findViewById(R.id.image_search);
-//        mImageSearchButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                System.out.println("");
-//            }
-//        });
     }
 
     @Override
     public void bindViewHolder(RecyclerData data) {
         if (data instanceof ImageSearchModel){
             ImageSearchModel image = (ImageSearchModel) data;
-//            Glide.with(mImageSearchButton)
-//                    .load(image.getImageSearchUrl())
-//                    .apply(RequestOptions.circleCropTransform())
-//                    .into(mImageSearchButton);
             mImageSearchButton.setImageResource(image.getImageSearchUrl());
         }
-//            mImageSearchButton.setImageResource(((ImageSearchModel) data).getImageSearchUrl());
-        //load anh
     }
 
     @Override
@@ -53,7 +41,6 @@ public class ImageSearchItemHolder extends BaseRecyclerViewHolder {
             @Override
             public void onClick(View v) {
                 actionListener.onViewClick(getAdapterPosition(), v, ImageSearchItemHolder.this);
-                System.out.println("HanhNTHe: search "+getAdapterPosition());
             }
         });
     }

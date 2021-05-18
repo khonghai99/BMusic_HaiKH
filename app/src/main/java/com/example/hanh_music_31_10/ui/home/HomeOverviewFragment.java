@@ -64,7 +64,6 @@ public class HomeOverviewFragment extends Fragment {
             }
         };
         mRecyclerView.setAdapter(adapter);
-        System.out.println("QuangNHe onCreateView " +mRecyclerView);
 
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);

@@ -53,11 +53,9 @@ public class SettingFragment extends Fragment {
                 if(isChecked){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     mNight = true;
-                    System.out.println("HanhNTHe; getThemeNightMode night true ");
                 }else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     mNight = false;
-                    System.out.println("HanhNTHe; getThemeNightMode night false ");
                 }
                 saveThemeNightMode(isChecked);
             }

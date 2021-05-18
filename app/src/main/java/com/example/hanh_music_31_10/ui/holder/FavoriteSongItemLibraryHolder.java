@@ -41,17 +41,11 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
     public void bindViewHolder(RecyclerData data) {
         if (data instanceof Song) {
             Song song = (Song) data;
-//            if (song.loadImageFromPath(song.getPathSong()) == null) {
-//                mImageFavorite.setImageResource(R.drawable.ic_queue_music_black_24dp);
-//            } else {
-//                mImageFavorite.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
-//            }
             if(mService != null){
                 Song playingSong = mService.getPlayingSong();
                 updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
             }else {
                 updateEqualizerView(false, song);
-//                mNumber.setText(""+(getLayoutPosition()+1));
             }
             mNameSongFavorite.setText(song.getNameSong());
             mArtist.setText(song.getSinger());
@@ -117,7 +111,6 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
     }
 
     private void clickButtonMenu(Song song, RecyclerActionListener.CONTROL_UPDATE state){
-        System.out.println("HanhNTHe: click button song "+song+ " state "+state);
         mAction.updateSongFromMenuButton(song, state);
     }
 }

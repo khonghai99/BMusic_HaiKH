@@ -1,6 +1,7 @@
 package com.example.hanh_music_31_10.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.activity.ActivityViewModel;
 import com.example.hanh_music_31_10.model.Constants;
+import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerAdapter;
@@ -32,12 +35,14 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+    private ActivityViewModel mActivityViewModel;
 
     RecyclerActionListener mRecyclerActionListener = new RecyclerActionListener() {
         @Override
@@ -59,13 +64,13 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        mActivityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         homeViewModel.openDetailSong().observe(getViewLifecycleOwner(), new Observer<Song>() {
             @Override
             public void onChanged(Song song) {
-                System.out.println("Hanh NTHe song "+song);
                 if(song != null) {
-                    openDetailFragment();
+                    openDetailFragment(song);
                     homeViewModel.setDetailSong(song);
                     homeViewModel.setSongFirstClick(null);
                 }
@@ -85,11 +90,12 @@ public class HomeFragment extends Fragment {
                 .commit();
     }
 
-    private void openDetailFragment() {
-        getParentFragmentManager().beginTransaction()
-                .replace(R.id.home_fragment_container, new DetailSongFragment(), DetailSongFragment.class.getName())
-                .addToBackStack(null)
-                .commit();
+    private void openDetailFragment(Song song) {
+//        getParentFragmentManager().beginTransaction()
+//                .replace(R.id.home_fragment_container, new DetailSongFragment(), DetailSongFragment.class.getName())
+//                .addToBackStack(null)
+//                .commit();
+        mActivityViewModel.setPlaylist(new PlaySong(song, new ArrayList<>(Collections.singletonList(song))));
     }
 
     //Create data
@@ -105,8 +111,6 @@ public class HomeFragment extends Fragment {
                 Object object = dataSnapshot.getValue(Object.class);
                 String json = gson.toJson(object);
 
-//                Type listType = new TypeToken<ArrayList<Song>>() {}.getType();
-//                ArrayList<Song> data = gson.fromJson(json, listType);
                 try {
                     Type listType = new TypeToken<HashMap<String, Song>>() {
                     }.getType();
@@ -120,7 +124,6 @@ public class HomeFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-//                Playlist playlist = map.get(map.keySet().toArray()[0]);
             }
 
             @Override
@@ -140,17 +143,10 @@ public class HomeFragment extends Fragment {
                 Type listType = new TypeToken<ArrayList<Playlist>>() {}.getType();
                 ArrayList<Playlist> data = gson.fromJson(json, listType);
 
-//                for (String key : map.keySet()) {
-//                    data.add(map.get(key));
-//                }
-
-//                if (homeViewModel.getPlaylist().getValue().size() == 0)
-//                homeViewModel.setPlaylist(data);
                 for (int i =0; i < data.size() ; i++)
                     mData.add(data.get(i));
                 homeViewModel.setPlaylist(mData);
 
-//                Playlist playlist = map.get(map.keySet().toArray()[0]);
             }
 
             @Override
@@ -158,49 +154,5 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-
-
-//        List<Song> dataSong = new ArrayList<Song>();
-//        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-//        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-//        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-//        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-//        dataSong.add(new Song(1, "Em khong sai chung ta sai", "", "erics", "", "4:2", 0, ""));
-//        data.add(new Playlist(1, "em khong sai chung ta sai", dataSong));
-//        List<Song> dataSong1 = new ArrayList<Song>();
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong1.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        data.add(new Playlist(1, " Ta da Tung Yeu ", dataSong1));
-//        List<Song> dataSong2 = new ArrayList<Song>();
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong2.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        data.add(new Playlist(1, "Muon mang la tu luc", dataSong2));
-//        List<Song> dataSong3 = new ArrayList<Song>();
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        data.add(new Playlist(1, "Anh yeu nguoi khac roi", dataSong3));
-//        return data;
     }
 }

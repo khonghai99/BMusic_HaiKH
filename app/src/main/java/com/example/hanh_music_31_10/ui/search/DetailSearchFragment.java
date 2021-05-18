@@ -104,24 +104,12 @@ public class DetailSearchFragment extends Fragment {
                 Type listType = new TypeToken<ArrayList<PlaylistSearch>>() {}.getType();
                 ArrayList<PlaylistSearch> data = gson.fromJson(json, listType);
 
-//                for (String key : map.keySet()) {
-//                    data.add(map.get(key));
-//                }
-
-//                if (homeViewModel.getPlaylist().getValue().size() == 0)
-//                homeViewModel.setPlaylist(data);
                 for (int i =0; i < data.size() ; i++){
                     PlaylistSearch playlistData = data.get(i);
                     if(namePlaylist.equals(playlistData.getNameCategory())){
                         mAdapter.update(playlistData.getListSong());
                     }
                 }
-//                    mData.add(data.get(i));
-//
-//                List<Song> dataSong3 = new ArrayList<Song>();
-//                mAdapter.update(dataSong3);
-
-//                Playlist playlist = map.get(map.keySet().toArray()[0]);
             }
 
             @Override
@@ -131,16 +119,5 @@ public class DetailSearchFragment extends Fragment {
         });
 
 
-//        List<Song> dataSong3 = new ArrayList<Song>();
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Muon Mang la Tu Luc", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        dataSong3.add(new Song(2, "Tung yeu", "", "Phan Duy Anh", "", "5:13", 0, ""));
-//        mAdapter.update(dataSong3);
     }
 }

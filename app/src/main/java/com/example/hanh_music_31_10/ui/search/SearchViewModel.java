@@ -11,7 +11,6 @@ import com.example.hanh_music_31_10.model.Song;
 
 public class SearchViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
     private final MutableLiveData<ImageSearchModel> mDetailImageSearch = new MutableLiveData<>();
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
     private final MutableLiveData<ImageSearchModel> mImageSearchFirstClick = new MutableLiveData<>();
@@ -20,12 +19,6 @@ public class SearchViewModel extends ViewModel {
 
 
     public SearchViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
     }
 
     public LiveData<ImageSearchModel> openDetailSearch() {

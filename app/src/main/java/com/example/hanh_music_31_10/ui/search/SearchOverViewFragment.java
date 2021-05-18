@@ -54,14 +54,12 @@ public class SearchOverViewFragment extends Fragment {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             searchViewModel.setImageSearchFirstClick(mAdapter.getData().get(position));
-            System.out.println("HanhNTHe: Click view search over view fragment " + position);
         }
 
         @Override
         public void onViewLongClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
             //thưc hien goi detail fragment
             searchViewModel.setItemSearchFirstClick(mViewSearchAdapter.getData().get(position));
-            System.out.println("hanhNTHe: click song search "+position);
         }
 
         @Override
@@ -115,11 +113,6 @@ public class SearchOverViewFragment extends Fragment {
         searchViewModel =
                 new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
         View root = inflater.inflate(R.layout.fragment_search_overview, container, false);
-        searchViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-            }
-        });
 
         mSearchView = root.findViewById(R.id.search_view);
 
@@ -130,17 +123,13 @@ public class SearchOverViewFragment extends Fragment {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
-//                mSearchString = newText;
                 doFilterAsync(newText);
-//                Toast.makeText(getContext(), "Test1 " + newText, Toast.LENGTH_LONG).show();
                 return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-//                mSearchString = query;
                 doFilterAsync(query);
-//                Toast.makeText(getContext(), "Test2 query: " + query, Toast.LENGTH_LONG).show();
 
                 return true;
             }
@@ -157,15 +146,12 @@ public class SearchOverViewFragment extends Fragment {
                 Query queryRef = FirebaseDatabase.getInstance().getReference(
                         Constants.FIREBASE_REALTIME_SONG_PATH)
                         .orderByChild("nameSong")
-//                .orderByValue()
                         .startAt(queryText)
                         .endAt(queryText + "\uf8ff")
                         .limitToFirst(10);
                 queryRef.addValueEventListener(mValueEventListener);
             }
         });
-        System.out.println("HanhNTHe; searchManager " + searchManager);
-
         mRecyclerViewPodCasts = root.findViewById(R.id.recycler_view_podcasts);
         mRecyclerViewPodCasts.setHasFixedSize(true);
 

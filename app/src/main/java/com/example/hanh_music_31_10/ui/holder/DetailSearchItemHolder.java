@@ -48,9 +48,7 @@ public class DetailSearchItemHolder extends BaseRecyclerViewHolder {
                 updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
             }else {
                 updateEqualizerView(false, song);
-//                mNumber.setText(""+(getLayoutPosition()+1));
             }
-//            mImageSearch.setImageResource(R.drawable.ic_baseline_library_music_24);
             mNameSearch.setText(song.getNameSong());
             mArtistSearch.setText(song.getSinger());
         }

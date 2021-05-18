@@ -28,12 +28,10 @@ public class AddSongInPlayListItemHolder extends BaseRecyclerViewHolder {
     public void bindViewHolder(RecyclerData data) {
         if (data instanceof Song) {
             Song song = (Song) data;
-            System.out.println("hanhnthe song name " + song.getNameSong());
             mSelectSong.setText(song.getNameSong());
             mSelectSong.setOnCheckedChangeListener(null);
         } else if (data instanceof AddSongToPlaylist.CheckboxSong) {
             AddSongToPlaylist.CheckboxSong cbSong = (AddSongToPlaylist.CheckboxSong) data;
-            System.out.println("hanhnthe song name " + cbSong.mSong.getNameSong());
             mSelectSong.setText(cbSong.mSong.getNameSong());
             mSelectSong.setChecked(cbSong.mChecked);
             mSelectSong.setOnCheckedChangeListener((buttonView, isChecked) -> cbSong.mChecked = isChecked);

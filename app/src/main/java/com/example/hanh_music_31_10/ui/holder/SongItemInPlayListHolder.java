@@ -41,13 +41,11 @@ public class SongItemInPlayListHolder extends BaseRecyclerViewHolder {
     public void bindViewHolder(RecyclerData data) {
         if( data instanceof Song){
             Song song = (Song) data;
-//            mImageSong.setImageResource(R.drawable.ic_baseline_library_music_24);
             if(mService != null){
                 Song playingSong = mService.getPlayingSong();
                 updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
             }else {
                 updateEqualizerView(false, song);
-//                mNumber.setText(""+(getLayoutPosition()+1));
             }
             mNameSong.setText(song.getNameSong());
             mArtistSong.setText(song.getSinger());

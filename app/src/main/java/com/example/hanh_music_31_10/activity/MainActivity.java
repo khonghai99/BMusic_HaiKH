@@ -63,22 +63,12 @@ public class MainActivity extends AppCompatActivity {
     private ActivityViewModel mActivityViewModel;
 
     public MediaPlaybackService mMediaPlaybackService;
-    IServiceConnectListenner1 mServiceConnectListenner1;
-    IServiceConnectListenner2 mServiceConnectListenner2;
 
     ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MediaPlaybackService.MediaPlaybackServiceBinder mediaPlaybackServiceBinder = (MediaPlaybackService.MediaPlaybackServiceBinder) iBinder;
             mMediaPlaybackService = mediaPlaybackServiceBinder.getService();
-
-            System.out.println("HanhNTHe: connect service iBinder " + mMediaPlaybackService);
-//            mServiceConnectListenner1.onConnect();
-//            int orientation = getResources().getConfiguration().orientation;
-//            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//                mServiceConnectListenner2.onConnect();
-//            }
-//            update();
 
             //update từ service khi thực hiện các thao tác chuyển bài..
             mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
@@ -89,11 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             });
-//            if (mMediaPlaybackService.isMusicPlay()) {
             if (mMediaPlaybackService.getSharedPreferences().contains("SONG_LIST")) {
                 mMediaPlaybackService.loadData();
                 updateUI(mMediaPlaybackService.getPlayingSong());
-                System.out.println("HanhNTHe: update ");
             } else {
                 mBottomControl.setVisibility(View.GONE);
             }
@@ -123,13 +111,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-//        mMainBottomSheetFragment = new MainBottomSheetFragment();
-
         mBottomControl = findViewById(R.id.layout_play_home);
         mBottomControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mMainBottomSheetFragment.show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
                 mMainBottomSheetFragment = new MainBottomSheetFragment();
                 mMainBottomSheetFragment.show(getSupportFragmentManager(), MainBottomSheetFragment.class.getName());
             }
@@ -167,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
     //HanhNTHe: setThemenight
     private void getThemeNightMode(){
-        System.out.println("HanhNTHe: getThemeNightMode "+SettingFragment.mNight);
         if(SettingFragment.mNight){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }else {
@@ -197,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         Intent it = new Intent(this, MediaPlaybackService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startService(it);
-            System.out.println("HanhNTHe: start service");
         }
     }
 
@@ -216,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
     public void connectService() {
         Intent it = new Intent(this, MediaPlaybackService.class);
         bindService(it, mServiceConnection, Context.BIND_AUTO_CREATE);
-        System.out.println("HanhNTHe: connect service");
     }
 
     @Override
@@ -226,8 +208,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void playSong(ArrayList<Song> songs, Song song) {
-//        songs.add(song);
-//        songs.add(song);
         if (mMediaPlaybackService != null){
             mMediaPlaybackService.playSong(songs, song);
             updateUI(song);
@@ -248,10 +228,6 @@ public class MainActivity extends AppCompatActivity {
                 //doc du lieu tu intent
                 Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 int isplaying = intent.getIntExtra(MediaPlaybackService.ISPLAYING, 0);
-//                if (change&& isplaying==0) {
-//                }else if( change && isplaying==1){
-//                    mPlay.setImageResource(R.drawable.ic_pause_1);
-//                }
             }
         }
     };
@@ -300,11 +276,11 @@ public class MainActivity extends AppCompatActivity {
                 //Permisson don't granted
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission isn't granted 1", Toast.LENGTH_SHORT).show();
                 }
                 // Permisson don't granted and dont show dialog again.
                 else {
-                    Toast.makeText(this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permisson don't granted and dont show dialog again 1", Toast.LENGTH_SHORT).show();
                 }
                 //Register permission
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -341,15 +317,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    //interface
-    public interface IServiceConnectListenner1 {
-        void onConnect();
-    }
-
-    public interface IServiceConnectListenner2 {
-        void onConnect();
     }
 
 }

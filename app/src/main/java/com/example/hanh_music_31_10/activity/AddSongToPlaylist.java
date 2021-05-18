@@ -40,7 +40,6 @@ public class AddSongToPlaylist extends AppCompatActivity {
     private RecyclerActionListener actionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-//            mLibraryViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
             mAdapter.notifyDataSetChanged();
         }
     };
