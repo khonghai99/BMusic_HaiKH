@@ -25,6 +25,7 @@ import com.example.hanh_music_31_10.ui.recycler.BaseRecyclerViewHolder;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 import com.example.hanh_music_31_10.ui.search.SearchViewModel;
+import com.example.hanh_music_31_10.ui.splashscreen.SplashScreenFragment;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -78,6 +79,7 @@ public class HomeFragment extends Fragment {
         });
 
         openOverviewFragment();
+        openOverviewSplashFragment();
 
         getData();
 
@@ -87,6 +89,12 @@ public class HomeFragment extends Fragment {
     private void openOverviewFragment() {
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.home_fragment_container, new HomeOverviewFragment(), HomeOverviewFragment.class.getName())
+                .commit();
+    }
+
+    private void openOverviewSplashFragment() {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.splash_screen, new SplashScreenFragment(), SplashScreenFragment.class.getName())
                 .commit();
     }
 
@@ -102,8 +110,8 @@ public class HomeFragment extends Fragment {
     private void getData() {
         ArrayList<Playlist> mData = new ArrayList<>();
 
-        new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH)
-                .limitToLast(5).addListenerForSingleValueEvent(new ValueEventListener() {
+        new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH).orderByChild("releaseDate")
+                .limitToLast(6).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();

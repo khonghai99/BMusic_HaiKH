@@ -90,6 +90,9 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
                 mImageFavorite.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
             }
         }
+        mEqualizerView.getLayoutParams().height = 65;
+        mEqualizerView.getLayoutParams().width = 65;
+        mEqualizerView.requestLayout();
         mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
         mImageFavorite.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );
     }

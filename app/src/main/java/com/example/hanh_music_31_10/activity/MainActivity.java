@@ -7,9 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,13 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.GenericTransitionOptions;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
+import com.example.hanh_music_31_10.ui.library.LibraryViewModel;
 import com.example.hanh_music_31_10.ui.media_playback.MainBottomSheetFragment;
 import com.example.hanh_music_31_10.ui.setting.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,7 +43,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityViewModel mActivityViewModel;
 
+    private LibraryViewModel mLibraryViewModel;
+
     public MediaPlaybackService mMediaPlaybackService;
 
     ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             mMediaPlaybackService.listenChangeStatus(new MediaPlaybackService.IServiceCallback() {
                 @Override
                 public void onUpdate() {
+                    mLibraryViewModel.setPlaySong(mMediaPlaybackService.getPlayingSong());
                     updateUI(mMediaPlaybackService.getPlayingSong());
                     updateBottomSheet();
                 }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        mLibraryViewModel = new ViewModelProvider(this).get(LibraryViewModel.class);
         mActivityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
         mActivityViewModel.getPlaylist().observe(this, new Observer<PlaySong>() {
             @Override

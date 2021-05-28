@@ -21,10 +21,10 @@
             />
         <es.claucookie.miniequalizerlibrary.EqualizerView
             android:id="@+id/equalizer"
-            android:visibility="gone"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"/>
     </FrameLayout>
 
     <LinearLayout

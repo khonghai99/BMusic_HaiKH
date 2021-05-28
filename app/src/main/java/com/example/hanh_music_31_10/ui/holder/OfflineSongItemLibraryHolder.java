@@ -20,7 +20,7 @@ import com.example.hanh_music_31_10.ui.recycler.RecyclerData;
 import es.claucookie.miniequalizerlibrary.EqualizerView;
 
 public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
-    private TextView mNumber;
+    private ImageView mImageOffline;
     private TextView mNameSongOffline;
     private TextView mDuration;
     private ImageView mOptionOffline;
@@ -34,7 +34,7 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
 
     public OfflineSongItemLibraryHolder(@NonNull View itemView) {
         super(itemView);
-        mNumber = itemView.findViewById(R.id.id_number);
+        mImageOffline = itemView.findViewById(R.id.id_image_offline);
         mNameSongOffline = itemView.findViewById(R.id.id_item_name_song);
         mDuration = itemView.findViewById(R.id.id_item_duration);
         mOptionOffline = itemView.findViewById(R.id.id_option_menu);
@@ -47,11 +47,10 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
             Song song = (Song) data;
             if(mService != null){
                 Song playingSong = mService.getPlayingSong();
-                updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying());
+                updateEqualizerView(playingSong != null && playingSong.getId() == song.getId() && mService.isMusicPlay() && mService.isPlaying(), song);
             }else {
-                updateEqualizerView(false);
+                updateEqualizerView(false, song);
             }
-            mNumber.setText(""+(getLayoutPosition()+1));
             mNameSongOffline.setText(song.getNameSong());
             mDuration.setText(song.getDuration());
             mOptionOffline.setOnClickListener(new View.OnClickListener() {
@@ -93,14 +92,22 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
     }
     //update sóng khi phát 1 bài hát
     @SuppressLint("SetTextI18n")
-    public void updateEqualizerView(boolean isPlay){
+    public void updateEqualizerView(boolean isPlay, Song song){
         if( isPlay ){
             mEqualizerView.animateBars();
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
+            if (song.loadImageFromPath(song.getPathSong()) == null) {
+                mImageOffline.setImageResource(R.drawable.tim);
+            } else {
+                mImageOffline.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
+            }
         }
+        mEqualizerView.getLayoutParams().height = 65;
+        mEqualizerView.getLayoutParams().width = 65;
+        mEqualizerView.requestLayout();
         mEqualizerView.setVisibility(isPlay ? View.VISIBLE : View.INVISIBLE);
-        mNumber.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );
+        mImageOffline.setVisibility(isPlay ? View.INVISIBLE : View.VISIBLE );
     }
 
     @Override

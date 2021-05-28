@@ -11,7 +11,7 @@ import com.example.hanh_music_31_10.model.Song;
 public class LibraryViewModel extends ViewModel {
 
     private final MutableLiveData<Playlist> mDetailPlaylist = new MutableLiveData<>();
-    private final MutableLiveData<PlaySong> mPlaySong = new MutableLiveData<>();
+    private final MutableLiveData<Song> mPlaySong = new MutableLiveData<>();
     // nhan su kien khi click vao mot bai hat
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
 
@@ -30,12 +30,12 @@ public class LibraryViewModel extends ViewModel {
         this.mDetailPlaylist.setValue(mPLayList);
     }
 //
-    public MutableLiveData<PlaySong> getPlaylist() {
+    public MutableLiveData<Song> getPlaySong() {
         return mPlaySong;
     }
 
-    public void setPlaylist(PlaySong mPlaylist) {
-        this.mPlaySong.setValue(mPlaylist);
+    public void setPlaySong(Song song) {
+        this.mPlaySong.setValue(song);
     }
 
     public MutableLiveData<Playlist> openDetailPlaylist(){

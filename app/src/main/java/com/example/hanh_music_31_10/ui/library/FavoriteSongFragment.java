@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +22,6 @@ import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.ActivityViewModel;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.model.PlaySong;
-import com.example.hanh_music_31_10.model.Playlist;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.provider.FavoriteSongProvider;
 import com.example.hanh_music_31_10.provider.FavoriteSongsTable;
@@ -31,7 +31,6 @@ import com.example.hanh_music_31_10.ui.recycler.RecyclerActionListener;
 import com.example.hanh_music_31_10.ui.recycler.RecyclerViewType;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FavoriteSongFragment extends Fragment {
 
@@ -45,14 +44,15 @@ public class FavoriteSongFragment extends Fragment {
     static final Uri CONTENT_URI = Uri.parse(URL);
 
     private RecyclerView mRecyclerView;
-    private ActivityViewModel mLibraryViewModel;
+    private ActivityViewModel mActivityViewModel;
+    private LibraryViewModel mLibraryViewModel;
     private BaseRecyclerAdapter<Song> mAdapter;
 
 
     private RecyclerActionListener mActionListener = new RecyclerActionListener() {
         @Override
         public void onViewClick(int position, View view, BaseRecyclerViewHolder viewHolder) {
-            mLibraryViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
+            mActivityViewModel.setPlaylist(new PlaySong(position, new ArrayList<>(mAdapter.getData())));
             mAdapter.notifyDataSetChanged();
         }
 
@@ -89,7 +89,15 @@ public class FavoriteSongFragment extends Fragment {
 
         mRecyclerView.setAdapter(mAdapter);
 
-        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
+        mLibraryViewModel = new ViewModelProvider(requireActivity()).get(LibraryViewModel.class);
+        mLibraryViewModel.getPlaySong().observe(getViewLifecycleOwner(), new Observer<Song>() {
+            @Override
+            public void onChanged(Song song) {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        mActivityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
         return view;
     }
 

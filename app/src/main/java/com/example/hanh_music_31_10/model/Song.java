@@ -28,19 +28,20 @@ public class Song implements RecyclerData, Serializable {
     private int idCategory;
     private String imageUrl;
     private String linkUrl;
+    private String releaseDate;
 
     @Exclude private boolean isOffline = false;
 
     public Song() {
-        this(0, "", "", "", "", "", 0, "", "");
+        this(0, "", "", "", "", "", 0, "", "", "");
     }
 
     public Song(int id, String nameSong, String pathSong, String singer, String albumID, String duration, int idCategory, String mImageUrl) {
-        this(id, nameSong, pathSong, singer, albumID, duration, idCategory, mImageUrl, "");
+        this(id, nameSong, pathSong, singer, albumID, duration, idCategory, mImageUrl, "", "");
     }
 
     public Song(int id, String nameSong, String pathSong, String singer, String albumID,
-                String duration, int idCategory, String mImageUrl, String mLinkUrl) {
+                String duration, int idCategory, String mImageUrl, String mLinkUrl, String releaseDate) {
         this.id = id;
         this.nameSong = nameSong;
         this.pathSong = pathSong;
@@ -50,11 +51,12 @@ public class Song implements RecyclerData, Serializable {
         this.idCategory = idCategory;
         this.imageUrl = mImageUrl;
         this.linkUrl = mLinkUrl;
+        this.releaseDate = releaseDate;
     }
 
     //song offline
     public Song(int id, String nameSong, String imageUrl, String artist, String albumID, String timeSong) {
-        this(id, nameSong, imageUrl, artist, albumID, timeSong, 0, "", "");
+        this(id, nameSong, imageUrl, artist, albumID, timeSong, 0, "", "", "");
         isOffline = true;
     }
 
@@ -128,6 +130,14 @@ public class Song implements RecyclerData, Serializable {
 
     public void setAlbumID(String albumID) {
         this.albumID = albumID;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     //lay anh theo bitmap neu co path

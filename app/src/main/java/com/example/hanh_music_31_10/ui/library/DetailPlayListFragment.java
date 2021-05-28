@@ -80,7 +80,6 @@ public class DetailPlayListFragment extends Fragment {
             @SuppressLint("SetTextI18n")
             @Override
             public void onChanged(Playlist playlist) {
-                Log.i("HaiKH", "onChanged: 1");
                 if (playlist != null) {
                     mTitlePlayList.setText("Tên Playlist: "+playlist.getNamePlaylist());
                     if(mAdapter.getItemCount() == 0){
