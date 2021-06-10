@@ -21,17 +21,13 @@ public class ViewPagerAdapterLibrary extends FragmentStatePagerAdapter {
     public ViewPagerAdapterLibrary(@NonNull FragmentManager fm) {
         super(fm);
     }
-
+    // HaiKH sự kiện chuyển tab bên thư viên
     @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                OfflineSongFragment offlineSongFragment = new OfflineSongFragment();
-                Bundle bundle = new Bundle();
-                //
-                offlineSongFragment.setArguments(bundle);
-                return offlineSongFragment;
+                return new OfflineSongFragment();
             case 1:
                 return new PlayListFragment();
             case 2:

@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        // HaiKH Layout thu nho bai hat va event onclick
         mBottomControl = findViewById(R.id.layout_play_home);
         mBottomControl.setOnClickListener(new View.OnClickListener() {
             @Override

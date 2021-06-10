@@ -1,8 +1,12 @@
 package com.example.hanh_music_31_10.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hanh_music_31_10.R;
 import com.example.hanh_music_31_10.activity.ActivityViewModel;
+import com.example.hanh_music_31_10.activity.SettingsActivity;
 import com.example.hanh_music_31_10.model.Constants;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Playlist;
@@ -63,6 +68,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         mActivityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewModel.class);
@@ -109,7 +115,7 @@ public class HomeFragment extends Fragment {
     //Create data
     private void getData() {
         ArrayList<Playlist> mData = new ArrayList<>();
-
+        // HaiKH Get list MPH sap xep theo ngay ra mat
         new Firebase(Constants.FIREBASE_REALTIME_DATABASE_URL).child(Constants.FIREBASE_REALTIME_SONG_PATH).orderByChild("releaseDate")
                 .limitToLast(6).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -160,6 +166,25 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
+            }
+        });
+    }
+
+    // HaiKH click setting
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.setting_menu, menu);
+
+        MenuItem settingItem = menu.findItem(R.id.action_setting);
+
+        settingItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
             }
         });
     }

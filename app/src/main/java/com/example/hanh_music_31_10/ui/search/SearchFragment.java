@@ -85,4 +85,23 @@ public class SearchFragment extends Fragment {
                 .commit();
     }
 
+    // HaiKH click setting
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.setting_menu, menu);
+
+        MenuItem settingItem = menu.findItem(R.id.action_setting);
+
+        settingItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
+    }
+
 }
