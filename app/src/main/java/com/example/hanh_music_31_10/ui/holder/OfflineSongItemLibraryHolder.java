@@ -98,7 +98,7 @@ public class OfflineSongItemLibraryHolder extends BaseRecyclerViewHolder {
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
             if (song.loadImageFromPath(song.getPathSong()) == null) {
-                mImageOffline.setImageResource(R.drawable.tim);
+                mImageOffline.setImageResource(R.drawable.music);
             } else {
                 mImageOffline.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
             }

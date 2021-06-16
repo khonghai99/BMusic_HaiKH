@@ -3,44 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:id="@+id/line5">
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_setting"
-            android:padding="15dp"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:id="@+id/title"
-            android:text="Cài đặt"
-            android:textSize="25sp"
-            android:textStyle="italic|bold"
-            android:gravity="center|start"
-            android:paddingStart="20dp"
-            android:paddingLeft="20dp" />
-    </LinearLayout>
-
+    android:layout_height="match_parent">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000"
-        android:layout_below="@+id/line5"/>
+        android:background="#000" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
-        android:id="@+id/line4"
-        android:layout_below="@id/line5">
+        android:id="@+id/line4">
         <TextView
             android:id="@+id/manager_acc"
             android:layout_width="0dp"

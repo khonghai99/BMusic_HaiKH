@@ -85,13 +85,12 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/btMainPlay"
+            android:id="@+id/btnMainPlay"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="46dp"
-            android:src="@drawable/ic_play_black_24dp"
-            android:layout_gravity="center"
-            app:tint="@color/icon_color" />
+            android:layout_height="45dp"
+            android:src="@drawable/ic_play_select"
+            android:layout_gravity="center" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -6,6 +6,8 @@
     <color name="pink_playlist">#371015</color>
     <color name="icon_color">#FFFFFF</color>
 
+    <color name="liked_color">#FB0000</color>
+
     <color name="name_song">#FFFFFF</color>
     <color name="duration">#F2F2F2</color>
 
@@ -17,8 +19,8 @@
     <color name="center_background_recyclerview">#171015</color>
 
     <color name="bottom_layout">#aa141217</color>
-    <color name="progress_tint">#FFFFFF</color>
-    <color name="thum_tint">#FFFFFF</color>
+    <color name="progress_tint">#F44C36</color>
+    <color name="thum_tint">#F44C36</color>
     <color name="top_layout">#aa371015</color>
 
     <color name="icon_click_color">#FF5722</color>

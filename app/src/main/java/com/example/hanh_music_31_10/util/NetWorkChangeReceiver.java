@@ -19,9 +19,7 @@ public class NetWorkChangeReceiver extends BroadcastReceiver {
         splashScreenFragment = new SplashScreenFragment();
         try{
             if (isOnline(context)){
-                Log.i("HaiKH1", "onReceive: show");
             }else {
-                Log.i("HaiKH1", "onReceive: hide");
                 Toast.makeText(context, "disconnected", Toast.LENGTH_SHORT).show();
             }
         }catch (NullPointerException e){

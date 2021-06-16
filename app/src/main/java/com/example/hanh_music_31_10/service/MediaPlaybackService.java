@@ -57,26 +57,12 @@ import java.util.Random;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS;
 import static android.media.AudioManager.AUDIOFOCUS_LOSS_TRANSIENT;
 
-//import com.example.activitymusic.Model.SongOnline;
-//import com.example.activitymusic.Provider.FavoriteSongsProvider;
-//import com.example.activitymusic.Activity.MainActivityMusic;
-//import com.example.activitymusic.Model.Song;
-//import com.example.activitymusic.R;
-//import com.example.activitymusic.Server.APIServer;
-//import com.example.activitymusic.Server.DataServer;
-//import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
-//import pub.devrel.easypermissions.EasyPermissions;
-//import retrofit2.Call;
-//import retrofit2.Callback;
-//import retrofit2.Response;
-
 
 public class MediaPlaybackService extends Service {
     public static final String CHANNEL_ID = "MusicServiceChannel";
     public static final String DOWNLOAD_ID = "MusicDownloadChannel";
 
-    public static final String ISPLAYING ="isplaying";
+    public static final String ISPLAYING = "isplaying";
     public static final String MY_KEY = "my_key";
     public static final String ACTION = "my_action";
 
@@ -85,7 +71,7 @@ public class MediaPlaybackService extends Service {
 
     private ArrayList<Song> mPlayingSongList;
     private Song mPLayingSong;
-//    private ArrayList<SongOnline> mListSongOnline;
+    //    private ArrayList<SongOnline> mListSongOnline;
 //    private SongOnline mPlayingSongOnline;
     public boolean mIsPlayOnline = false;
     private int mIndexofPlayingSong;
@@ -140,7 +126,7 @@ public class MediaPlaybackService extends Service {
             );
             musicServiceChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             musicServiceChannel.enableVibration(false);
-            NotificationManager manager =getSystemService(NotificationManager.class);
+            NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(musicServiceChannel);
         }
         mSharedPreferences = getSharedPreferences(sharePrefFile, MODE_PRIVATE);
@@ -202,11 +188,11 @@ public class MediaPlaybackService extends Service {
         }
 
         Bitmap bitmap = null;
-        if (mPLayingSong.isOffline()){
+        if (mPLayingSong.isOffline()) {
             bitmap = mImgSong;
         } else {
-            if (loadImageFromPath(getPathSong()) == null){
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song);
+            if (loadImageFromPath(getPathSong()) == null) {
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.music);
             } else {
                 bitmap = loadImageFromPath(getPathSong());
             }
@@ -218,9 +204,9 @@ public class MediaPlaybackService extends Service {
                 .setContentTitle(getNameSong())
                 .setContentText(getArtist())
                 .setLargeIcon(bitmap)
-                .addAction(R.drawable.ic_skip_previous_black_24dp, "previous", previousPendingIntent)
-                .addAction(isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp, "play", playPendingIntent)
-                .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextPendingIntent)
+                .addAction(R.drawable.ic_previous, "previous", previousPendingIntent)
+                .addAction(isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play_select, "play", playPendingIntent)
+                .addAction(R.drawable.ic_next, "next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2))
                 .setContentIntent(pendingIntent)
@@ -316,7 +302,7 @@ public class MediaPlaybackService extends Service {
 
     public boolean isPlaying() {
         if (mMediaPlayer.isPlaying())
-           return true;
+            return true;
         else
             return false;
     }
@@ -409,12 +395,18 @@ public class MediaPlaybackService extends Service {
             mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    if (mLoopStatus == 0) {
-                        nextSongNoloop();
-                    } else if (mLoopStatus == 1) {
-                        nextSong();
+                    if (mPLayingSong.isOffline()) {
+                        if (mLoopStatus == 0) {
+                            nextSongNoloop();
+                        } else if (mLoopStatus == 1) {
+                            nextSong();
+                        } else {
+                            playSong(mPlayingSongList, mPLayingSong);
+                        }
                     } else {
-                        playSong(mPlayingSongList, mPLayingSong);
+                        mServiceCallback.onUpdate();
+                        if (mServiceCallback1 != null) mServiceCallback1.onUpdateDetailFragent();
+                        showNotification();
                     }
                 }
             });
@@ -432,7 +424,7 @@ public class MediaPlaybackService extends Service {
 
     public void nextSong() {
         if (isMusicPlay()) {
-           {
+            {
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         mIndexofPlayingSong = 0;
@@ -443,15 +435,15 @@ public class MediaPlaybackService extends Service {
                     Random rd = new Random();
                     mIndexofPlayingSong = rd.nextInt(mPlayingSongList.size());
                 }
-               mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
-           }
+                mPLayingSong = mPlayingSongList.get(mIndexofPlayingSong);
+            }
             preparePlay();
         }
     }
 
     public void nextSongNoloop() {
         if (isMusicPlay()) {
-           {
+            {
                 if (mShuffle == 0) {
                     if (mIndexofPlayingSong == mPlayingSongList.size() - 1) {
                         stop();
@@ -529,7 +521,8 @@ public class MediaPlaybackService extends Service {
     }
 
     public void setSeekTo(int seekProgress) {
-        mMediaPlayer.seekTo(seekProgress);
+        if (mMediaPlayer != null)
+            mMediaPlayer.seekTo(seekProgress);
     }
 
     public int getCurrentDuration() {
@@ -558,6 +551,7 @@ public class MediaPlaybackService extends Service {
     public void listenChangeStatus(IServiceCallback callbackService) {
         this.mServiceCallback = callbackService;
     }
+
     public void listenChangeDetailFragment(IServiceCallback1 callbackService) {
         this.mServiceCallback1 = callbackService;
     }

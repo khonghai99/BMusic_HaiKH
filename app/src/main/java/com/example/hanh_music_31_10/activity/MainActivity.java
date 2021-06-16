@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.StorageUtil;
 import com.example.hanh_music_31_10.model.PlaySong;
 import com.example.hanh_music_31_10.model.Song;
 import com.example.hanh_music_31_10.service.MediaPlaybackService;
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         mImageSong = findViewById(R.id.imgMainSong);
         mNameSong = findViewById(R.id.tvMainNameSong);
         mArtist = findViewById(R.id.tvMainArtist);
-        mIsPlaySong = findViewById(R.id.btMainPlay);
+        mIsPlaySong = findViewById(R.id.btnMainPlay);
 
         mIsPlaySong.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
                     mMediaPlaybackService.preparePlay();
                 }else if (mMediaPlaybackService.isPlaying()) {
                     mMediaPlaybackService.pause();
-                    mIsPlaySong.setImageResource(R.drawable.ic_play_black_24dp);
+                    mIsPlaySong.setImageResource(R.drawable.ic_play_select);
                 } else {
                     mMediaPlaybackService.play();
-                    mIsPlaySong.setImageResource(R.drawable.ic_pause_black_24dp);
+                    mIsPlaySong.setImageResource(R.drawable.ic_pause);
                 }
             }
         });
@@ -151,9 +152,11 @@ public class MainActivity extends AppCompatActivity {
         getThemeNightMode();
     }
 
+    StorageUtil mStorageUtil = new StorageUtil(this);
+
     //HanhNTHe: setThemenight
     private void getThemeNightMode(){
-        if(SettingFragment.mNight){
+        if(mStorageUtil.loadThemeColor()){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
@@ -247,11 +250,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (song.loadImageFromPath(song.getPathSong()) == null) {
-            mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_song));
+            mImageSong.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music));
             Glide.with(mImageSong)
                     .load(song.getImageUrl())
                     .apply(RequestOptions.
-                            placeholderOf(R.drawable.icon_default_song))
+                            placeholderOf(R.drawable.music))
                     .into(mImageSong);
         } else {
             mImageSong.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
@@ -259,8 +262,9 @@ public class MainActivity extends AppCompatActivity {
         mNameSong.setText(song.getNameSong());
         mArtist.setText(song.getSinger());
         if (mMediaPlaybackService.isMusicPlay()) {
-            mIsPlaySong.setImageResource(mMediaPlaybackService.isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp);
-        } else mIsPlaySong.setImageResource(R.drawable.ic_play_black_24dp);
+            mIsPlaySong.setImageResource(mMediaPlaybackService.isPlaying() ? R.drawable.ic_pause
+                    : R.drawable.ic_play_select);
+        } else mIsPlaySong.setImageResource(R.drawable.ic_play_select);
     }
 
     public void updateBottomSheet() {

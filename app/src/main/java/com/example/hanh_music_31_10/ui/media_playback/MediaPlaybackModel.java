@@ -12,7 +12,7 @@ public class MediaPlaybackModel extends ViewModel {
 
     private MutableLiveData<String> mPathImage;
     private final MutableLiveData<Playlist> mDetailPlaylist = new MutableLiveData<>();
-    private final MutableLiveData<PlaySong> mPlaySong = new MutableLiveData<>();
+    private final MutableLiveData<Song> mSong = new MutableLiveData<>();
     // nhan su kien khi click vao mot bai hat
     private final MutableLiveData<Song> mClickSong = new MutableLiveData<>();
 
@@ -39,12 +39,12 @@ public class MediaPlaybackModel extends ViewModel {
         this.mDetailPlaylist.setValue(mPLayList);
     }
 //
-    public MutableLiveData<PlaySong> getPlaylist() {
-        return mPlaySong;
+    public MutableLiveData<Song> getSong() {
+        return mSong;
     }
 
-    public void setPlaylist(PlaySong mPlaylist) {
-        this.mPlaySong.setValue(mPlaylist);
+    public void setSong(Song song) {
+        this.mSong.setValue(song);
     }
 
     public MutableLiveData<Playlist> openDetailPlaylist(){

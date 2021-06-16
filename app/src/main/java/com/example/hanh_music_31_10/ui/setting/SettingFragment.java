@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.hanh_music_31_10.R;
+import com.example.hanh_music_31_10.StorageUtil;
 import com.example.hanh_music_31_10.activity.MainActivity;
 import com.example.hanh_music_31_10.auth.AuthActivity;
 
@@ -25,15 +26,18 @@ public class SettingFragment extends Fragment {
 
     public static final String THEME_NIGHT = "theme_night";
     public static boolean mNight = false;
+    private Context context;
 
-    public SettingFragment() {
-    }
+    public SettingFragment() {}
+
+    private StorageUtil mStorageUtil;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.setting_layout, container, false);
-
+        context = container.getContext();
+        mStorageUtil = new StorageUtil(context);
         LinearLayout managerAcc = view.findViewById(R.id.line4);
         managerAcc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,13 +54,14 @@ public class SettingFragment extends Fragment {
         switchNight.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     mNight = true;
-                }else {
+                } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     mNight = false;
                 }
+                mStorageUtil.storeThemeColor(isChecked);
                 saveThemeNightMode(isChecked);
             }
         });
@@ -71,13 +76,16 @@ public class SettingFragment extends Fragment {
         return view;
     }
 
-    private void saveThemeNightMode(boolean isnight){
+
+
+    private void saveThemeNightMode(boolean isNight) {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(THEME_NIGHT, isnight);
+        editor.putBoolean(THEME_NIGHT, isNight);
         editor.apply();
     }
-    private boolean getThemeNightMode(){
+
+    private boolean getThemeNightMode() {
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         return sharedPref.getBoolean(THEME_NIGHT, false);
     }

@@ -24,6 +24,8 @@
 
     <color name="icon_color">#000000</color>
 
+    <color name="liked_color">#FB0000</color>
+
     <color name="name_song">#222222</color>
     <color name="duration">#505050</color>
 

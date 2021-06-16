@@ -85,7 +85,7 @@ public class FavoriteSongItemLibraryHolder extends BaseRecyclerViewHolder {
         } else if (!mEqualizerView.isAnimating()){
             mEqualizerView.stopBars();
             if (song.loadImageFromPath(song.getPathSong()) == null) {
-                mImageFavorite.setImageResource(R.drawable.tim);
+                mImageFavorite.setImageResource(R.drawable.music);
             } else {
                 mImageFavorite.setImageBitmap(song.loadImageFromPath(song.getPathSong()));
             }

@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.hanh_music_31_10.ui.library.OfflineSongFragment;
+
 public class PagerAdapterBottom extends FragmentStatePagerAdapter {
     public PagerAdapterBottom(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -19,7 +21,7 @@ public class PagerAdapterBottom extends FragmentStatePagerAdapter {
                 frag = new ImageFragment();
                 break;
             case 1:
-                frag = new LyricsFragment();
+                frag = new OfflineSongFragment();
                 break;
         }
         return frag;
